@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy analyse layer1
+#
+# chkconfig: 2345 95 02
+# description:  ptolemy analysis and caching of layer1 peerings
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="analyse"
+COMMAND="layer1"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

@@ -1,0 +1,38 @@
+{% extends "mobile/base-multipage.html" %}
+{% load str_tags %}
+
+{% block main-title %}Ports on {{ Device.name|dnsstrip }}{% endblock %}
+{% block main-content %}
+
+        <ul data-role="listview" data-filter="true">
+          <!-- <li data-role="list-divider">A</li> -->
+          {% for p in ports %}
+          <li><a rel="external" href="/mobile/port/id/{{ p.id }}/info/"><img src="{% if p.status == 'connected' %}/images/status-green.png{% endif %}{% if p.status == 'notconnected' %}/images/status-red.png{% endif %}{% if p.status == 'disabled' %}/images/status-black.png{% endif %}" class="ui-li-icon"/>{{ p.physical_port }} <p class="ui-li-aside">{{ p.alias|default_if_none:"" }}</p></a></li>
+          <!-- <p class="ui-li-aside">{{ p.vlan }}</p> -->
+          {% endfor %}
+        </ul>
+
+        <ul data-role="listview">
+          <form id="poll-form" method="get" target="response-poll-iframe" action="/mobile/provision/poll/{{ device.name }}/spanningtree/" data-ajax="false">
+            <div class="ui-block-b"><a id="poll-button" href="#tertiary" data-rel="dialog" data-role="button" data-theme="a">Poll</a></div> 
+          </form>
+          <script>
+          $('#poll-button').live( 'click', function(){
+              $('#poll-form').submit()
+            })
+          </script>
+        </ul>
+        
+{% endblock %}
+
+{% block tertiary-title %}Poll Response{% endblock %}
+{% block tertiary-content %}
+
+        <iframe id="response-poll-iframe"></iframe>
+        <div class="ui-body ui-body-b"> 
+          <fieldset class="ui-grid-a"> 
+            <div class="ui-block-a"><a id="back-button" href="/mobile/device/id/{{ device.id }}/ports/" rel="external" data-role="button" data-theme="c">Back</a></div> 
+          </fieldset> 
+        </div>
+        
+{% endblock %}

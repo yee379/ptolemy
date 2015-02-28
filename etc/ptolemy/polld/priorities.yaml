@@ -1,0 +1,122 @@
+reachability:
+    - generic.yaml
+
+entity:
+    - generic.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+
+ports: 
+    - cisco_catos.yaml
+    - cisco_ios_switch.yaml
+    - cisco_2900.yaml
+    - cisco_ios_4000.yaml
+    - cisco_hybrid_router.yaml
+    - topspin_sfs7000d.yaml
+    - f5_bigip.yaml
+    - dell_8024f.yaml
+    - cisco_router.yaml
+port_stats: 
+    - cisco_ios.yaml
+    - generic.yaml
+    - f5_bigip.yaml
+    
+port_channel:
+    # - cisco_ios.yaml
+    - net-config.yaml
+    
+layer1_peer:
+    - generic.yaml
+    - cisco_cdp.yaml
+    - lldp.yaml 
+    - net-config.yaml
+
+spanning_tree:
+    - cisco_generic.yaml
+    # - cisco_aironet.yaml
+    - cisco_wlc.yaml
+    # dot1qTpFdb needs to come after cisco_aironet as the latter will pick up the wrong vlans
+    - dot1qTpFdb.yaml
+    - net-config.yaml
+arps: 
+    - generic.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+    - net-config.yaml
+    
+layer3:
+    - generic.yaml
+    - net-config.yaml
+
+psu:
+    - cisco_ios_router.yaml
+    - cisco_ios_switch.yaml
+    - f5_bigip.yaml
+    - dell_8024f.yaml
+power:
+    - cisco_ios_router.yaml
+    - cisco_ios_switch.yaml
+    - topspin_sfs7000d.yaml
+    # arista.yaml
+    - dell_8024f.yaml
+    - f5_bigip.yaml
+
+fan:
+    - cisco_ios_router.yaml
+    - cisco_ios_switch.yaml
+    - cisco_nexus.yaml
+    - f5_bigip.yaml
+    
+module:
+    - cisco_stack.yaml
+    - cisco_ios_router.yaml
+    - net-config.yaml
+stack: 
+    - cisco_generic.yaml
+
+transceiver:
+    - net-config.yaml
+
+cpu: 
+    - cisco_generic.yaml
+    - cisco_nexus.yaml
+    - cisco_asa.yaml
+    # topspin_sfs7000d.yaml
+    - dell_8024f.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+
+memory: 
+    - cisco_generic.yaml
+    - topspin_sfs7000d.yaml
+    - dell_8024f.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+    
+temperature:
+    - cisco_generic.yaml
+    # cisco_2900.yaml
+    - topspin_sfs7000d.yaml
+    # arista.yaml
+    - dell_8024f.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+
+user_stats: 
+    - cisco_vpn.yaml
+    # - cisco_aironet.yaml
+    - f5_bigip.yaml
+    - cisco_wlc.yaml
+
+wireless: 
+    # - cisco_aironet.yaml
+    - cisco_wlc.yaml
+ha:
+    - cisco_generic.yaml
+    - f5_bigip.yaml
+
+ip_sla: 
+    - cisco_generic.yaml
+
+uptime:
+    - generic.yaml

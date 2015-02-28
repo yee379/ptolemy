@@ -1,0 +1,66 @@
+---
+specification:  high availability status
+description:    high availability status statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-RF-MIB
+
+mappings:
+    ha_status: &ha_status
+        - value_sub:
+            dict:
+                notKnown:   2
+                disabled:   0
+                initialization: 2
+                negotiation: 2
+                standbyCold:    2
+                standbyColdConfig:  2
+                standbyColdFileSys: 2
+                standbyColdBulk:    2
+                standbyHot: 2
+                activeFast: 2
+                activeDrain: 2
+                activePreconfig: 2
+                activePostconfig: 2
+                active: 1
+                activeExtraload: 2
+                activeHandback: 2
+
+
+definition:
+
+    stats:
+        
+        group_by_key:   True
+        key_name: physical_index
+        defaults:
+            map: &remap_to_slot
+                - key_sub:
+                    ref:    cRFStatusUnitId
+        defs:
+            - status:
+                ref:    cRFStatusUnitState
+                map:
+                    - *remap_to_slot
+                    - *ha_status
+            - primary:
+                ref:    cRFStatusPrimaryMode
+                required: False
+                map:
+                    - *remap_to_slot
+                    - value_sub:
+                        dict:
+                            'true':   1
+                            'false':  0
+            - peer:
+                ref: cRFStatusPeerUnitId
+            - peer_status:
+                ref:    cRFStatusPeerUnitState
+                map:
+                    - *remap_to_slot
+                    - *ha_status
+                

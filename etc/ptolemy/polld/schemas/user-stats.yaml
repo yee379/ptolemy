@@ -1,0 +1,8 @@
+---
+user-stats:
+    # statistical indication of the number of users on the device, this couldbe vpn users, dot11 users etc.
+    info:
+        - name
+    status:
+        - users
+--- 

@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# ptolemy scheduled
+#
+# chkconfig: 2345 95 02
+# description:  Run provisiond at boot time to provide an authorisation service for tasks
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="stored nsca"
+USER='netmon'
+OPTIONS=" --logfile=/opt/ptolemy/var/log/stored-nsca.log"
+
+PTOLEMY="/usr/bin/ptolemy"
+WORK_DIR='/'
+
+pidfile=${PIDFILE-/var/run/$PROG-stored-nsca}
+lockfile=${LOCKFILE-/var/lock/subsys/$PROG-stored-nsca}
+STOP_TIMEOUT=30
+
+
+get_pid(){
+  local PID=`ps wx -U $USER | grep ptolemy | grep stored | grep nsca | awk '{print $1}'`
+  echo $PID
+}
+
+start(){
+    echo -n $"Starting ptolemy $NAME"
+    cd $WORK_DIR
+    daemon --pidfile=${pidfile} --user=$USER $PTOLEMY $NAME $OPTIONS
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch ${lockfile}
+    sleep 5
+    pid=$(get_pid)
+    echo ${pid} > ${pidfile}
+    return $RETVAL
+}
+
+stop(){
+    echo -n $"Stopping $NAME $pidfile "
+    killproc -p ${pidfile} -d $STOP_TIMEOUT $PTOLEMY
+    RETVAL=$?
+    echo
+    rm -f ${pidfile} ${lockfile}
+    return $RETVAL
+}
+
+forcestop(){
+    echo "Stopping $NAME "
+    PID=get_pid
+    kill -9 $PID
+    rm -f ${pidfile} ${lockfile}
+}
+
+currentstatus(){
+    status -p ${pidfile} -l ${lockfile}
+}
+
+case "$1" in
+  start)
+    start
+        ;;
+  stop)
+    stop
+        ;;
+  forcestop)
+    forcestop
+        ;;
+  status)
+    currentstatus
+        ;;
+  restart|reload)
+    stop
+    start
+        ;;
+  *)
+        echo "Usage: $NAME {start|stop|status|restart|reload}"
+        exit 1
+esac
+
+exit 0

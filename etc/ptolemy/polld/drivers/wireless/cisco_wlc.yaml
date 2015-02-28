@@ -1,0 +1,190 @@
+specification:  wireless
+description:    cisco cam collection for thin wlc ap's'
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-WIRELESS-MIB
+
+
+definition:
+
+    ap_name:
+        clean: True
+        defs:
+            - device:
+                ref:    bsnAPName
+                map:
+                    - function:
+                        value:  fqdn
+
+
+    info:
+        group_by_key: True
+        remove_key: True
+        additional_key_names:
+            - device
+        defs:
+            - ap_group:
+                ref:    bsnAPGroupVlanName
+            - ip_address:
+                ref:    bsnApIpAddress
+            - gateway:
+                ref:    bsnAPGateway
+            - netmask:
+                ref:    bsnAPNetmask
+            - static_ip:
+                ref:    bsnAPIsStaticIP
+            - mac_address:
+                ref:    bsnAPEthernetMacAddress
+                map:
+                    - function:
+                        value: normalise_mac_address
+        post:
+            map:
+                - post_function:
+                    dataset: post_merge_wireless_apname_on_radio
+
+
+    status:
+        group_by_key:   True
+        additional_key_names:
+            - device
+            - radio
+        remove_key: True
+        defs:
+            - clause:
+                ref:    bsnAPIfType
+            - radio:
+                ref:    bsnAPIfType
+                map:
+                    - regexp:
+                        key:  ^.*\.(?P<value>\d)$
+            - frequency:
+                ref:    bsnAPIfPhyChannelNumber
+                map:
+                    - value_sub:
+                        dict:
+                            # 2.4ghz
+                            ch1:    2412
+                            ch2:    2417
+                            ch3:    2422
+                            ch4:    2427
+                            ch5:    2432
+                            ch6:    2437
+                            ch7:    2442
+                            ch8:    2447
+                            ch9:    2452
+                            ch10:    2457
+                            ch11:    2462
+                            ch12:    2467
+                            ch13:    2472
+                            ch14:    2484
+                            # 5ghz
+                            ch183:    4915
+                            ch184:    4920
+                            ch185:    4925
+                            ch187:    4935
+                            ch188:    4940
+                            ch189:    4945
+                            ch192:    4960
+                            ch196:    4980
+                            # ch7:    5035
+                            # ch8:    5040
+                            # ch9:    5045
+                            # ch11:    5055
+                            # ch12:    5060
+                            ch16:    5080
+                            ch34:    5170
+                            ch36:    5180
+                            ch38:    5190
+                            ch40:    5200
+                            ch42:    5210
+                            ch44:    5220
+                            ch46:    5230
+                            ch48:    5240
+                            ch52:    5260
+                            ch56:    5280
+                            ch60:    5300
+                            ch64:    5320
+                            ch100:    5500
+                            ch104:    5520
+                            ch108:    5540
+                            ch112:    5560
+                            ch116:    5580
+                            ch120:    5600
+                            ch124:    5620
+                            ch128:    5640
+                            ch132:    5660
+                            ch136:    5680
+                            ch140:    5700
+                            ch149:    5745
+                            ch153:    5765
+                            ch157:    5785
+                            ch161:    5805
+                            ch165:    5825
+            - bssid:
+                ref:    bsnAPIfDot11BSSID    
+                map:    
+                    - function:
+                        value:    pretty_print_mac_address
+            - assignment:
+                ref:    bsnAPIfPhyChannelAssignment
+            - tx_power_mode:
+                ref:    bsnAPIfPhyTxPowerControl
+                    
+        post:
+            map:
+                - post_function:
+                    dataset: post_merge_wireless_apname_on_radio
+
+    # radio_stats:
+    #     
+    #     group_by_key:   True
+    #     key_name:   radio
+    #     defs:
+    #         - gain:
+    #             ref:    bsnAPIfAntennaGain
+    #         - tx_power_level:
+    #             ref:    bsnAPIfPhyTxPowerLevel
+    #         - tx_fragments:
+    #             ref:    bsnAPIfDot11TransmittedFragmentCount
+    #         - tx_multicast:
+    #             ref:    bsnAPIfDot11MulticastTransmittedFrameCount
+    #         - retries:
+    #             ref:    bsnAPIfDot11RetryCount
+    #         - multiple_retries:
+    #             ref:    bsnAPIfDot11MultipleRetryCount
+    #         - tx_frames:
+    #             ref:    bsnAPIfDot11TransmittedFrameCount
+    #         - dup_frames:
+    #             ref:    bsnAPIfDot11FrameDuplicateCount
+    #         - rts_successes:
+    #             ref:    bsnAPIfDot11RTSSuccessCount
+    #         - rts_failures:
+    #             ref:    bsnAPIfDot11RTSFailureCount
+    #         - ack_failures:
+    #             ref:    bsnAPIfDot11ACKFailureCount
+    #         - rx_fragments:
+    #             ref:    bsnAPIfDot11ReceivedFragmentCount
+    #         - rx_multicast:
+    #             ref:    bsnAPIfDot11MulticastReceivedFrameCount
+    #         - fcs_errors:
+    #             ref:    bsnAPIfDot11FCSErrorCount
+    #         - failed:
+    #             ref:    bsnAPIfDot11FailedCount
+    #         - rx_load:
+    #             ref:    bsnAPIfLoadRxUtilization
+    #         - tx_load:
+    #             ref:    bsnAPIfLoadTxUtilization
+    #         - channel_load:
+    #             ref:    bsnAPIfLoadChannelUtilization
+    #         - poor_snr_clients:
+    #             ref:    bsnAPIfPoorSNRClients
+    # 
+    #     post:
+    #         map:
+    #             - post_function:
+    #                 dataset: post_merge_wireless_apname_on_radio

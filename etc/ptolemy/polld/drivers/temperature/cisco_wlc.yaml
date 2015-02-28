@@ -1,0 +1,27 @@
+---
+specification:  temperature
+description:    Cisco WLC Temperature Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-WIRELESS-MIB
+
+definition:
+
+    stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+
+        defs:
+            
+            # - state:
+            #    ref:    bsnSensorTemperature
+            - value:
+                ref:    bsnSensorTemperature
+            - threshold:
+                ref:    bsnTemperatureAlarmHighLimit
+            

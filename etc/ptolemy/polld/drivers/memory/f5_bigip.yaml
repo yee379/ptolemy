@@ -1,0 +1,32 @@
+---
+specification:  memory
+description:    memory statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+        
+        # how does this map to something meaningful?
+        
+        group_by_key:   True
+        key_name: physical_index
+        
+        defs:
+            # - description:
+            #     ref:    ciscoMemoryPoolName
+            #     required:   False
+            - total:
+                ref:    sysHostMemoryTotal
+            - used:
+                ref:    sysHostMemoryUsed
+            # - free:
+            #     ref:    ciscoMemoryPoolFree
+            # - largest_free:
+            #     ref:    ciscoMemoryPoolLargestFree

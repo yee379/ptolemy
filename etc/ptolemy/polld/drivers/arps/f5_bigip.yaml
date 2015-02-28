@@ -1,0 +1,64 @@
+---
+specification: arps
+description: Generic ARP poller
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+
+
+
+definition:
+
+    meta:
+        key_name: physical_port
+        clean: True
+        defs:
+            - physical_port:
+                ref: sysInterfaceName
+        
+    arps:
+        
+        group_by_key: True
+        key_name:   physical_port
+        additional_key_names:
+            - mac_address
+            - ip_address
+        defs:
+            - mac_address:
+                ref:    ipNetToMediaPhysAddress
+                map:
+                    - function:
+                        value:   normalise_mac_address
+            - mac_address_v6:
+                ref:    ipNetToPhysicalPhysAddress
+                required: False
+                map:
+                    - function:
+                        value:  normalise_mac_address
+            - type:
+                ref:    ipNetToMediaType
+
+        post:
+        
+            # extract the index to contain the ifindex and ip address
+            map:
+                # the 'key' is a combined ifindex and ip address of the arp, so we extract
+                - post_extract:
+                    physical_port: ^(?P<physical_port>\d+)\.(ipv[4|6]\.\"?)?(4\.)?(?P<ip_address>[\.\:0-9a-z]+)
+                # we rename the mac_address_v6 to just mac address
+                - post_extract:
+                    mac_address_v6: ^(?P<mac_address>.*)$
+                # replace the physical port (ifindex) with a real physical port
+                - post_key_sub:
+                    physical_port:    meta:physical_port
+                # assume all arps are dynamic unless otherwise defined
+                - post_default_value:
+                    type:   dynamic
+        
+        
+        

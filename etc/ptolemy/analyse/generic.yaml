@@ -1,0 +1,180 @@
+# generic analysis for data
+
+WORKERS: 3 
+POOL: 'analyse.default'
+
+
+ANALYSE:
+    
+    # the goal of this is to define what to analyse and when an alert should be issued.
+    # examples are
+    #  - monitor all ports where the alias is labeled 'swh-*' and alert if it's operational status has changed
+    #    the 'what' defines that we need to listen to spec=ports and group=status (see polling drivers) to get the metadata for 'alias' information. we define the 'field' parameter to look for the field name=alias where it's contents matches a regex (swh-)
+    #    the 'when' defines the actual data to look for - in the context of the found meta data in the 'what' section. again, we define teh spec and group to listen for to subscribe to the messages, and we define that we can to analyse the oper_status condition such that it's it's not True, then send alerts.
+
+    # alert if uplinks are offline
+    uplinks.down:
+        what:
+            spec: ports
+            group: status
+            field:
+                name:   alias
+                regex:  (swh|rtr)-
+                # equals|lt|gt|gte|lte
+            # TODO: implement like this...
+            # - spec: ports
+            #   group: status
+            #   field:
+            #       name:   alias
+            #       regex:  (swh|rtr)-
+            # - spec: port_stats
+            #   group: rfc2863
+            #   field:
+            #       name:   admin_status
+            #       regex:  True
+
+        when:
+            spec:   port_stats
+            group:  rfc2863
+            field:
+                name: oper_status
+                ne:    True
+
+    # alert if ap's are offline
+    ap.down:
+        what:
+            spec: ports
+            group: status
+            field:
+                name:   alias
+                regex:  ap-
+        when:
+            spec:   port_stats
+            group:  rfc2863    
+            field:  
+                name:   oper_status
+                ne:    True
+                
+    # alert if pings failed to switches
+    devices.unreachable:
+        what:
+            spec:   reachability
+            group:  ping
+            field:
+                name:   device
+                regex:  .*
+        when:
+            spec:   reachability
+            group:  ping
+            field:
+                name:   loss
+                ge:    100
+    
+    ###
+    # alert if transceivers not within optimal range
+    ###
+    transceivers.outofspec:sfpplus.lh:
+        what:
+            spec:   transceiver
+            group:  meta
+            field:
+                name:   type
+                regex:  SFP-10GBase-LR
+        when:
+            spec:   transceiver
+            group:  stats
+            field:
+                name:   rx
+                outside:    -14.4,0.5
+    transceivers.outofspec:sfp.lh:
+        what:
+            spec:   transceiver
+            group:  meta
+            field:
+                name:   type
+                regex:  (1000BaseLX SFP|1000BaseLH|1000BaseLX SFP)
+        when:
+            spec:   transceiver
+            group:  stats
+            field:
+                name:   rx
+                outside:    -20,-3
+    transceivers.outofspec:x2.lh:
+        what:
+            spec:   transceiver
+            group:  meta
+            field:
+                name:   type
+                regex:  ^(10GBase-LR|10Gbase-LR)$
+        when:
+            spec:   transceiver
+            group:  stats
+            field:
+                name:   rx
+                outside:    -14.4,0.5
+    transceivers.outofspec:x2.sr:
+        what:
+            spec:   transceiver
+            group:  meta
+            field:
+                name:   type
+                regex:  (10GBase-SR|10Gbase-SR)
+        when:
+            spec:   transceiver
+            group:  stats
+            field:
+                name:   rx
+                outside:    -9.9,-1
+    
+    # modules on switches go down
+    modules.outage:
+        what:
+            spec:   module
+            group:  stats
+            field:
+                name:   member
+                regex:  .
+        when:
+            spec:   module
+            group:  stats
+            field:
+                name:   status
+                ne: 1
+                
+    # alert when psu's break
+    psus.outage:
+        what:
+            spec:   power
+            group:  stats
+            field:
+                name:   power_op
+                regex: .
+        when:
+            spec:   power
+            group:  stats
+            field:
+                name:   power_op
+                ne: 1
+                
+    # alert when fan's break
+    fans.outage:
+        what:
+            spec:   fan
+            group:  stats
+            field:
+                name:   status
+                regex:  .
+        when:
+            spec:   fan
+            group:  stats
+            field:
+                name:   status
+                ne: 1
+    
+    
+    # flappping?
+    
+    # TODO?
+    # alert if subnets acting funny
+    # alert when phones change location
+    #

@@ -1,0 +1,28 @@
+# logging file
+LOG_FILE: '/opt/ptolemy/var/log/stored-mongo.log'
+
+WORKERS: 2
+#######################################################################
+# Agent Settings
+#######################################################################
+
+POOL: 'mongo.default'
+KEYS:
+    - '#.spanning_tree.#'
+    - '#.entity.#'
+    - '#.ports.#'
+    - '#.layer1_peer.#'
+    - '#.arps.#'
+    - '#.property_control.#'
+    - '#.dns.#'
+    - '#.layer3.#'
+    - '#.spec.wireless.#'
+    - '#.spec.ip_sla.group.meta.#'
+
+
+#######################################################################
+# MONGO Settings
+#######################################################################
+
+MONGO_HOST: 'net-lanmon01.slac.stanford.edu'
+MONGO_PORT: 27017

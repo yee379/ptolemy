@@ -1,0 +1,18 @@
+specification: reachability
+description: ping the given host (from where polld workers are)
+
+defaults:
+    agent: Ping
+        
+definition:
+
+    ping:
+        
+        key_name: tool
+        group_by_key: True
+        defs:
+            - min_rtt:
+                ref:    min_rtt
+                required:   False
+            - loss:
+                ref:    loss

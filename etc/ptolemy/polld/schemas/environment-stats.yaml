@@ -1,0 +1,24 @@
+---        
+environment-stats:
+    # environmental status of the device, eg temperatures, power etc.
+    # index by the entity table
+    info:
+        - name
+    temperature:
+        - temperature
+    power:
+        - power_status
+        - redundancy_admin_status
+        - redundancy_op_status
+        - redudancy_mode
+    voltage:
+        - voltage_reading
+        - voltage_threshold
+    current:
+        - current_reading
+        - current_threshold
+    fan:
+        - fan_status
+        - fan_speed
+        - fan_threshold
+--- 

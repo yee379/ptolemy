@@ -1,0 +1,151 @@
+---
+specification:  entity
+description:    Generic entity Ptolemy Driver using entPhysical
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+
+definition:
+    
+    info:
+        group_by_key:   True
+        remove_key: True
+        defs:
+            - name:
+                ref:    sysName
+            - location:
+                ref:        sysLocation
+                required:   False
+            - string:
+                ref:    sysDescr
+                required: False
+            # - uptime:
+            #     ref:    sysUpTime   # doesn't match exactly
+
+
+    chassis:
+        group_by_key:   True
+        key_name:   chassis_physical_index
+        clean:  True
+        defs:
+            - chassis_type:
+                ref:    sysPlatformInfoMarketingName
+                map:
+                    - value_sub:
+                        set:    chassis
+            - chassis_vendor:
+                ref:    sysPlatformInfoMarketingName
+                map:
+                    - value_sub:
+                        set: f5
+            - chassis_model:
+                ref:    sysPlatformInfoMarketingName
+            # - description:
+            #     ref:    sysDescr
+            - chassis_serial:
+                ref:    sysGeneralChassisSerialNum
+            - chassis_hw_rev:
+                ref:    sysGeneralHwName
+            - chassis_fw_rev:
+                ref:    sysProductBuild
+            - chassis_sw_rev:
+                ref:    sysProductVersion
+            - chassis_parent_index:
+                ref:    sysPlatformInfoMarketingName
+                map:
+                    - value_sub:
+                        set:  -1
+            - chassis_relative_position:
+                ref:    sysPlatformInfoMarketingName
+                map:
+                    - value_sub:
+                        set: 0
+
+    psu:
+        group_by_key: True
+        key_name: psu_physical_index
+        clean:  True
+        defs:
+            - psu_physical_index:
+                ref:    sysChassisPowerSupplyIndex
+                map:
+                    - value_sub:
+                        prefix: 'psu'
+            - psu_type:
+                ref:    sysChassisPowerSupplyIndex
+                map:
+                    - value_sub:
+                        set:    'power_supply'
+            - psu_parent_index:
+                ref:    sysChassisPowerSupplyIndex
+                map:
+                    - value_sub:
+                        set:    0
+            - psu_relative_position:
+                ref:    sysChassisPowerSupplyIndex
+
+    hd:
+        group_by_key: True
+        key_name: hd_physical_index
+        clean:  True
+        defs:
+            - hd_type:
+                ref:    sysPhysicalDiskName
+                map:
+                    - value_sub:
+                        set:    'disk'
+            - hd_serial:
+                ref:    sysPhysicalDiskSerialNumber
+            
+            - hd_parent_index:
+                ref:    sysPhysicalDiskName
+                map:
+                    - value_sub:
+                        set:    0
+            - hd_physical_index:
+                ref:    sysPhysicalDiskName
+            - hd_relative_position:
+                ref:    sysPhysicalDiskName
+
+    fan:
+        group_by_key: True
+        key_name: hd_physical_index
+        clean:  True
+        defs:
+            - fan_physical_index:
+                ref:    sysChassisFanIndex
+                map:
+                    - value_sub:
+                        prefix: 'fan'
+            - fan_type:
+                ref:    sysChassisFanIndex
+                map:
+                    - value_sub:
+                        set:    'fan'
+            - fan_parent_index:
+                ref:    sysChassisFanIndex
+                map:
+                    - value_sub:
+                        set:    0
+            - fan_relative_position:
+                ref:    sysChassisFanIndex
+
+
+    meta:
+        group_by_key:   True
+        key_name: physical_index
+        additional_key_names:
+            - type
+            - relative_position
+        post:
+            map:
+                - post_merge:
+                    chassis:    chassis_
+                    fan:    fan_
+                    hd: hd_
+                    psu:    psu_

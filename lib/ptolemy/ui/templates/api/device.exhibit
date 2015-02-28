@@ -1,0 +1,19 @@
+{% load str_tags %}
+{
+  "items": [
+{% for d in devices %}
+    {   "type": "Device",
+        "label": "{{ d.name }}",
+        "vlan": [ {% for i in d.vlan|split:"," %}"{{ i }}"{% if not forloop.last %},{% endif %}{% endfor %} ],
+        "sw_version": [ {% for i in d.software_version|split:"," %}"{{ i }}"{% if not forloop.last %},{% endif %}{% endfor %} ],
+        "vendor": "{{ d.vendor }}",
+        "model": [ {% for i in d.model|split:"," %}"{{ i }}"{% if not forloop.last %},{% endif %}{% endfor %} ],
+        "category": "{{ d.category }}",
+        "kind": "{{ d.kind }}",
+        "location": "{{ d.location }}",
+        "uptime": "{{ d.uptime }}",
+        "last_seen": "{{ d.last_seen }}"
+    }{% if not forloop.last %},{% endif %}
+{% endfor %}
+  ]
+}

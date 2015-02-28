@@ -1,0 +1,6 @@
+# number of concurrent workers
+WORKERS: 1
+
+POOL: 'console.default'
+KEYS:
+    - '#'

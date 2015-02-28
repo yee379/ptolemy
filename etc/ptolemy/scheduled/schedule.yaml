@@ -1,0 +1,82 @@
+
+default:
+    reachability:   56 +- 4
+    port_stats:     58 +- 4
+    ports:          260 +- 20 
+    layer1_peer:    240 +- 20
+    spanning_tree:  560 +- 60
+    arps:           560 +- 60
+    layer3:         560 +- 60
+    entity:         560 +- 40
+    port_channel:   560 +- 40
+    # stack:          116 +- 8
+    module:         260 +- 40
+    psu:            260 +- 40
+    fan:            260 +- 40
+    temperature:    260 +- 40
+    # power:          260 +- 40
+    transceiver:    3200 +- 300
+    cpu:            260 +- 40
+
+accelerator:
+    reachability:   56 +- 4
+    port_stats:	    58 +- 4
+    ports:	        260 +- 20 
+    layer1_peer:    240 +- 20
+    spanning_tree:	560 +- 60
+    arps:           560 +- 40
+    layer3:         900 +- 100
+    entity:         560 +- 40
+    port_channel:   560 +- 40
+    cpu:            260 +- 40
+    fan:            260 +- 40
+    temperature:    260 +- 40
+    # power:          260 +- 40
+    psu:            260 +- 40
+    transceiver:    3200 +- 300
+    # stack:          116 +- 8
+    module:         260 +- 40
+    
+visitor: {}
+    # reachability:  56 +- 4
+    # entity:          560 +- 40
+    # port_stats:      58 +- 4
+    # ports:          260 +- 20
+    # layer1_peer:  260 +- 20
+    # wireless:      520 +- 40
+    # user_stats:      260 +- 20
+    # spanning_tree:  560 +- 60
+    # cpu:          260 +- 40
+    # fan:            260 +- 40
+    # power:          260 +- 40
+    # temperature:  260 +- 40
+    
+wlc:
+    reachability:   56 +- 4
+    entity:         280 +- 20
+    user_stats:	    280 +- 20
+    wireless:       280 +- 20
+    port_stats:	    58 +- 4
+    temperature:	  260 +- 40
+    cpu:            260 +- 40
+    memory:         260 +- 40
+    spanning_tree:  560 +- 60
+    arps:           560 +- 60
+
+ssrl:
+    # reachability:    260 +- 4
+    entity:	        560 +- 40
+    port_stats:	    520 +- 80
+    ports:          520 +- 80
+    layer1_peer:    520 +- 80
+    port_channel:   840 +- 60
+    # wireless:        520 +- 40
+    user_stats:     520 +- 80
+    spanning_tree:  840 +- 60
+    cpu:            520 +- 80
+    fan:            520 +- 80
+    power:          520 +- 80
+    temperature:    520 +- 80
+    # transceiver:    3200 +- 300
+
+    

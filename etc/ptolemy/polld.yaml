@@ -1,0 +1,32 @@
+# number of concurrent workers
+WORKERS: 200
+
+#######################################################################
+# driver cache settings
+#######################################################################
+DRIVER_DIR: '/opt/ptolemy/etc/ptolemy/polld/drivers/'
+DRIVER_PRIORITIES: '/opt/ptolemy/etc/ptolemy/polld/priorities.yaml'
+FORCED_DRIVERS: '/opt/ptolemy/etc/ptolemy/polld/forced_drivers.yaml'
+
+#######################################################################
+# poll settings
+#######################################################################
+
+# do not repeat tests that are received within this time period of test start
+RECEIVED_THROTTLE_TIME: 30
+# do not repeat tests that are received within this time period of test finish
+COMPLETE_THROTTLE_TIME: 15
+# # if a test failed, do not repeat test for another n seconds
+FAILED_THROTTLE_TIME: 3600
+
+# invalid a running test if its running this times the frequency of the test
+INVALID_TIME_MULTIPLIER: 1
+
+# reprobes every PERIOD +/- PERIOD*SPREAD
+REPROBE_PERIOD: 7200
+REPROBE_SPREAD: 0.3
+
+#######################################################################
+# agent settings
+#######################################################################
+NETCONFIG_CONFIG: '/opt/ptolemy/etc/ptolemy/polld/net-config/net-config.yaml'

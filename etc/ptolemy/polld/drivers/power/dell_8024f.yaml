@@ -1,0 +1,33 @@
+---
+specification:  performance
+description:    Dell Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - FASTPATH-BOXSERVICES-PRIVATE-MIB
+
+definition:
+
+    status:
+        group_by_key:   True
+        key_name:   physical_index
+        
+        defs:
+            - power_index:
+                ref:    boxServicesPowSupplyIndex
+            - power_admin:
+                required:   False
+            - power_type:
+                ref:    boxServicesPowSupplyItemType
+            - power_op:
+                ref:    boxServicesPowSupplyItemState
+                map:
+                    value_sub:
+                        failed:  0
+                        operational:  1
+                        notpresent:  2
+            # - power_current:
+            #     required:   False

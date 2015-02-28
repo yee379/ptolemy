@@ -1,0 +1,111 @@
+---
+specification:  entity
+description:    Generic entity Ptolemy Driver using entPhysical
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - ENTITY-MIB
+                - AIRESPACE-WIRELESS-MIB
+
+
+map:
+    strip_value:    &strip_value
+        - regexp:
+            value:  ^\s*(?P<value>\S+)\s*$
+
+
+definition:
+    
+    bsn:
+        # lookup information for other defs
+        group_by_key: True
+        clean: True
+        defs:
+            - bsn_device:
+                ref:    bsnAPName
+            - bsn_serial:
+                ref:    bsnAPSerialNumber
+            - bsn_location: 
+                ref:    bsnAPLocation
+    
+    
+    info:
+        group_by_key:   True
+        remove_key: True
+        defs:
+            - name:
+                ref:    sysName
+            - location:
+                ref:        sysLocation
+                required:   False
+            - string:
+                ref:    sysDescr
+                required: False
+            # - uptime:
+            #     ref:    sysUpTime   # doesn't match exactly
+        post:
+            map:
+                - post_function:
+                    # create info's for each wireless ap
+                    dataset:    post_merge_wireless_info_bsn
+
+
+    meta:
+        group_by_key:   True
+        key_name: physical_index
+        additional_key_names:
+            - type
+            - relative_position
+
+        defs:
+
+            # no type on wlc
+            - type:
+                ref:    entPhysicalModelName
+                map:
+                    - value_sub:
+                        dict:
+                            AIR-(LAP|CAP): chassis
+                            other: chassis
+                            
+            - vendor:
+                ref:    entPhysicalMfgName
+                required: False
+            - model:
+                ref:    entPhysicalModelName
+                map:
+                    - *strip_value
+            - description:
+                ref:    entPhysicalDescr
+            - serial:
+                ref:    entPhysicalSerialNum
+                map:
+                    - *strip_value
+            - hw_rev:
+                ref:    entPhysicalHardwareRev
+                required: False
+                map:
+                    - *strip_value
+            - fw_rev:
+                ref:    entPhysicalFirmwareRev
+                required: False
+            - sw_rev:
+                ref:    entPhysicalSoftwareRev
+                required: False
+            
+            - parent_index:
+                ref:    entPhysicalContainedIn
+            - relative_position:
+                ref:    entPhysicalParentRelPos
+
+        post:
+            
+            map:
+                - post_function:
+                    # merge in the device name into each meta
+                    dataset:  post_merge_wireless_meta_bsn
+                # - post_function:
+                #     dataset:  post_reindex_wireless_on_serial

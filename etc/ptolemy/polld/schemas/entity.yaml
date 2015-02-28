@@ -1,0 +1,40 @@
+---
+entity:
+    # contains information about the system and components within (fru's, versions etc.)
+    node-info:
+        required:
+            - name
+            - location
+        optional:
+            - uptime
+            
+    info:
+        required:
+            - vendor
+            - manufacturer
+            - model_name
+            - alias
+            - desc
+            - class
+            - serial
+            - asset_id
+            - hw_rev
+            - fw_rev
+            - sw_rev
+            - mfg_date
+            - fru
+            - contained_in
+            - parent_rel_pos
+            
+    status:
+        required:
+            - op_status
+            - admin_status
+
+    modules:
+        required:
+            - physical_index
+            - num_ports
+            - slot_number
+
+--- 

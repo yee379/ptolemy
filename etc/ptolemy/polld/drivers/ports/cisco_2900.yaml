@@ -1,0 +1,163 @@
+---
+specification: port
+description: Cisco IOS Switch Layer2 Ptolemy Driver provides physical port information about the device such as port names and vlans on such ports
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-STACK-MIB
+                - CISCO-VLAN-MEMBERSHIP-MIB
+                - CISCO-CDP-MIB
+                - IEEE8023-LAG-MIB
+                - EtherLike-MIB
+                - CISCO-C2900-MIB
+
+
+mapping:
+    
+    updown_value: &updown_value
+        - value_sub:
+            dict: 
+                up:      True
+                down:    False
+                enabled:    True
+                disabled:   False
+                other:   None
+    ifname_to_physical_port: &ifname_to_physical_port
+        - key_sub:
+            ref:  ifName
+        - function:
+            key:  truncate_physical_port_name
+    port_index_to_physical_port: &port_index_to_physical_port
+        # first map to ifindex, then use that to get the physical port
+        - key_sub:
+            ref:  portIfIndex
+        - *ifname_to_physical_port
+    c2900port_index_to_physical_port: &c2900port_index_to_physical_port
+        # first map to ifindex, then use that to get the physical port
+        - key_sub:
+            ref: c2900PortIfIndex
+        - *ifname_to_physical_port
+    c2900port_index_with_duplex: &c2900port_index_with_duplex
+        - *c2900port_index_to_physical_port
+        - value_sub:
+            dict:
+                fullduplex: 'full'
+                halfduplex: 'half'
+                autoNegotiate:  'auto'
+                unknown:      'unknown'
+    ifindex_to_physical_port: &ifindex_to_physical_port
+        - key_sub:
+            ref:    ifName
+    ifindex_to_physical_port_with_updown: &ifindex_to_physical_port_with_updown
+        - *ifindex_to_physical_port
+        - *updown_value
+    port_speed: &port_speed
+        - *ifindex_to_physical_port
+        - value_sub:
+            dict:
+                10:       '10'
+                100:      '100'
+                1000:     '1000'
+                10000:    '10000'
+                s10000000:  '10'
+                s100000000: '100'
+                s1000000000: '1000'
+                autoDetect: 'auto'
+                autoDetect10100: 'auto'
+                # other:      'unknown'
+    decode_vlan: &decode_vlan
+        - function:
+            value:   decode_vlanVlansOnPort
+        - *ifindex_to_physical_port
+
+
+definition:
+
+    status:
+        
+        group_by_key:   True
+        key_name:       physical_port
+        
+        defs:
+            - alias:
+                ref:    ifAlias
+                map:    *ifindex_to_physical_port
+            - description:
+                ref:    ifDescr
+                map:    *ifindex_to_physical_port
+            - type:
+                ref:    ifType
+                map:    *ifindex_to_physical_port
+            - mac_address:
+                ref:    ifPhysAddress
+                map:    
+                    - *ifindex_to_physical_port
+                    - function:
+                        value:   normalise_mac_address
+            - physical:
+                ref:    ifType
+                map:
+                    - *ifindex_to_physical_port
+                    - value_sub:
+                        dict:
+                            (E|e)thernet:  True
+                            other:  False
+            - admin_status:
+                ref:    ifAdminStatus
+                map:    *ifindex_to_physical_port_with_updown
+            - op_status:
+                ref:    ifOperStatus
+                map:    *ifindex_to_physical_port_with_updown
+
+            - duplex_admin_status:
+                ref:    c2900PortDuplexState
+                map:    *c2900port_index_with_duplex
+            - duplex_status:
+                ref:    c2900PortDuplexStatus
+                map:    *c2900port_index_with_duplex
+            - speed_admin_status:
+                ref:    ifHighSpeed
+                map:    *port_speed
+            - speed:
+                ref:    ifHighSpeed
+                map:    *ifindex_to_physical_port
+            - portfast:
+                ref:    c2900PortSpantreeFastStart
+                map:    
+                    - *c2900port_index_to_physical_port
+                    - *updown_value
+                required: False
+                
+            - native_vlan:
+                ref:    vmVlan
+                map:
+                    - *ifindex_to_physical_port
+            - vlanTrunkPortVlansEnabled1k:
+                ref:    vlanTrunkPortVlansEnabled
+                map:    *decode_vlan
+                clean:  True
+            - vlanTrunkPortVlansEnabled2k:
+                ref:    vlanTrunkPortVlansEnabled2k
+                map:    *decode_vlan
+                clean:  True
+            - vlanTrunkPortVlansEnabled3k:
+                ref:    vlanTrunkPortVlansEnabled3k
+                map:    *decode_vlan
+                clean:  True
+            - vlanTrunkPortVlansEnabled4k:
+                ref:    vlanTrunkPortVlansEnabled4k
+                map:    *decode_vlan
+                clean:  True
+            - trunked_vlans:
+                map:
+                    - function:
+                        group: merge_trunking_vlans
+            - function:
+                map:
+                    - function:
+                        group: determine_port_function
+
+...

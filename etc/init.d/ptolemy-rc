@@ -1,0 +1,88 @@
+#!/bin/sh
+
+PID_DIR="$WORK_DIR/var/run/$PROG/"
+mkdir -p $WORK_DIR/var/
+mkdir -p $PID_DIR
+chown -R $USER $PID_DIR
+chgrp -R $GROUP $PID_DIR
+chmod -R u+rwx $PID_DIR
+pidfile="$PID_DIR/$NAME-$COMMAND.pid"
+lockfile="${pidfile}.lock"
+
+PTOLEMY="${WORK_DIR}/bin/ptolemy.py"
+LOGFILE="${WORK_DIR}/var/log/${NAME}-${COMMAND}.log"
+ALL_OPTIONS=" --logfile=${LOGFILE} --pidfile=${pidfile} --uid=${USER} --gid=${GROUP} $OPTIONS"
+
+STOP_TIMEOUT=60
+
+start(){
+    echo -n $"Starting $PROG $NAME $COMMAND"
+    $PTOLEMY $NAME $COMMAND $ALL_OPTIONS
+    RETVAL=$?
+    echo
+    # [ $RETVAL = 0 ] && touch ${lockfile}
+    return $RETVAL
+}
+
+stop(){
+    echo -n $"Stopping $PROG $NAME $COMMAND "
+    killproc -p ${pidfile} -d $STOP_TIMEOUT 
+    RETVAL=$?
+    echo
+    rm -f ${pidfile} ${lockfile}
+    return $RETVAL
+}
+
+reload(){
+    echo "Reloading $PROG $NAME $COMMAND "
+    killproc -p ${pidfile} $PTOLEMY -HUP 
+}
+
+currentstatus(){
+    status -p ${pidfile} -l ${lockfile}
+}
+
+clean() {
+    rm -f $pidfile $lockfile
+}
+
+
+forcestop(){
+    echo "Force stopping $PROG $NAME $COMMAND "
+    if [ $COMMAND=="" ]; then
+        ps wx -U $USER | grep $PROG | grep $NAME | awk '{print $1}' | xargs kill -9 
+    else
+        ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | awk '{print $1}' | xargs kill -9 
+    fi
+}
+
+case "$1" in
+  start)
+    start
+        ;;
+  stop)
+    stop
+        ;;
+  forcestop)
+    forcestop
+    clean
+        ;;
+  clean)
+    clean
+        ;;
+  status)
+    currentstatus
+        ;;
+  reload)
+    reload
+        ;;
+  restart)
+    stop
+    start
+        ;;
+  *)
+        echo "Usage: $NAME {start|stop|status|restart|reload}"
+        exit 1
+esac
+
+exit 0

@@ -1,0 +1,6 @@
+hosts:
+    swh-wlc.slac.stanford.edu: null
+  
+settings:
+    schedule: wlc
+    snmp: default

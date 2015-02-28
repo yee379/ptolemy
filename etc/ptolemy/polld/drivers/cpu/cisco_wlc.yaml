@@ -1,0 +1,25 @@
+---
+specification:  cpu
+description:    Cisco wlc CPU Driver
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                # - CISCO-LWAPP-SYS-MIB
+                - AIRESPACE-SWITCHING-MIB
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        defs:
+            - load_1min:
+                # ref:    clsSysCurrentCpuUsage
+                ref: agentCurrentCPUUtilization
+            # - load_5min:
+            #     ref:    clsSysAverageCpuUsage

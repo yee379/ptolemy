@@ -1,0 +1,9 @@
+---
+layer1-peer:
+    # describes the layer1 peers (via cdp/lldp etc.) connected to the device being queried
+    # index by a physical port name
+    info:
+        required:
+            - device
+            - peer_port
+--- 

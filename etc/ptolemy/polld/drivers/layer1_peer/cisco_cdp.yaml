@@ -1,0 +1,126 @@
+---
+specification:  layer1_peer
+description:    CDP Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-CDP-MIB
+
+mappings:
+    
+    cdp_index_to_physical_port: &cdp_index_to_physical_port
+        - regexp:
+            key: ^(?P<key>\d+)\.\d+$
+        - key_sub:
+            ref:    ifName
+        - function:
+            key:   truncate_physical_port_name
+
+definition:
+
+    meta:
+        defs:
+            # what this device reports itself as
+            - self:
+                ref:  cdpGlobalDeviceId
+                map:
+                    - function:
+                      value:  normalise_devicename
+                  
+
+    neighbour:
+        
+        group_by_key:   True
+        key_name:       physical_port
+
+        defaults:
+            map:    *cdp_index_to_physical_port
+
+        defs:
+
+            - peer_device:
+                ref:    cdpCacheDeviceId
+                map:
+                    - function:
+                        value:  normalise_devicename
+
+            - peer_physical_port:
+                ref:    cdpCacheDevicePort
+                map:
+                    - *cdp_index_to_physical_port
+                    - function:
+                        value:  truncate_physical_port_name
+                    - function:
+                        value:  printable
+                        
+            - device_index:
+                ref:    cdpCacheDeviceIndex
+                required:   False
+            - address_type:
+                ref:    cdpCacheAddressType
+                required:   False
+            - address:
+                ref:    cdpCacheAddress
+                map:
+                    -   *cdp_index_to_physical_port
+                    -   function:
+                            value:   hex_to_integers
+                required:   False
+
+            - location:
+                ref:    cdpCachePhysLocation
+                required:   False
+            - platform:
+                ref:    cdpCachePlatform
+
+            - vtp:
+                ref:    cdpCacheVTPMgmtDomain
+                required:   False
+            - native_vlan:
+                ref:    cdpCacheNativeVLAN
+            - vlan_id:
+                ref:    cdpCacheVlanID
+                required: False
+            - duplex:
+                ref:    cdpCacheDuplex
+                map:    
+                    - *cdp_index_to_physical_port
+                    - value_sub:
+                        dict:
+                            fullduplex: full
+                            halfduplex: half
+                            unknown:    None
+            - mtu:
+                ref:    cdpCacheMTU
+                required:   False
+                                
+            # dunno how to decode
+            # - capabilities:
+            #     ref:    cdpCacheCapabilities
+
+            # not very useful?
+            # - cache_index:
+            #     ref:    cdpCacheIfIndex
+            #     required:   False
+            # - applicance:
+            #     ref:    cdpCacheApplianceID
+            #     required:   False
+            # - sysname:
+            #     ref:    cdpCacheSysName
+            #     required:   False
+            # - obj_id:
+            #     ref:    cdpCacheSysObjectID
+            #     required:   False
+            # - mgmt_address_type:
+            #     ref:    cdpCachePrimaryMgmtAddrType
+            #     required:   False
+            # - mgmt_address:
+            #     ref:    cdpCachePrimaryMgmtAddr
+            #     required:   False
+            
+
+            
+                

@@ -1,0 +1,17 @@
+{% extends "mobile/base.html" %}
+{% load str_tags %}
+
+{% block title %}Network Devices by {{ field|capfirst }}{% endblock %}
+
+{% block content %}
+        <div class="content-primary">   
+
+          <ul data-role="listview" data-filter="true">
+            <!-- <li data-role="list-divider">A</li> -->
+            {% for i in object_list %}
+            <li><a href="/mobile/device/search/{{ field }}/{{ i.name }}" data-ajax="false" rel="external">{{ i.name }} </a><span class="ui-li-count">{{ i.count }}</span></li>
+            {% endfor %}
+          </ul>
+
+        </div>
+{% endblock %}

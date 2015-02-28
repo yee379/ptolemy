@@ -1,0 +1,33 @@
+---
+specification:  memory
+description:    memory statistics for topspin sfs7000d
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - TOPSPIN
+
+definition:
+    
+
+    stats:
+        
+        # how does this map to something meaningful?
+        group_by_key: True
+        defaults:
+            map:
+                - value_math:
+                    multiply_by:    1024
+        
+        defs:
+            # - name:
+            #     ref:    ciscoMemoryPoolName
+                
+            - used:
+                ref:    tsDevCardExtUsedMemory
+            - free:
+                ref:    tsDevCardExtFreeMemory
+            # - largest_free:
+            #     ref:    ciscoMemoryPoolLargestFree

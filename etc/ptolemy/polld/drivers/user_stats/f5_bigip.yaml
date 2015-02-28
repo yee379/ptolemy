@@ -1,0 +1,45 @@
+---
+specification:  users
+description:    users for f5
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+        
+        group_by_key:   True
+        key_name: physical_index
+        
+        defs:
+            - client_accepts:
+                ref:    sysTcpStatAccepts
+            - server_connects:
+                ref:    sysTcpStatConnects
+            - client_total_connects:
+                ref:    sysStatClientTotConns
+            - server_connects:
+                ref:    sysStatServerTotConns
+            - client_ssl_native_connects:
+                ref:    sysClientsslStatTotNativeConns                
+            - client_ssl_compat_connects:
+                ref:    sysClientsslStatTotCompatConns
+            - server_ssl_native_connects:
+                ref:    sysServersslStatTotNativeConns
+            - server_ssl_compat_connects:
+                ref:    sysServersslStatTotCompatConns
+
+            - client_connections:
+                ref:  sysStatClientCurConns
+            - server_connections:
+                ref:  sysStatServerCurConns
+            - client_ssl_connections:
+                ref:  sysClientsslStatCurConns
+            - server_ssl_connections:
+                ref:  sysServersslStatCurConns
+                

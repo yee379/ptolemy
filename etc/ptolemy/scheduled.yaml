@@ -1,0 +1,16 @@
+SCHEDULE: '/opt/ptolemy/etc/ptolemy/scheduled/schedule.yaml'
+
+# config files required
+NODES:
+    - '/opt/ptolemy/etc/ptolemy/scheduled/campus.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/wlc.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/visitor.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/accelerator.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/data-center.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/forsythe.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/ssrl.yaml' 
+    - '/opt/ptolemy/etc/ptolemy/scheduled/other.yaml' 
+    
+
+# poll settings
+SNMP_SETTINGS: '/opt/ptolemy/etc/ptolemy/scheduled/snmp.yaml'

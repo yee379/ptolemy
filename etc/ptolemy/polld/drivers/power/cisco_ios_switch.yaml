@@ -1,0 +1,41 @@
+---
+specification:  power
+description:    Cisco Switch power driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENVMON-MIB
+                - CISCO-ENTITY-FRU-CONTROL-MIB
+
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        additional_key_names:
+            - relative_position
+
+        defs:
+            - power_admin:
+                required:   False
+            - power_op:
+                ref:    ciscoEnvMonSupplyState
+                map:
+                    - value_sub:
+                        dict:
+                            normal:  1
+                            warning:    2
+                            critical:    0
+                            shutdown:  0
+                            notPresent:    2
+                            notFunctioning:    2
+            - relative_position:
+                ref:    entPhysicalParentRelPos
+
+        post:
+            map:
+                - post_remove:
+                    power_op:   null

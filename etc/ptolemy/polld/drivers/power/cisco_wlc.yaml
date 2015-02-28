@@ -1,0 +1,28 @@
+---
+specification:  psu
+description:    Cisco WLC psu
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-SWITCHING-MIB
+
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        defaults:
+            map:
+                - value_sub:
+                    dict:
+                        'true': 1
+                        'false': 2
+
+        defs:
+            - power_op_1:
+                ref:    agentSwitchInfoPowerSupply1Operational
+            - power_op_2:
+                ref:    agentSwitchInfoPowerSupply2Operational

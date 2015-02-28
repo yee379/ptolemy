@@ -1,0 +1,29 @@
+---
+specification:  performance
+description:    Cisco Generic? Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - ENTITY-SENSOR-MIB
+
+definition:
+
+    entities:
+        defs:
+            - entPhySensorType:
+                ref:    entPhySensorType
+            - entPhySensorPrecision:
+                ref:    entPhySensorPrecision
+            - entPhySensorValue:
+                ref:    entPhySensorValue
+            - entPhySensorOperStatus:
+                ref:    entPhySensorOperStatus
+                map:
+                    - value_sub:
+                        dict:
+                            ok:             True
+                            nonoperational: False
+                            unavailable:    None

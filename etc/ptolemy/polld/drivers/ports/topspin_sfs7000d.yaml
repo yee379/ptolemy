@@ -1,0 +1,133 @@
+---
+specification: port
+description: Cisco IOS Switch Layer2 Ptolemy Driver provides physical port information about the device such as port names and vlans on such ports
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - TOPSPIN
+                # - CISCO-STACK-MIB
+                # - CISCO-VLAN-MEMBERSHIP-MIB
+                # - CISCO-CDP-MIB
+                # - IEEE8023-LAG-MIB
+                # - EtherLike-MIB
+
+
+mapping:
+    
+    updown_value: &updown_value
+        - value_sub:
+            dict: 
+                up:      True
+                down:    False
+    ifindex_to_physical_port: &ifindex_to_physical_port
+        - key_sub:
+            ref:    ifName
+    ifindex_to_physical_port_with_updown: &ifindex_to_physical_port_with_updown
+        - *ifindex_to_physical_port
+        - *updown_value
+    ts_port_to_physical_port: &ts_port_to_physical_port
+        - key_sub:
+            ref:    tsDevPortIfIndex
+    speed_map:  &speed_map
+        - value_sub:
+            dict:
+                unknown:    unknown
+                mbps10:     10
+                mbps100:    100
+                gbps1:      1000
+                gbps2:      2000
+                mbps2500:   2500
+                gbps10:     10000
+                gbps30:     30000
+                gbps20:     20000
+                other:      unknown
+                gbps5ddr1x: 5000
+                gbps20ddr4x:    20000
+                gbps40ddr8x:    40000
+                gbps60ddr12x:   60000
+                gbps10qdr1x:    10000
+                gbps40qdr4x:    40000
+                gbps80qdr8x:    80000
+                gbps120qdr12x:  12000
+
+definition:
+
+    status:
+        
+        group_by_key:   True
+        key_name:       physical_port
+
+        defs:
+            - alias:
+                ref:    ifAlias
+                map:    *ifindex_to_physical_port
+                required: False
+            - description:
+                ref:    ifDescr
+                map:    *ifindex_to_physical_port
+            - type:
+                ref:    tsDevPortType
+                map:    *ts_port_to_physical_port
+            - mac_address:
+                ref:    ifPhysAddress
+                map:    
+                    - *ifindex_to_physical_port
+                    - function:
+                        value:   normalise_mac_address
+            - admin_status:
+                ref:    ifAdminStatus
+                map:    *ifindex_to_physical_port_with_updown
+            - op_status:
+                ref:    ifOperStatus
+                map:    *ifindex_to_physical_port_with_updown
+            
+            - duplex_admin_status:
+                ref:    tsDevPortAdminDuplex
+                map:    *ts_port_to_physical_port
+            - duplex_status:
+                ref:    tsDevPortOperDuplex
+                map:    *ts_port_to_physical_port
+            
+            - speed_admin_status:
+                ref:    tsDevPortAdminSpeed
+                map:
+                    - *ts_port_to_physical_port
+                    - *speed_map
+            - speed:
+                ref:    tsDevPortOperSpeed
+                map:
+                    - *ts_port_to_physical_port
+                    - *speed_map
+            
+            # - portfast:
+            #     required: False
+            #     
+            # - native_vlan:
+            #     ref:    vmVlan
+            #     map:
+            #         - *ifindex_to_physical_port
+            # - vlanTrunkPortVlansEnabled1k:
+            #     ref:    vlanTrunkPortVlansEnabled
+            #     map:    *decode_vlan
+            #     clean:  True
+            # - vlanTrunkPortVlansEnabled2k:
+            #     ref:    vlanTrunkPortVlansEnabled2k
+            #     map:    *decode_vlan
+            #     clean:  True
+            # - vlanTrunkPortVlansEnabled3k:
+            #     ref:    vlanTrunkPortVlansEnabled3k
+            #     map:    *decode_vlan
+            #     clean:  True
+            # - vlanTrunkPortVlansEnabled4k:
+            #     ref:    vlanTrunkPortVlansEnabled4k
+            #     map:    *decode_vlan
+            #     clean:  True
+            # - trunked_vlans:
+            #     map:
+            #         - function:
+            #             group: merge_trunking_vlans
+
+...

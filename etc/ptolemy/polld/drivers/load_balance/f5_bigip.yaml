@@ -1,0 +1,217 @@
+---
+specification:  load_balance
+description:    meload_balancemory statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-LOCAL-MIB
+
+
+mapping:
+    bigip_state_map: &bigip_state_map
+        - value_sub:
+            dict:
+                unchecked:  2
+                checking: 2
+                inband: 2
+                forced-up: 1
+                up: 1
+                down: 0
+                forced-down: 0
+                irule-down: 0
+                inband-down: 0
+                down-manual-resume: 0
+                disabled: 0
+                enabled: 1
+    bigip_colour_map: &bigip_colour_map
+        - value_sub:
+            dict:
+                none:   2
+                green:  1
+                yellow: 2
+                red:    0
+                blue:   2
+                gray:   2
+                enabled:    1
+                disabled: 0
+                disabledbyparent: 0
+
+definition:
+                
+    pool:
+        group_by_key: True
+        key_name: name
+        # defaults:
+        #     map:
+                
+        defs:
+            - name:
+                ref:    ltmPoolName
+                required: False
+            - algorithm:
+                ref:    ltmPoolLbMode
+
+            - admin_status:
+                ref:    ltmPoolStatusEnabledState
+                map:    *bigip_colour_map
+            - oper_status:
+                ref:    ltmPoolStatusAvailState
+                map:    *bigip_colour_map
+
+            - members:
+                ref:    ltmPoolMemberCnt
+            - active_members:
+                ref:    ltmPoolActiveMemberCnt
+
+            - min_up:
+                ref:    ltmPoolMinUpMembers
+            - min_active:
+                ref:    ltmPoolMinActiveMembers
+
+            
+            - pkts_in:
+                ref:    ltmPoolStatServerPktsIn
+            - bytes_in:
+                ref:    ltmPoolStatServerBytesIn
+            - pkts_out:
+                ref:    ltmPoolStatServerPktsOut
+            - bytes_out:
+                ref:    ltmPoolStatServerBytesOut
+                
+            - max_connections:
+                ref:    ltmPoolStatServerMaxConns
+            - total_connections:
+                ref:    ltmPoolStatServerTotConns
+            - current_connections:
+                ref:    ltmPoolStatServerCurConns
+                
+
+            - hw_pkts_in:
+                ref:    ltmPoolStatPvaPktsIn
+            - hw_bytes_in:
+                ref:    ltmPoolStatPvaBytesIn
+            - hw_pkts_out:
+                ref:    ltmPoolStatPvaPktsOut
+            - hw_bytes_out:
+                ref:    ltmPoolStatPvaBytesOut
+                
+            - hw_total_assist:
+                ref:    ltmPoolStatTotPvaAssistConn
+            - hw_current_assist:
+                ref:    ltmPoolStatCurrPvaAssistConn
+                
+            - hw_max_connections:
+                ref:    ltmPoolStatPvaMaxConns
+            - hw_total_connections:
+                ref:    ltmPoolStatPvaTotConns
+            - hw_current_connections:
+                ref:    ltmPoolStatPvaCurConns
+
+
+    member_stats:
+        
+        # how does this map to something meaningful?
+        
+        group_by_key:   True
+        key_name: pool_name
+        
+        defaults:
+            map: &node_address_name
+                - key_sub:
+                    ref:    ltmNodeAddrName
+        defs:
+            - address:
+                ref:    ltmNodeAddrAddr
+                map:
+                    - *&node_address_name
+                    - 
+            - address_type:
+                ref:    ltmNodeAddrAddrType
+
+            - state:
+                ref:    ltmNodeAddrMonitorState
+                map:    *bigip_state_map
+            - status:
+                ref:    ltmNodeAddrMonitorStatus
+                map:    *bigip_state_map
+
+
+            - connection_limit:
+                ref:    ltmNodeAddrConnLimit
+            - session_status:
+                ref:    ltmNodeAddrSessionStatus
+                map:    *bigip_state_map
+            - pool_name:
+                ref:    ltmNodeAddrScreenName
+                required: False
+            - members:
+                ref:    ltmNodeAddrPoolMemberRefCount
+            - availability:
+                ref:    ltmNodeAddrStatusAvailState
+                map:    *bigip_colour_map
+
+
+    virtual_server_stats:
+        group_by_key:   True
+        key_name: pool_name
+        
+        defaults:
+            map: &virtual_server_name
+                - key_sub:
+                    ref:    ltmVirtualServName
+        
+        defs:
+            - name:
+                ref:    ltmVirtualServStatName
+            - address:
+                ref:    ltmVirtualServAddr
+            - port:
+                ref:    ltmVirtualServPort
+            - protocol:
+                ref:    ltmVirtualServAddrType
+                
+            - admin_status:
+                ref:    ltmVirtualServEnabled
+                
+            - pool:
+                ref:    ltmVirtualServDefaultPool
+            
+            - pkts_in:
+                ref:    ltmVirtualServStatClientPktsIn
+            - bytes_in:
+                ref:    ltmVirtualServStatClientBytesIn
+            - pkts_out:
+                ref:    ltmVirtualServStatClientPktsOut
+            - bytes_out:
+                ref:    ltmVirtualServStatClientBytesOut
+            
+            - max_connections:
+                ref:    ltmVirtualServStatClientMaxConns
+            - total_connections:
+                ref:    ltmVirtualServStatClientTotConns
+            - current_connections:
+                ref:    ltmVirtualServStatClientCurConns
+
+            - hw_pkts_in:
+                ref:    ltmVirtualServStatPvaPktsIn
+            - hw_bytes_in:
+                ref:    ltmVirtualServStatPvaBytesIn
+            - hw_pkts_out:
+                ref:    ltmVirtualServStatPvaPktsOut
+            - hw_bytes_out:
+                ref:    ltmVirtualServStatPvaBytesOut
+                
+            - hw_total_assist:
+                ref:    ltmPoolStatTotPvaAssistConn
+            - hw_current_assist:
+                ref:    ltmPoolStatCurrPvaAssistConn
+                
+            - hw_max_connections:
+                ref:    ltmVirtualServStatPvaMaxConns
+            - hw_total_connections:
+                ref:    ltmVirtualServStatPvaTotConns
+            - hw_current_connections:
+                ref:    ltmVirtualServStatPvaCurConns            

@@ -1,0 +1,72 @@
+---
+specification:  spanning_tree
+description:    Generic cisco cam table and spanning tree querier Ptolemy Driver
+
+defaults:
+    agent: NetConfig
+
+
+definition:
+
+    meta:
+        key_name:     vlan
+        group_by_key:   True
+        defs:
+            - state:
+                ref:  layer2.vlan.on_operational
+            - name:
+                ref:  layer2.vlan.on_name
+
+    
+    neighbour:
+        group_by_key:   True
+        key_name:       mac_address
+        additional_key_names:
+            - mac_address
+            - vlan
+            - physical_port
+        defs:
+            - physical_port:
+                ref:    layer2.mac_address.on_physical_port
+                map:
+                    - function:
+                        value:   truncate_physical_port_name
+            - vlan:
+                ref:    layer2.mac_address.on_vlan
+            - type:
+                ref:    layer2.mac_address.on_type
+            - status:
+                ref:    layer2.mac_address.on_status
+    
+        post:
+            # organise it so that this group name is merged with teh vlan
+            map:
+                - post_new_group_from_field:
+                    field:  vlan
+    
+    status:
+        group_by_key:   True
+        # NB can't have two def's called vlan in same spec, so we hack it by calling this vlan this_vlan and then doing a post map to rename it to vlan after
+        key_name:   vlan
+        defs:
+            - designated_root:
+                ref:    layer2.spanningtree.on_root
+            - root_cost:
+                ref:    layer2.spanningtree.on_cost
+            - this_vlan:
+                ref:    layer2.spanningtree.on_vlan
+            # - root_port:
+            #     ref:    layer2.spanningtree.on_port_number
+            - root_physical_port:
+                ref:    layer2.spanningtree.on_root_physical_port
+                required: false
+                map:
+                    - function:
+                        value:  truncate_physical_port_name
+            - bridge_priority:
+                ref:    layer2.spanningtree.on_bridge_priority
+
+        post:
+            map:
+                - post_key_rename:
+                    this_vlan:    vlan

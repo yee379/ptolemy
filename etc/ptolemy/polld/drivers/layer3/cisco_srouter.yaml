@@ -1,0 +1,47 @@
+specification: layer3
+description: Generic Subnet Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - IP-FORWARD-MIB
+
+# mapping:
+# 
+#     ifindex_to_physical_port: &ifindex_to_physical_port
+#         - key_sub:
+#             ref:    ifName
+# gateways:
+
+        # - gateway_status:
+        #     ref:    cHsrpGrpStandbyState
+        #     # map: hsrpMap
+
+definition:
+
+
+
+    subnets:
+        
+        key_name:   prefix
+        additional_key_names: 
+            - netmask
+        group_by_key: True
+        defs:
+            - type:
+                ref:    ipCidrRouteType
+                
+        post:
+            map:
+                - post_extract:
+                    index:  ^(?P<key>\d+\.\d+\.\d+\.\d+)\.(?P<netmask>\d+\.\d+\.\d+\.\d+)\.0\.(?P<next_hop>\d+\.\d+\.\d+\.\d+)$
+            
+        # - ipSubnets:
+        #     agent: CommandLine
+        #     ref: "[timeout=30] show ip route | inc directly connected"
+        #     function: srouter_ipSubnetsCommandMap
+        #     required: True
+
+

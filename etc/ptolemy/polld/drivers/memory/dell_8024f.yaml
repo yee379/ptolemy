@@ -1,0 +1,27 @@
+---
+specification:  memory_stats
+description:    memory statistics for dell 8024f
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - FASTPATH-SWITCHING-MIB
+
+definition:
+    
+    stats:
+        
+        # how does this map to something meaningful?
+        
+        defs:
+            - total:
+                # ref:    iso.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.2
+                ref:    agentSwitchCpuProcessMemAvailable
+                
+            - used:
+                # ref:    iso.3.6.1.4.1.674.10895.5000.2.6132.1.1.1.1.4.1
+                ref:    agentSwitchCpuProcessMemFree
+            # - free:
+            #     ref:    ciscoMemoryPoolFree

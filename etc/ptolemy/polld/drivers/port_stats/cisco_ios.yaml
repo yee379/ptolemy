@@ -1,0 +1,82 @@
+---
+specification:  performance
+description:    Cisco Port Statistics Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - IF-MIB
+                - OLD-CISCO-INTERFACES-MIB
+
+mapping:
+    
+    updown_value: &updown_value
+        - value_sub:
+            dict: 
+                up:      True
+                down:      False
+                other:  False
+
+
+definition:
+    
+    rfc2863:
+
+        group_by_key: True
+        key_name: physical_port
+
+        mapping:
+            ifindex_to_physical_port: &ifindex_to_physical_port
+                - key_sub:
+                    ref:    ifName
+                - function:
+                    key:   truncate_physical_port_name
+            ifindex_to_physical_port_with_updown: &ifindex_to_physical_port_with_updown
+                - *ifindex_to_physical_port
+                - *updown_value
+            
+        defaults:
+            agent: SNMP
+            required: True
+            map:    *ifindex_to_physical_port
+
+        defs:
+            - admin_status:
+                ref:    ifAdminStatus
+                map:    *ifindex_to_physical_port_with_updown
+            - oper_status:
+                ref:    ifOperStatus
+                map:    *ifindex_to_physical_port_with_updown
+            - connector_status:
+                ref:    ifConnectorPresent
+                map:    *ifindex_to_physical_port_with_updown
+                required:   False
+            - octets_in:
+                ref:    ifHCInOctets
+            - unicast_pkts_in:
+                ref:    ifHCInUcastPkts
+            - multicast_pkts_in:
+                ref:    ifHCInMulticastPkts
+            - broadcast_pkts_in:
+                ref:    ifHCInBroadcastPkts
+            - discards_in:
+                ref:    ifInDiscards
+            - errors_in:
+                ref:    ifInErrors
+            - octets_out:
+                ref:    ifHCOutOctets
+            - unicast_pkts_out:
+                ref:    ifHCOutUcastPkts
+            - multicast_pkts_out:
+                ref:    ifHCOutMulticastPkts
+            - broadcast_pkts_out:
+                ref:    ifHCOutBroadcastPkts
+            - discards_out:
+                ref:    ifOutDiscards
+            - errors_out:
+                ref:    ifOutErrors
+            - crc_in:
+                ref:    locIfInCRC
+

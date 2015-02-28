@@ -1,0 +1,3 @@
+{% for e in entities %}
+{{ e.id }}\t{{ e.device.name }}\t{{ e.type|lower }}\t{{ e.model }}\t{{ e.vendor }}
+{% endfor %}

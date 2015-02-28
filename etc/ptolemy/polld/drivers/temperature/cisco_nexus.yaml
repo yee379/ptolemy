@@ -1,0 +1,46 @@
+---
+specification:  temperature
+description:    Cisco Nexus Temperature Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENTITY-SENSOR-MIB
+
+definition:
+
+    stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+
+        defs:
+            
+            - state:
+                ref:    entSensorStatus
+                map:
+                    - value_sub:
+                        dict:
+                            ok: 1
+                            unavailable:    2
+                            nonoperational:   0
+                            other:  2
+            - sensor:
+                ref:    entSensorType
+            # - description:
+            #     ref:    ciscoEnvMonTemperatureStatusDescr
+            - value:
+                ref:    entSensorValue
+            - scale:
+                ref:    entSensorScale
+            - threshold:
+                ref:    entSensorThresholdValue
+            
+        post:
+    
+            map:
+                - function:
+                    dataset:    normalise_temperatures
+

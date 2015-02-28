@@ -1,0 +1,79 @@
+specification: stack
+description: provide status of switch stack items
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENTITY-FRU-CONTROL-MIB
+                
+definition:
+    
+    stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            #     clean: True
+            - admin_status:
+                ref:    cefcModuleAdminStatus
+            - status:
+                ref:    cefcModuleOperStatus
+                required:   True
+            - model:
+                ref:    entPhysicalModelName
+
+            - type:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            powerSupply: power_supply
+                            chassis: chassis
+                            port: transceiver
+                            container: container
+                            fan: fan
+                            sensor: sensor
+                            module: module
+                            stack: stack
+                            other: unknown
+
+            - parent_index:
+                ref:    entPhysicalContainedIn
+            - relative_position:
+                ref: entPhysicalParentRelPos
+            - description:
+                ref:    entPhysicalDescr
+                # map:
+                    # - key_sub:
+                    #     ref:    cswSwitchNumCurrent
+                    # - value_sub:
+                    #     dict:
+                    #         ready:  1
+                    #         waiting:    2
+                    #         progressing:    2
+                    #         added:  2
+                    #         sdmMismatch:    0
+                    #         verMismatch:    0
+                    #         featureMismatch:    0
+                    #         newMasterInit:  0
+                    #         provisioned:    2
+                    #         invalid:    0
+                    
+            # - ha_mode:
+            #     ref:    cefcPowerRedundancyMode
+            #       ref: cefcPowerRedundancyOperMode
+            # cefcFRUPowerAdminStatus
+            # cefcFRUPowerOperStatus
+            
+        post:
+            
+            map:
+                # remove things we don't really care about
+                - post_function:
+                    dataset:  post_normalise_entities
+
+                # remove items that do not have a status
+                # - post_remove:
+                #     status:  null

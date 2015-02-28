@@ -1,0 +1,29 @@
+specification: module
+description: provide status of fru modules on switch
+
+defaults:
+    agent:  NetConfig
+                
+definition:
+    
+    stats:
+
+        group_by_key:   True
+        key_name:   member
+        defs:
+            - status:
+                ref:    system.fru.module.on_status
+                required:   True
+                map:
+                    - value_sub:
+                        dict:
+                            ok: 1
+                            Ok: 1
+                            active: 1
+                            ha-standby: 1
+                            Online: 1
+                            powered-dn: 2
+                            testing:    2
+                            initializing: 2
+                            failure: 0
+                            other: 0

@@ -1,0 +1,31 @@
+---
+specification: module
+description: provide status of modules on cisco
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-STACK-MIB
+                
+definition:
+    
+    stats:
+        
+        group_by_key:   True
+        key_name:   member
+        defs:
+            - status:
+                ref:    moduleStatus
+                required:   True
+                
+                map:
+                    - value_sub:
+                        dict:
+                            ok:  1
+                            other:    2
+                            minorFault: 0
+                            majorFault: 0
+
+                            

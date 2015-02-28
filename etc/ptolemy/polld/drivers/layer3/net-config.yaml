@@ -1,0 +1,29 @@
+specification: layer3
+description: Generic Subnet Ptolemy Driver
+
+defaults:
+    agent: NetConfig
+    # settings:
+        
+definition:
+
+    subnets:
+        
+        key_name:   prefix
+        additional_key_names: 
+            - prefix
+            - netmask
+            - next_hop
+        group_by_key: True
+        defs:
+            - prefix:
+                ref:    layer3.routes.on_prefix
+            - netmask:
+                ref:    layer3.routes.on_netmask
+            # - prefix_len:
+            #     ref:    layer3.routes.on_prefix_len
+            
+            - next_hop:
+                ref:    layer3.routes.on_next_hop
+            - local:
+                ref:    layer3.routes.on_local

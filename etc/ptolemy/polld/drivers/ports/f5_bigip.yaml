@@ -1,0 +1,147 @@
+---
+specification: port
+description: Cisco IOS Switch Layer2 Ptolemy Driver provides physical port information about the device such as port names and vlans on such ports
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+
+mapping:
+    
+    # truth_value: &truth_value
+    #     - value_sub:
+    #         dict: 
+    #             up:      True
+    #             down:    False
+    #             'true':   True
+    #             'false':  False
+    #             unpopulated:  False
+    bigip_index_to_physical_port: &bigip_index_to_physical_port
+        - key_sub:
+            ref:    sysInterfaceName
+    #     # - value_sub:
+    #     #     ref:    sysIfName
+    # speed_value: &speed_value
+    #     - value_sub:
+    #         dict:
+    #             1000:   1000
+    #             100:    100
+    #             0:      None
+    # duplex_value: &duplex_value
+    #     - value_sub:
+    #         dict:
+    #             full:   full
+    #             half:   half
+    #             none:   None
+    #             unknown:      'unknown'
+
+    # truth_value: &truth_value
+    #     - value_sub:
+    #         dict: 
+    #             up:      True
+    #             enabled:  True
+    #             down:    False
+    #             disabled: False
+    #             other:   None
+    # ifindex_to_physical_port: &ifindex_to_physical_port
+    #     - key_sub:
+    #         ref:    ifName
+    # ifindex_to_physical_port_with_truth_value: &ifindex_to_physical_port_with_truth_value
+    #     - *ifindex_to_physical_port
+    #     - *truth_value
+
+
+
+
+definition:
+
+    status:
+        
+        group_by_key:   True
+        key_name:       physical_port
+
+        defs:
+
+            - alias:
+                # TODO: can't reference itself
+                ref:    sysIfName
+                map:    *bigip_index_to_physical_port
+            # - description:
+            #     ref:    ifDescr
+            #     map:    *ifindex_to_physical_port
+            # - type:
+            #     ref:    portType
+            #     map:    *port_index_to_physical_port
+            # only reports phyiscal ports on f5's
+            - physical:
+                ref:    sysInterfaceEnabled
+                map:    
+                    - *bigip_index_to_physical_port
+                    - value_sub:
+                        dict:
+                            other:  True
+            - mac_address:
+                ref:    sysInterfaceMacAddr
+                map:    
+                    - *bigip_index_to_physical_port
+                    - function:
+                        value:   normalise_mac_address
+            - admin_status:
+                ref:    sysInterfaceEnabled
+                map:    *bigip_index_to_physical_port
+            - op_status:
+                ref:    sysInterfaceStatus
+                map:    *bigip_index_to_physical_port
+            - duplex_admin_status:
+                ref:    sysInterfaceMediaMaxDuplex
+                map:    *bigip_index_to_physical_port
+            - duplex_status:
+                ref:    sysInterfaceMediaActiveDuplex
+                map:    *bigip_index_to_physical_port
+            - speed_admin_status:
+                ref:    sysInterfaceMediaMaxSpeed
+                map:    *bigip_index_to_physical_port
+            - speed:
+                ref:    sysInterfaceMediaActiveSpeed
+                map:    *bigip_index_to_physical_port
+            # - portfast:
+            #     ref:    portSpantreeFastStart
+            #     map:    
+            #       - *port_index_to_physical_port
+            #       - *truth_value
+            #     required: False
+
+            # - native_vlan:
+            #     ref:    vmVlan
+            #     map:
+            #         - *ifindex_to_physical_port
+
+    vlan:
+        
+        defs:
+
+            - tagged:
+                ref:    sysVlanMemberTagged
+            - name:
+                ref:    sysVlanMemberParentVname
+            - type:
+                ref:    sysVlanMemberType
+                
+    meta:
+        defs:
+            - vlan_name: 
+                ref:    sysVlanVname
+                
+            - number:
+                ref:    sysVlanId
+
+            # - trunked_vlans:
+            #     map:
+            #         - function:
+            #             group: merge_trunking_vlans
+
+...

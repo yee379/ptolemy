@@ -1,0 +1,4 @@
+SUBCOMMAND_CONFIG:
+    RABBIT_MQ:   '/opt/ptolemy/etc/ptolemy/profiler/rabbitmq.yaml'
+    POSTGRES:   '/opt/ptolemy/etc/ptolemy/profiler/postgres.yaml'
+    

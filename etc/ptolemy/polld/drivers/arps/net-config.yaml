@@ -1,0 +1,39 @@
+---
+specification: arps
+description: Grab layer2 to layer3 mapping information 
+
+defaults:
+    agent: NetConfig
+
+definition:
+
+    arps:
+        
+        group_by_key: True
+        key_name: mac_address
+        additional_key_names:
+            - physical_port
+            - mac_address
+            - ip_address
+        defs:
+
+            - mac_address:
+                ref:    layer3.arps.on_mac_address
+            - ip_address:
+                ref:    layer3.arps.on_ip_address
+            - physical_port:
+                ref:    layer3.arps.on_physical_port
+                map:
+                    - function:
+                        value:   truncate_physical_port_name
+                    # - regexp:
+                    #     key: ^(?P<key>(\w|\.)+)(\-.*)?$
+            - vlan:
+                ref:    layer3.arps.on_vlan
+                required: false
+
+        post:
+            # strip the key as it's set as mac-ip in order to allow mac addresses for both ipv4 and ipv6
+            map:
+                - post_extract:
+                    mac_address: ^(?P<mac_address>(\w|\.)+)(\-.*)?$

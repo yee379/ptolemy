@@ -1,0 +1,29 @@
+---
+specification:  entity
+description:    Generic uptime Ptolemy Driver using entPhysical
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - DISMAN-EVENT-MIB
+
+
+map:
+    strip_value:    &strip_value
+        - regexp:
+            value:  ^\s*(?P<value>\S+)\s*$
+
+
+definition:
+    
+    stats:
+        group_by_key:   True
+        remove_key: True
+        merge_data: True # allows for the uptime to keep with without archiving
+        defs:
+            - uptime:
+                ref:    sysUpTime   # doesn't match exactly
+                required: False
+

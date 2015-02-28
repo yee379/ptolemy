@@ -1,0 +1,34 @@
+---
+specification:  temperature
+description:    f5 bigip Temperature Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+
+        default:
+            mapping:
+                - key_sub:
+                    ref: sysChassisTempIndex
+
+        defs:
+            
+            - state:
+                required: False
+
+            - value:
+                ref:    sysChassisTempTemperature
+
+            - threshold:
+                required:   False
+            

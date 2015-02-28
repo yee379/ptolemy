@@ -1,0 +1,29 @@
+---
+specification:  memory
+description:    memory statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-MEMORY-POOL-MIB
+
+definition:
+
+    stats:
+        
+        # how does this map to something meaningful?
+        
+        group_by_key:   True
+        
+        defs:
+            - description:
+                ref:    ciscoMemoryPoolName
+                required:   False
+            - used:
+                ref:    ciscoMemoryPoolUsed
+            - free:
+                ref:    ciscoMemoryPoolFree
+            - largest_free:
+                ref:    ciscoMemoryPoolLargestFree

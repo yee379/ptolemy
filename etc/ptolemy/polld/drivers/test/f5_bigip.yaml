@@ -1,0 +1,53 @@
+---
+specification:  memory
+description:    memory statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    one:
+        
+        group_by_key:   True
+        key_name: physical_index
+    #     
+    #     # defaults:
+    #     #     map:
+    #     #         - key_sub:
+    #     #             ref: sysInterfaceName
+        defs:
+            # - trunkname:
+            #     ref:    sysTrunkCfgMemberTrunkName
+            - something:
+                ref:    sysTrunkCfgMemberName
+                map:
+                    - key_sub:
+                        ref: sysTrunkCfgMemberTrunkName
+
+
+    two:
+        
+        group_by_key:   True
+        key_name: key
+        
+        defs:
+            # - vlan_number:
+            #     ref: 
+            # - vlan:
+            #     ref: sysVlanMemberParentVname
+                # map:
+                #     - function: 
+                #         value: quotify
+                #     - value_sub:
+                #         ref:  sysVlanId
+            - name:
+                ref:    sysVlanMemberVmname
+            - type:
+                ref:    sysVlanMemberType
+            - tagged:
+                ref:    sysVlanMemberTagged

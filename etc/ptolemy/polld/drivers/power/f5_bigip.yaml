@@ -1,0 +1,35 @@
+---
+specification:  performance
+description:    f5 bigip Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+
+        defaults:
+            mapping:
+                - key_sub:
+                    ref:    sysChassisPowerSupplyIndex
+
+        defs:
+            - power_admin:
+                required:   False
+            - power_op:
+                ref:    sysChassisPowerSupplyStatus
+                map:
+                    - value_sub:
+                        dict:
+                            good:  1
+                            notpresent:    2
+                            bad:    0
+            - power_current:
+                required:   False

@@ -1,0 +1,48 @@
+---
+specification: stack
+description: provide status of switch stack items
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-STACKWISE-MIB
+                
+definition:
+    
+    stats:
+        
+        group_by_key:   True
+        key_name:   member
+        defs:
+            - status:
+                ref:    cswSwitchState
+                required:   True
+                
+                map:
+                    - key_sub:
+                        ref:    cswSwitchNumCurrent
+                    - value_sub:
+                        dict:
+                            ready:  1
+                            waiting:    2
+                            progressing:    2
+                            added:  2
+                            sdmMismatch:    0
+                            verMismatch:    0
+                            featureMismatch:    0
+                            newMasterInit:  0
+                            provisioned:    2
+                            invalid:    0
+                            
+    ha:
+        
+          group_by_key: True
+          key_name: unit
+          defs:
+              
+              - status:
+                  ref: cswRingRedundant
+                  
+                  

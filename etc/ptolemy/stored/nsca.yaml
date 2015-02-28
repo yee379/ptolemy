@@ -1,0 +1,25 @@
+# number of concurrent workers
+WORKERS: 1
+
+LOG_FILE: '/opt/ptolemy/var/log/stored-nsca.log'
+
+#######################################################################
+# Agent Settings
+#######################################################################
+
+POOL: 'nsca.default-pool'
+KEYS:
+    - '#.reachability.#'
+
+# statistics for performance measurement
+STATS_HOST: 'net-store01.slac.stanford.edu'
+#STATS_PORT: 2104
+STATS_PORT: 2014
+
+
+#######################################################################
+# NSCA Settings
+#######################################################################
+
+NSCA_HOST: 'nagios02.slac.stanford.edu'
+NSCA_PORT: 5667

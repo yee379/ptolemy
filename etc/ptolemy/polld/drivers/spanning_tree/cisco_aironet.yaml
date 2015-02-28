@@ -1,0 +1,54 @@
+---
+specification:  spanning_tree
+description:    cisco cam collection for thick aironet
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-DOT11-ASSOCIATION-MIB
+
+
+definition:
+
+    neighbour:
+        group_by_key:   True
+        key_name:       mac_address
+        additional_key_names: 
+            - mac_address
+            - vlan
+            - physical_port
+        
+        defaults:
+            map:    &convert_mac_address
+                - regexp:
+                    key:    ^\d+\..*\.\'(?P<key>.*)\'$
+                - function:
+                    key:    binary_to_hex
+                - function:
+                    key:    pretty_print_mac_address
+
+        defs:
+
+            - physical_port:
+                ref:    cDot11ClientSubIfIndex
+                map:
+                    - *convert_mac_address
+                    - value_sub:
+                        ref:    ifName
+                    - function:
+                        value:   truncate_physical_port_name
+            - status:
+                ref:    cDot11ClientAssociationState
+            - vlan:
+                ref:    cDot11ClientVlanId
+
+
+        post:
+
+            map:
+
+                # remove items that do not have a status
+                - post_remove:
+                    mac_address:  null

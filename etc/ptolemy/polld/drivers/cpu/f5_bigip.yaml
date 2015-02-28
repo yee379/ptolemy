@@ -1,0 +1,32 @@
+---
+specification:  cpu
+description:    f5 CPU Driver v9
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        mapping:
+            cpm_index_to_physical_index: &cpm_index_to_physical_index
+                - key_sub:
+                    ref:    cpmCPUTotalPhysicalIndex
+
+        defaults:
+            map:    *cpm_index_to_physical_index
+        
+        defs:
+            - load_1min:
+                ref:    cpmCPUTotal1minRev
+            - load_5min:
+                ref:    cpmCPUTotal5minRev

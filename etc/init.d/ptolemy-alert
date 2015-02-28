@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy alert
+#
+# chkconfig: 2345 95 02
+# description:  provide alerting service for ptolemy
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="alert"
+COMMAND=""
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

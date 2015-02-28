@@ -1,0 +1,64 @@
+---
+specification:  layer1_peer
+description:    layer1 information
+
+defaults:
+    agent: NetConfig
+
+
+definition:
+
+    # meta:
+    #     
+    #     group_by_key:   True
+    #     
+    #     defs:
+    #         - self_lldp:
+    #             ref:    lldpLocSysName
+    #             clean:  True
+    #             required:   False
+    #         - self_cdp:
+    #             ref:    cdpGlobalDeviceId
+    #             clean:  True
+    #             required:   False
+    #         
+    #         - self:
+    #             map:
+    #                 - merge_defs:
+    #                     self_lldp: []
+    #                     self_cdp: []
+    #         
+    #         - description:
+    #             ref:    lldpLocSysDesc
+    #             required:   False
+    #             map:    *lldp_index_to_physical_port
+
+    neighbour:
+        
+        group_by_key: True
+        key_name:       physical_port
+    
+        defs:
+            - physical_port:
+                ref:    layer1.on_physical_port
+
+            - peer_device:
+                ref:    layer1.on_peer_device
+                required: False
+            - peer_physical_port:
+                ref:    layer1.on_peer_physical_port
+
+            - peer_ip_address:
+                ref:    layer1.on_peer_ip_address
+                required: False
+            - peer_mac_address:
+                ref:    layer1.on_peer_mac_address
+                required: False
+
+            - capability_bridge:
+                ref:    layer1.on_capability_bridge
+                required: False
+            - capability_telephone:
+                ref:    layer1.on_capability_telephone
+                required: False
+                

@@ -1,0 +1,82 @@
+#!/bin/sh
+#
+# ptolemy stored mongo
+#
+# chkconfig: 2345 95 02
+# description:  Run provisiond at boot time to provide an authorisation service for tasks
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PTOLEMY="/opt/ptolemy/bin/ptolemy.py"
+WORK_DIR='/opt/ptolemy/'
+PROG="ptolemy"
+NAME="stored"
+SUBNAME="mongo"
+USER='netmon'
+OPTIONS=""
+# OPTIONS=" --pidfile=${pidfile}"
+
+pidfile=${PIDFILE-/tmp/$PROG-$NAME-$SUBNAME}
+lockfile=${LOCKFILE-/var/lock/subsys/$PROG-$NAME-$SUBNAME}
+STOP_TIMEOUT=30
+
+
+get_pid(){
+  local PID=`ps wx -U $USER | grep $PROG | grep $NAME | grep $SUBNAME | grep manager | awk '{print $1}'`
+  echo $PID
+}
+
+start(){
+    echo -n $"Starting ptolemy $NAME"
+    cd $WORK_DIR
+    su $USER -c "$PTOLEMY $NAME $SUBNAME $OPTIONS"
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch ${lockfile}
+    return $RETVAL
+}
+
+stop(){
+    echo -n $"Stopping $NAME "
+    killproc -p ${pidfile} -d $STOP_TIMEOUT $PTOLEMY
+    RETVAL=$?
+    echo
+    rm -f ${pidfile} ${lockfile}
+    return $RETVAL
+}
+
+forcestop(){
+    echo "Stopping $NAME "
+    ps wx -U $USER | grep $PROG | grep $NAME | grep $SUBNAME | awk '{print $1}' | kill -9
+    rm -f ${pidfile} ${lockfile}
+}
+
+currentstatus(){
+    status -p ${pidfile} -l ${lockfile}
+}
+
+case "$1" in
+  start)
+    start
+        ;;
+  stop)
+    stop
+        ;;
+  forcestop)
+    forcestop
+        ;;
+  status)
+    currentstatus
+        ;;
+  restart|reload)
+    stop
+    start
+        ;;
+  *)
+        echo "Usage: $NAME {start|stop|status|restart|reload}"
+        exit 1
+esac
+
+exit 0

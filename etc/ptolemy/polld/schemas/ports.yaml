@@ -1,0 +1,32 @@
+---
+ports:
+    # description of the network ports that are on the device
+    # indexed by a physical name (eg Gi1/2)
+    info:
+        # high level information that identifies the port
+        required:
+            - alias
+            - description
+            - type
+            - mac_address
+    status:
+        required:
+            - admin_status
+            - op_status
+            - connector_status
+            - last_change
+    settings:
+        required:
+            - duplex_admin_status
+            - duplex_admin
+            - speed_admin_status
+            - speed_status
+        optional:
+            - port_fast
+
+    vlan:
+        required:
+            - native_vlan
+            - trunked_vlans
+
+--- 

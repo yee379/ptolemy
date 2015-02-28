@@ -1,0 +1,20 @@
+---
+specification:  user_stats
+description:    provides the number of vpn users connected to a cisco asa
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-UNIFIED-FIREWALL-MIB
+
+
+definition:
+
+    neighbour:
+        
+        defs:
+
+            - number:
+                ref:    crasSVCNumSessions

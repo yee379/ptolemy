@@ -1,0 +1,25 @@
+###
+# messenging settings
+###
+BROKER_HOST:
+    - 'net-amqp01.slac.stanford.edu:5672'
+    - 'net-amqp02.slac.stanford.edu:5672'
+BROKER_PORT: 5672
+BROKER_VHOST: '/ptolemy'
+BROKER_USER: 'ptolemy'
+BROKER_PASSWORD: 'ptolemy'
+
+###
+# memcache for job synchronisation
+###
+MEMCACHE_POOL:
+    - 'net-lanmon01.slac.stanford.edu:11211'
+    - 'net-lanmon02.slac.stanford.edu:11211'
+
+###
+# redis cache
+###
+CACHE_HOST:
+    - 'net-amqp01.slac.stanford.edu:6379'
+    - 'net-amqp02.slac.stanford.edu:6379'
+

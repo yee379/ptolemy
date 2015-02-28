@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy scheduled
+#
+# chkconfig: 2345 95 02
+# description:  Run provisiond at boot time to provide an authorisation service for tasks
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="scheduled"
+COMMAND=""
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

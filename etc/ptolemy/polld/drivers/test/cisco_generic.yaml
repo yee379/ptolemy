@@ -1,0 +1,111 @@
+---
+specification:  entity
+description:    Cisco IOS Switch entity Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - ENTITY-MIB
+                - CISCO-STACK-MIB
+
+
+map:
+    strip_value:    &strip_value
+        - regexp:
+            value:  ^\s*(?P<value>\S+)\s*$
+
+
+definition:
+    
+    info:
+        group_by_key:   True
+        remove_key: True
+        defs:
+            - name:
+                ref:    sysName
+            - location:
+                ref:        sysLocation
+                required:   False
+            # - uptime:
+            #     ref:    sysUpTime   # doesn't match exactly
+
+
+    meta:
+        group_by_key:   True
+        key_name: id
+        additional_key_names:
+            - type
+            - relative_id
+
+
+        defs:
+
+            - type:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            powerSupply: power_supply
+                            chassis: chassis
+                            port: transceiver
+                            container: container
+                            fan: fan
+                            sensor: sensor
+                            module: module
+                            stack: stack
+                            other: unknown
+                            
+            - vendor:
+                ref:    entPhysicalMfgName
+                required: False
+            - model:
+                ref:    entPhysicalModelName
+                map:
+                    - *strip_value
+            - description:
+                ref:    entPhysicalDescr
+            - serial:
+                ref:    entPhysicalSerialNum
+                map:
+                    - *strip_value
+            - hw_rev:
+                ref:    entPhysicalHardwareRev
+                required: False
+                map:
+                    - *strip_value
+            - fw_rev:
+                ref:    entPhysicalFirmwareRev
+                required: False
+            - sw_rev:
+                ref:    entPhysicalSoftwareRev
+                required: False
+            
+            - parent_id:
+                ref:    entPhysicalContainedIn
+            - relative_position:
+                ref:    entPhysicalParentRelPos
+
+        post:
+            
+            map:
+                # remove things we don't really care about
+                - post_function:
+                    dataset:  post_normalise_entities
+        #         - post_filter:
+        #             type:
+        #                 chassis:  True
+        #                 port: False
+        #                 container: False
+        #                 module: True
+        #     
+
+
+    # status:
+        
+        # 3750
+        # CISCO-STACKWISE-MIB / cswSwitchState
+        # CISCO-ENVMON-MIB / ciscoEnvMonSupplyState -> entity indexon 3750, not on 650
+        # " / ciscoEnvMonFanState -> entity index
+        # moduleStatus -> 6500 (slot)

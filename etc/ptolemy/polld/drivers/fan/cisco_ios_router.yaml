@@ -1,0 +1,65 @@
+---
+specification:  performance
+description:    Cisco Router Switch Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENVMON-MIB
+                - CISCO-ENTITY-FRU-CONTROL-MIB
+definition:
+
+    # need to force this driver only on 6509's
+    cooling:
+        clean: True
+        defs:
+            - cefcFanCoolingCapacity:
+                ref:    cefcFanCoolingCapacity
+
+
+    # need to map the stupid stats index (which is in fact a relative index) to an actual entPhysical index
+    entity_map:
+        group_by_key: True
+        clean: True
+        defs:
+            - entPhysicalClass:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            fan: fan
+                            other: null
+            - entPhysicalParentRelPos:
+                ref:    entPhysicalParentRelPos
+
+        post:
+            map:
+                - post_remove:
+                    entPhysicalClass:    null
+   
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            - admin_status:
+                required: false
+            - status:
+                ref:    ciscoEnvMonFanState
+                map:
+                    - value_sub:
+                        dict:
+                            normal: 1
+                            warning:  2
+                            critical: 0
+                            shutdown: 2
+                            notPresent: 2
+                            notFunctioning: 0
+        post:
+            map:
+                - post_function:
+                    per_item:    post_fan_physical_index_lookup
+                    
+    

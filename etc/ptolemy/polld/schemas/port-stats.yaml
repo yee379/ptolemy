@@ -1,0 +1,21 @@
+---
+port-stats:
+    # determines port statistics for various packet counts
+    rfc2863:
+        # rfc2863 are standard ietf counters
+        # index by physical port names
+        required:
+            - admin_status
+            - oper_status
+            - octets_in
+            - unicast_pkts_in
+            - multicast_pkts_in
+            - broadcast_pkts_in
+            - discards_in
+            - errors_in
+            - octets_out
+            - unicast_pkts_out
+            - multicast_pkts_out
+            - broadcast_pkts_out
+            - discards_out
+            - errors_out

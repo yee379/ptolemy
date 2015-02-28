@@ -1,0 +1,12 @@
+###
+# ampq settings
+###
+WORKERS: 1
+
+SUBCOMMAND_CONFIG:
+    TELEPHONE: '/opt/ptolemy/etc/ptolemy/analyse/telephone.yaml'
+    CAPACITY: '/opt/ptolemy/etc/ptolemy/analyse/capacity.yaml'
+    LAYER1: '/opt/ptolemy/etc/ptolemy/analyse/layer1.yaml'
+    GENERIC: '/opt/ptolemy/etc/ptolemy/analyse/generic.yaml'
+
+

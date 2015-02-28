@@ -1,0 +1,3 @@
+{% for p in ports %}
+{{ p.device }},{{ p.physical_port }},{{ p.alias }}
+{% endfor %}

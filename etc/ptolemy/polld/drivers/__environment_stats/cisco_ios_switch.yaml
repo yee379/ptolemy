@@ -1,0 +1,21 @@
+---
+specification:  performance
+description:    Cisco IOS Switch Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-STACK-MIB
+
+definition:
+
+        
+    power:
+        defs:
+            - power_status:
+                ref:    ciscoEnvMonSupplyState                        
+            - power_desc:
+                ref:    ciscoEnvMonSupplyStatusDescr
+    

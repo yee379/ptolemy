@@ -1,0 +1,21 @@
+
+IPAM_TYPES: '/opt/ptolemy/etc/ptolemy/ipam/types.conf'
+IPAM_GROUPS: '/opt/ptolemy/etc/ptolemy/ipam/groups.conf'
+IPAM_CATEGORIES: '/opt/ptolemy/etc/ptolemy/ipam/categories.conf'
+
+IPAM_DEVICES_DIRECTORY: '/opt/ptolemy/etc/ptolemy/scheduled'
+
+SUBNET_MAP_FILE: '/opt/ptolemy/etc/ptolemy/ipam/subnet_types.yaml'
+
+NETDB_NODES: /afs/slac/g/scs/net/netdb/node.yaml
+NETDB_SUBNETS: /afs/slac/g/scs/net/netdb/subnet.yaml
+
+EXCLUDE_DEVICES:
+    - rtr-smsfw.*
+    - swh-butler
+    - swh-gong
+    - swh-lithium
+    - swh-manley
+    - swh-strittmatter
+    - swh-tritium
+

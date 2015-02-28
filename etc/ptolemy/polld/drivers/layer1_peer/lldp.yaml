@@ -1,0 +1,68 @@
+---
+specification:  layer1_peer
+description:    LLDP querier
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - LLDP-MIB
+
+definition:
+
+    meta:
+        
+        group_by_key:   True
+        
+        defs:
+            - self:
+                ref:    lldpLocSysName
+                map:
+                  - function:
+                      value:  normalise_devicename
+                  
+            - description:
+                ref:    lldpLocSysDesc
+
+    neighbour:
+        
+        group_by_key: True
+        key_name:       physical_port
+        
+        defaults:
+            map: &lldp_to_physical_port
+                - regexp:
+                    key: ^\d+\.(?P<key>\d+)\.\d+$
+                - key_sub:
+                    ref:    lldpLocPortId
+
+        defs:
+            
+            - peer_device:
+                ref:    lldpRemSysName
+                map:
+                    - function:
+                        value:  normalise_devicename
+
+            - peer_physical_port:
+                ref:    lldpRemPortId
+            - type:
+                ref:    lldpRemChassisIdSubtype
+            - address:
+                ref:    lldpRemChassisId
+                map:
+                    - regexp:
+                        key: ^\d+\.(?P<key>\d+)\.\d+$
+                    - key_sub:
+                        ref:    lldpLocPortId
+                    - function:
+                        value:  binary_to_hex
+                    - function:
+                        value:  pretty_print_mac_address
+
+                # map:
+                #     - *lldp_to_physical_port
+                #     - function:
+                #         value:  pretty_print_mac_address
+                #             

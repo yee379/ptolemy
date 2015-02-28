@@ -1,0 +1,20 @@
+# ampq settings
+# BROKER_HOST: 'net-lanmon01.slac.stanford.edu'
+BROKER_HOST: 
+    - 'net-amqp01.slac.stanford.edu:5672'
+    - 'net-amqp02.slac.stanford.edu:5672'
+BROKER_PORT: 5672
+BROKER_VHOST: '/ptolemy'
+BROKER_USER: 'ptolemy'
+BROKER_PASSWORD: 'ptolemy'
+
+WORKERS: 1
+
+SUBCOMMAND_CONFIG:
+    MONGO:      '/opt/ptolemy/etc/ptolemy/stored/mongo.yaml'
+    CONSOLE:    '/opt/ptolemy/etc/ptolemy/stored/console.yaml'
+    NSCA:       '/opt/ptolemy/etc/ptolemy/stored/nsca.yaml'
+    CARBON:     '/opt/ptolemy/etc/ptolemy/stored/carbon.yaml'
+    POSTGRES:   '/opt/ptolemy/etc/ptolemy/stored/postgres.yaml'
+    INFLUXDB:   '/opt/ptolemy/etc/ptolemy/stored/influxdb.yaml'
+    REDIS:      '/opt/ptolemy/etc/ptolemy/stored/redis.yaml'

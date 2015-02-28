@@ -1,0 +1,62 @@
+---
+specification:  spanning_tree
+description:    Generic cisco cam table and spanning tree querier Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-WIRELESS-MIB 
+
+definition:
+    
+    ap_name:
+        clean: True
+        defs:
+            - device:
+                ref:    bsnAPName
+                map:
+                    - function:
+                        value:  fqdn
+            - ap_mac_address:
+                ref:	bsnAPDot3MacAddress
+                map:
+                    - function:
+                        value: normalise_mac_address
+    
+    neighbour:
+        
+        group_by_key: True
+        key_name:     mac_address
+        additional_key_names:
+            - mac_address
+            - vlan
+            - physical_port
+            
+        # used to ensure that we have the vlan field as part of the context
+        forced_key_names: 
+            - vlan
+                
+        defs:
+    
+            - physical_port:
+                ref:    bsnMobileStationAPIfSlotId
+            - mac_address:
+                ref:    bsnMobileStationMacAddress
+                map:
+                    - function:
+                        value:   normalise_mac_address
+            - vlan:
+                ref:	bsnMobileStationVlanId
+            - on_mac_address:
+                ref:    bsnMobileStationAPMacAddr
+                map:
+                    - function:
+                        value: normalise_mac_address
+
+        post:
+            map:
+                - post_function:
+                      dataset: post_merge_wireless_apname_on_mac_address
+        

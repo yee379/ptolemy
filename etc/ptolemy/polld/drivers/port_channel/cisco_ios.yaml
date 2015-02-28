@@ -1,0 +1,45 @@
+---
+specification:  port_channel
+description:    Cisco Port Channel Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-LAG-MIB
+
+mapping:
+    
+    updown_value: &updown_value
+        - value_sub:
+            dict: 
+                up:      True
+                down:      False
+                other:  False
+
+
+definition:
+    
+    info:
+
+        group_by_key: True
+        key_name: physical_port
+
+        mapping:
+            ifindex_to_physical_port: &ifindex_to_physical_port
+                - key_sub:
+                    ref:    ifName
+                - function:
+                    key:   truncate_physical_port_name
+            ifindex_to_physical_port_with_updown: &ifindex_to_physical_port_with_updown
+                - *ifindex_to_physical_port
+                - *updown_value
+
+        defs:
+            - members:
+                ref: clagAggPortListPorts
+                map:    
+                    - *ifindex_to_physical_port
+                    - function: 
+                        value: decode_port_channels

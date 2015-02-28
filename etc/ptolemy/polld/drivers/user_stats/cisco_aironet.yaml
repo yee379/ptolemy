@@ -1,0 +1,22 @@
+---
+specification:  user_stats
+description:    provides the number of wireless users connected to a cisco ap
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-DOT11-ASSOCIATION-MIB
+
+
+definition:
+
+    neighbour:
+        
+        group_by_key:   True
+        key_name:   radio
+        defs:
+
+            - number:
+                ref:    cDot11ActiveWirelessClients

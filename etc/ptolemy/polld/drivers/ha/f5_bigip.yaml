@@ -1,0 +1,30 @@
+---
+specification:  high availability status
+description:    high availability status statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+        
+        group_by_key:   True
+        key_name: physical_index
+        
+        defs:
+            - status:
+                ref:    sysCmFailoverStatusId
+                map:
+                    - value_sub:
+                        dict:
+                            unknown:    2
+                            offline:    2
+                            forcedOffline:  2
+                            standby:    0
+                            active: 1
+

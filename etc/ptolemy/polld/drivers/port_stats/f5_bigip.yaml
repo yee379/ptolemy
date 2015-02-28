@@ -1,0 +1,81 @@
+---
+specification:  performance
+description:    Generic performance Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+    
+    rfc2863:
+
+        group_by_key: True
+        key_name:   physical_port
+
+        defaults:
+            map:    
+                - key_sub:
+                    ref:    sysInterfaceStatName
+
+        defs:
+            - admin_status:
+                ref:    sysInterfaceEnabled
+                map:
+                    - key_sub:
+                        ref: sysInterfaceStatName
+                    - value_sub:
+                        dict:
+                            'true':  True
+                            'false': False
+
+            - oper_status:
+                ref:    sysInterfaceStatus
+                map:
+                    - key_sub:
+                        ref: sysInterfaceStatName
+                    - value_sub:
+                        dict:
+                            'up':  True
+                            'down': False
+                            'disabled': False
+                            'uninitialized': false
+                            'loopback': True
+                            'unpopulated': False
+            - connector_status:
+                ref:    sysIfxStatConnectorPresent
+                required: False
+            - octets_in:
+                ref:    sysInterfaceStatBytesIn
+            - unicast_pkts_in:
+                ref:    sysIfxStatHcInUcastPkts
+                required: False
+            - multicast_pkts_in:
+                ref:    sysIfxStatHcInMulticastPkts
+                required: False
+            - broadcast_pkts_in:
+                ref:    sysIfxStatHcInBroadcastPkts
+                required: False
+            - discards_in:
+                ref:    sysInterfaceStatDropsIn
+            - errors_in:
+                ref:    sysInterfaceStatErrorsIn
+            - octets_out:
+                ref:    sysInterfaceStatBytesOut
+            - unicast_pkts_out:
+                ref:    sysIfxStatHcOutUcastPkts
+                required: False
+            - multicast_pkts_out:
+                ref:    sysIfxStatHcOutMulticastPkts
+                required: False
+            - broadcast_pkts_out:
+                ref:    sysIfxStatHcOutBroadcastPkts
+                required: False
+            - discards_out:
+                ref:    sysInterfaceStatDropsOut
+            - errors_out:
+                ref:    sysInterfaceStatErrorsOut
+

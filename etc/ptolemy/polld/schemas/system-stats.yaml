@@ -1,0 +1,15 @@
+---
+system-stats:
+    # determines statistics for system counters such as cpu load, memory usage etc.
+    cpu:
+        required:
+            - load_1min
+            - load_5min
+            
+    memory:
+        required:
+            - name
+            - used
+            - free
+            - largest_free
+--- 

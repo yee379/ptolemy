@@ -1,0 +1,34 @@
+---
+specification:  cpu_stats
+description:    cpu statistics for dell 8024f
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:  
+            mibs:
+                - Dell-Vendor-MIB
+                - FASTPATH-SWITCHING-MIB
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        defs:
+
+            - name:
+                ref:    agentSwitchCpuProcessName
+                
+            - load_1min:
+                ref:    agentSwitchCpuProcessPercentageUtilization
+                map:
+                    - regexp:
+                        value:   ^.* One Minute\(\s+(?P<value>\d+\.\d+)\%\).*$
+            - load_5min:
+                ref:    agentSwitchCpuProcessPercentageUtilization
+                map:
+                    - regexp:
+                        value:   ^.*Five Minutes\(\s+(?P<value>\d+\.\d+)\%\).*$

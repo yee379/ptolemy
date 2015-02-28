@@ -1,0 +1,282 @@
+# This configuration contains the regexp mappings of a subnet name to categorical types
+# the format is
+#  - type:
+#     - regex1
+#     - regex2
+# note that the analysis for the type is done in sequential order, so that one subnet may belong to multiple
+# types, and the order of the types is preserved
+- enterprise:
+    - EPN
+    - WEB
+    - WCM
+    - AFS
+    - DHCP
+    - MGMT
+    - CONSOLE
+    - BAM
+    - DEVCTL
+    - VPN
+    - FAC
+    - POWER
+    - LCW
+    - ADVMETER
+    - WCRACKS
+    - PWRMON
+    - DCS
+    - HVAC
+    - SEC
+    - -CPP-
+    - PROXY
+    - PBX
+    - LYNC
+    - VOICE
+    - ^.*-SMTP$
+    - ^.*-EXCH-.*$
+    - NS-
+    - -CONSOLE$
+    - ^.*SITESEC-.*$
+    - ^.*-CAMERA$
+    - ADMIN
+    - IEPM
+    - PSNR
+    - ^(SERV|FARM).*-LOGIN$
+    - ^SERV
+    - ^NETHUB
+    - ^LB-
+    - ^ERP-
+- experiments:
+    - ^ACCTEST(FAC|XTA)$
+    - ^ASTA.*$
+    - ^NLCTA.*$
+    - ^MCC-SRV$
+    - ^LEB$
+    - ^FACET.*$
+    - LCLS
+    - FCOM$
+    - PCDSN
+    - EXP
+    - ^REG
+    - SSRL
+    - GLAST
+    - LAT
+    - ^MCAST-
+    - BBR
+    - BABAR
+    - LTDA
+    - KAVLI
+    - FNET
+    - PULSE
+    - VIDEO
+    - ^KLY
+    - ^PEL
+    - ^SLACVX
+- campus:
+    - ^(B\d+|SECT).*-(PUBLIC|PRINTER|PRIVATE|IFZLITE)$
+    - ^KAVLI$
+    - ^PUB\d+$
+    - ^CAD$
+    - ^BSD$
+    - -VOICE$
+- visitor:
+    - ^VISITOR.*$
+    - ^AP.*$
+- facilities:
+    - ^.*-POWER$
+    - ^.*HVAC.*$
+    - ^LCW$
+    - ^.*-ADVMETER-.*$
+    - ^.*-WCRACKS$
+    - ^.*-DCS-.*$
+    - ^.*-PWRMON$
+    - ^SEM
+- site-security:
+    - ^.*SITESEC-.*$
+    - ^.*-CAMERA$
+- pcdsn:
+    - ^LCLSPCDSN$
+    - ^PCDSN-.*$
+    - ^REG-L.*$
+- glast:
+    - ^.*GLAST.*$
+    - ^.*-LAT.*-(PUB|PRIV|PRI)$
+- facet:
+    - FACET
+- lcls:
+    - LCLS
+- nlcta:
+    - ^NLCTA.*$
+- ssrl:
+    - ^.*SSRL.*$
+- pulse:
+    - ^.*PULSE.*$
+- babar:
+    - BBR
+    - LTDA
+    - BABAR
+- bpm:
+    - BPM
+- kavli:
+    - KLY
+- asta:
+    - ASTA
+- infrastructure:
+    - ^.*NS-.*$
+    - ^.*-DHCP$
+- management:
+    - ^.*-CONSOLE$
+    - ^.*-WINADMIN$
+    - ^.*-ADMIN$
+    - ^NETMGMT-.*
+    - ^.*WINMGMT$
+    - ^APMGMT\d+$
+    - ^NETMGMT$
+    - ^DEVCTL-.*$
+    - BAM
+    - MGMT
+    - -VMOTION
+    - -BASTION
+- network:
+    - ^NETMGMT
+    - ^APMGMT
+    - -IEPM
+    - -PSNR$
+- monitoring:
+    - ^.*-IEPM$
+    - ^.*-PSNR$
+- dhcp:
+    - ^.*-DHCP$
+- dns:
+    - ^.*NS-.*$
+- business:
+    - ^EPN.*$
+    - ^ERP-
+- cyber-security:
+    - ^.*-CPP-SENSOR$
+    - ^.*-SEC-.*$
+    - ^.*PROXY$
+    - ^SEC-.*$
+- mail:
+    - ^.*-SMTP$
+    - ^.*-EXCH-.*$
+- communications:
+    - ^.*PBX.*$
+    - ^.*LYNCEDGE.*$
+    - ^B\d+.*-VOICE$
+- vpn:
+    - ^VPN-.*$
+- login:
+    - ^.*-LOGIN$
+    - -CONSOLE$
+- web:
+    - ^.*-WEBSERV\d*$
+- sharepoint:
+    - ^.*-WCM-.*$    
+- farm:
+    - ^FARM\d+.*$
+    - ^LTDA-.*$
+    - ^BBR.*$
+    - ^PULSE.*
+    - ANA
+- storage:
+    - ^.*-AFS$
+- ltda:
+    - LTDA
+- mms:
+    - MMS-
+- epn2:
+    - EPN2
+- epn3:
+    - EPN3
+- epn4:
+    - EPN4
+- erp:
+    - ERP
+- hr:
+    - ERP-HR-
+- financial:
+    - ERP-FS-
+- staging:
+    - -UAT-
+- production:
+    - -PRD-
+- camera:
+    - -CAM$
+    - -CAMERA$
+- control:
+    - -CTRL$
+    - -(E)?IOC$
+    - CDS
+    - CA$
+    - VIDEO$
+    - INST$
+    - UTIL$
+    - MPS$
+    - BPM$
+- feedback:
+    - FNET
+    - FCOM
+- daq:
+    - FEZ
+    - BLD
+- amo:
+    - AMO
+- cxi:
+    - CXI
+- mec:
+    - MEC
+- xcs:
+    - XCS
+- sxr:
+    - XSR
+- xpp:
+    - XPP
+- pbx:
+    - -VOICE$
+    - PBX
+- lync:
+    - LYNC
+- power:
+    - -POWER$
+- hvac:
+    - HVAC
+- meters:
+    - ADVMETER
+- printer:
+    - -PRINTER$
+- public:
+    - -PUBLIC$
+    - -PUB$
+    - GRID
+- private:
+    - -PRIVATE$
+- servers:
+    - ^(SERV|FARM)\d+.*-(IFZLITE|PUBLIC|PRIVATE)$
+    - ^.*-LB-V$
+    - ^NETHUB.*$
+    - DEVCTL
+    - WINMGMT
+    - UNIX
+    - WIN
+    - SRV
+- voice:
+    - -VOICE
+- development:
+    - ^ACCTESTFAC$
+    - ^DEV-.*$
+    - ^.*T(E)?ST$
+    -  ^.*LCLS(DEV|FBCK)$
+    - ^REG-L.*$
+    - -LAT
+    - -MR\d+
+    - ^MCAST-B.
+    - TEST
+    - -DEV-
+- dmz:
+    - DMZ
+    - -WEBEXT
+    - -LB-EXT
+- database:
+    - -DB
+    - -RAC
+- spare:
+    - SPARE

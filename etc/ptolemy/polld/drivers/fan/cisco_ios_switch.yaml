@@ -1,0 +1,33 @@
+---
+specification:  fan
+description:    cisco fan Driver
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENVMON-MIB
+                - ENTITY-MIB
+                
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        defs:
+            - status:
+                ref:    ciscoEnvMonFanState
+                map:
+                    - value_sub:
+                        dict:
+                            normal: 1
+                            warning:  2
+                            critical: 0
+                            shutdown: 2
+                            notPresent: 2
+                            notFunctioning: 0
+            - rpm:
+                required: False

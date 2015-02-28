@@ -1,0 +1,34 @@
+---
+specification:  cpu
+description:    f5 fan Driver
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   index
+        
+        defaults:
+            map:    
+                - key_sub:
+                    ref:    sysChassisFanIndex
+        
+        defs:
+            - status:
+                ref:    sysChassisFanStatus
+                map:
+                    - value_sub:
+                        dict:
+                            'good': 1
+                            'bad':  0
+                            'notpresent': 2
+            - rpm:
+                ref:    sysChassisFanSpeed

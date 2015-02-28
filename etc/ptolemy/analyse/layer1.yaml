@@ -1,0 +1,15 @@
+# number of concurrent workers
+WORKERS: 1
+
+POOL: 'layer1'
+KEYS:
+    - '#.layer1_peer.#'
+    - '#.port_channel.#'
+
+CACHE_POOL:
+    - net-amqp01.slac.stanford.edu:6379
+    - net-amqp02.slac.stanford.edu:6379
+    
+REDIS_SERVER: localhost
+REDIS_PORT: 6379
+REDIS_DB: 0

@@ -1,0 +1,98 @@
+---
+specification:  entity
+description:    Generic entity Ptolemy Driver using entPhysical
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - ENTITY-MIB
+#                - CISCO-STACK-MIB
+
+
+map:
+    strip_value:    &strip_value
+        - regexp:
+            value:  ^\s*(?P<value>\S+)\s*$
+
+
+definition:
+    
+    info:
+        group_by_key:   True
+        remove_key: True
+        defs:
+            - name:
+                ref:    sysName
+            - location:
+                ref:        sysLocation
+                required:   False
+            - string:
+                ref:    sysDescr
+                required: False
+            # - uptime:
+            #     ref: sysUptime
+
+
+    meta:
+        group_by_key:   True
+        key_name: physical_index
+        additional_key_names:
+            - type
+            - relative_position
+
+        defs:
+
+            - type:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            powerSupply: power_supply
+                            chassis: chassis
+                            port: transceiver
+                            container: container
+                            fan: fan
+                            sensor: sensor
+                            module: module
+                            stack: stack
+                            other: unknown
+                            
+            - vendor:
+                ref:    entPhysicalMfgName
+                required: False
+            - model:
+                ref:    entPhysicalModelName
+                map:
+                    - *strip_value
+            - description:
+                ref:    entPhysicalDescr
+            - serial:
+                ref:    entPhysicalSerialNum
+                map:
+                    - *strip_value
+            - hw_rev:
+                ref:    entPhysicalHardwareRev
+                required: False
+                map:
+                    - *strip_value
+            - fw_rev:
+                ref:    entPhysicalFirmwareRev
+                required: False
+            - sw_rev:
+                ref:    entPhysicalSoftwareRev
+                required: False
+            
+            - parent_index:
+                ref:    entPhysicalContainedIn
+            - relative_position:
+                ref:    entPhysicalParentRelPos
+
+        post:
+            
+            map:
+                # remove things we don't really care about
+                - post_function:
+                    dataset:  post_normalise_entities
+

@@ -1,0 +1,34 @@
+specification: layer3
+description: Generic Subnet Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - IP-FORWARD-MIB
+
+definition:
+
+    subnets:
+        
+        key_name:   prefix
+        additional_key_names: 
+            - netmask
+            - next_hop
+        group_by_key: True
+        defs:
+            - local:
+                ref:    ipCidrRouteType
+                map:
+                    - value_sub:
+                        dict:
+                            local:  True
+                            remote: False
+                            other:  False
+                        
+        post:
+            map:
+                - post_extract:
+                    prefix:  ^(?P<prefix>\d+\.\d+\.\d+\.\d+)\.(?P<netmask>\d+\.\d+\.\d+\.\d+)\.0\.(?P<next_hop>\d+\.\d+\.\d+\.\d+)$
+            

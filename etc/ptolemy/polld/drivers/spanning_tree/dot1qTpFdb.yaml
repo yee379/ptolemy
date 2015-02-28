@@ -1,0 +1,60 @@
+---
+specification:  spanning_tree
+description:    Generic cisco cam table and spanning tree querier Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - Q-BRIDGE-MIB
+
+definition:
+
+    neighbour:
+        group_by_key:   True
+        key_name:       mac_address
+        additional_key_names:
+            - mac_address
+            - vlan
+            - physical_port
+        
+        defaults:
+            map:    &convert_mac_address
+                - function:
+                    key:    binary_to_hex
+                - function:
+                    key:    pretty_print_mac_address
+
+        defs:
+
+            - physical_port:
+                ref:    dot1qTpFdbPort
+                map:
+                    - regexp:
+                        key:    ^\d+\.\'(?P<key>.*)\'$
+                    - *convert_mac_address
+                    - value_sub:
+                        ref:    ifName
+                    - function:
+                        value:   truncate_physical_port_name
+            - status:
+                ref:    dot1qTpFdbStatus
+                map:
+                    - regexp:
+                        key:    ^\d+\.\'(?P<key>.*)\'$
+                    - *convert_mac_address
+            - vlan:
+                ref:    dot1qTpFdbPort
+                map:
+                    - regexp:
+                        key:  ^(?P<value>\d+)\..*$
+                    - regexp:
+                        key:    ^\d+\.\'(?P<key>.*)\'$
+                    - *convert_mac_address
+
+        post:
+            map:
+                - post_new_group_from_field:
+                    field:  vlan
+

@@ -1,0 +1,303 @@
+###
+# ampq settings
+###
+POOL:   'default'
+KEYS:
+    - '#'
+WORKERS: 1
+
+###
+# email settings
+###
+EMAIL_SERVER: smtp.slac.stanford.edu
+EMAIL_FROM_NAME: netmon
+EMAIL_FROM_EMAIL:   netmon@slac.stanford.edu
+EMAIL_SUBJECT_PREPEND:    '[netmon] '
+
+
+###
+# ignore ialerts that match the following metric and contexts
+###
+IGNORE:
+    
+    capacity.utilisation:
+        # stupid leb's report wrong utilisations
+        - device: swh-leb.*
+        # mcc monitoring/span ports
+        - device: rtr-mcccore1.slac.stanford.edu
+          physical_port: Gi2/45
+        - device: rtr-mcccore1.slac.stanford.edu
+          physical_port: Gi2/44
+        # something in nlcta
+        - device: swh-b062-nl02.slac.stanford.edu
+          physical_port: Gi2/0/16
+
+
+###
+# reference these strings for notificaiton templates
+###
+TEMPLATES:
+
+    sudden_increase: &email_template >
+        Network monitoring has detected a sudden increase in %(direction)sbound traffic on
+        
+          %(device)s port %(physical_port)s
+        
+        This may indicate performance problems and or network issues.
+        
+        Fractional link load averages for the last:
+        
+          1min  %(1)s
+          5min  %(5)s
+          15min %(15)s
+          30min %(30)s
+          60min %(60)s
+        
+        Port graphs: http://network.slac.stanford.edu/graphs.horizon/port/%(device)s/%(physical_port)s
+        
+        
+###
+# general referenced conditions for alerts
+###
+CONDITIONS:
+    
+    # data key '60' has a value greater than 0.8
+    continuous_high_load: &high_load
+        - '%(1)s > 0.90'
+        - '%(5)s > 0.85'
+    # data key '1' is greater than 0.8 and is > 1.1 * value of key '5'
+    sudden_change: &sudden_change
+        - '%(1)s > 0.8'
+        - '%(1)s > 1.1 * %(5)s'
+    # call the plateau function with the panda dataframe, with args of 5mins
+    plateau: &plateau
+        - 'plateau( pd, within=300 )'
+    whatever: &whatever
+        - 'True'
+
+    # generic alert handler to log to store queue
+    new_alert: &new_alert 
+        condition:
+            - '%(state)s == True'
+            - '%(last_state)s != True'
+        alert_with: 
+            - store: &store_new
+                just_insert: True
+    continual_alert: &continual_alert
+        condition: 
+            - '%(state)s == True'
+            - '%(last_state)s == True'
+        alert_with: 
+            - store: &store_continual
+                update_recent: True
+                ignore_data: True
+    end_alert: &end_alert
+        condition: 
+            - '%(state)s == False'
+            - '%(last_state)s == True'
+        alert_with: 
+            - store: &store_end
+                update_recent: True
+                ignore_data: True
+
+    
+###
+# what and how to alert
+# each item in the list defines the metric to monitor as the key and the 'stanza' that defines
+#  1) the context that each key,value should match (arrays are supported)
+#  2) check the data against the conditions which is an array of tests - all tests have to pass to meet the condition
+#       each test consists of a key, value pair: the key of the data and the value is an eval of the string against the data dictionary
+# alert_with specifies all alerting mechanisms:
+###
+ALERTS:
+    
+    - net-admin_capacity:
+        context:
+            device: 
+                - .*
+            metric: capacity.utilisation
+        condition: *high_load
+        alert_with:
+            # write to storage queues
+            - store:
+                just_insert: True
+            - file:
+                path: /tmp/90.log
+
+    ###
+    # keep records of duration and frequency of uplink ports being down, determined by the alias of the port and it's operational state
+    ###
+    - net-admin_uplinks.new:
+        <<: *new_alert
+        context: &uplinks
+            device: 
+                - .*
+            metric: uplinks.down
+    - net-admin_uplinks.continue:
+        <<: *continual_alert
+        context: *uplinks
+    - net-admin_uplinks.end:
+        <<: *end_alert
+        context: *uplinks
+    
+    ###
+    # keep records of duration and frequency of switches not being reachable
+    ###
+    - net-admin_ping.new:
+        <<: *new_alert
+        context: &pings
+            device: 
+                - .*
+            metric: devices.unreachable
+    - net-admin_ping.continue:
+        <<: *continual_alert
+        context: *pings
+    - net-admin_ping.end:
+        <<: *end_alert
+        context: *pings
+
+
+    ###
+    # keep records of duration and frequency of access port ports being down
+    ###
+    - net-admin_ap.new:
+        <<: *new_alert
+        context: &ap
+            device: 
+                - .*
+            metric: ap.down
+        alert_with:
+            - store: *store_new
+            - email:
+                subject: access point connect to %(device)s %(physical_port)s just went down
+                content: >
+                    i should probably do some alias lookup or something...
+                to: &gcx
+                    - gcx@slac.stanford.edu
+    - net-admin_ap.continue:
+        <<: *continual_alert
+        context: *ap
+        alert_with: 
+            - store: *store_continual
+            - email:
+                subject: access point connect to %(device)s %(physical_port)s is still down
+                content: >
+                    can customise frequency of alerts (currently once an hour) if the ap is still down
+                to: *gcx
+                limit: 86400
+    - net-admin_ap.end:
+        <<: *end_alert
+        context: *ap
+        alert_with:
+            - store: *store_end
+            - email:
+                subject: access point connect to %(device)s %(physical_port)s just came back up
+                content: >
+                    blah blah blah
+                to: *gcx
+                
+    ###
+    # alert when transceivers are going bad
+    ###
+    - net-admin_transceivers.new:
+        <<: *new_alert
+        context: &transceivers
+            device: 
+                - .*
+            metric: transceivers.outofspec
+    - net-admin_transceivers.continue:
+        <<: *continual_alert
+        context: *transceivers
+    - net-admin_transceivers.end:
+        <<: *end_alert
+        context: *transceivers
+    
+    ###
+    # modules outage
+    ###
+    - net-admin_modules.new:
+        <<: *new_alert
+        context: &modules
+            device: 
+                - .*
+            metric: modules.outage
+    - net-admin_modules.continue:
+        <<: *continual_alert
+        context: *modules
+    - net-admin_modules.end:
+        <<: *end_alert
+        context: *modules
+
+    ###
+    # psu outage
+    ###
+    - net-admin_psus.new:
+        <<: *new_alert
+        context: &psus
+            device: 
+                - .*
+            metric: psus.outage
+    - net-admin_psus.continue:
+        <<: *continual_alert
+        context: *psus
+    - net-admin_psus.end:
+        <<: *end_alert
+        context: *psus
+
+
+    ###
+    # fan outage
+    ###
+    - net-admin_fans.new:
+        <<: *new_alert
+        context: &fans
+            device: 
+                - .*
+            metric: fans.outage
+    - net-admin_fans.continue:
+        <<: *continual_alert
+        context: *fans
+    - net-admin_fans.end:
+        <<: *end_alert
+        context: *fans
+
+
+    ###
+    # alert mcc when a link connected to another switch has a high utilisation
+    ###
+    - mcc:
+        context:
+            device: 
+                - (swh|rtr)-(leb|mcc|li|in|nlcta|sect|und|atf).*
+            metric: capacity.utilisation
+            has_peer: True
+        condition:
+            # greater than 60% over 5 mins
+            - '%(5)s > 0.6'
+        alert_with:
+            - email:
+                subject: high link utilisation on %(device)s %(physical_port)s
+                content: *email_template
+                to:
+                    - brobeck@slac.stanford.edu
+                    - cxg@slac.stanford.edu
+                    - ytl@slac.stanford.edu
+                limit: 3600
+
+    ###
+    # alert ssrl when a link has a sudden increase in utilisation
+    ###
+    - ssrl:
+        context:
+            device: 
+                - (swh|rtr)-ssrl.*
+            metric: capacity.utilisation
+        condition: *sudden_change
+        alert_with:
+            - email:
+                subject: high link utilisation on %(device)s %(physical_port)s
+                content: *email_template
+                to:
+                    - ramirez@slac.stanford.edu
+                    - ytl@slac.stanford.edu
+                limit: 300

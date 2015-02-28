@@ -1,0 +1,144 @@
+hosts:
+  swh-b003.slac.stanford.edu: null
+  swh-b005.slac.stanford.edu: null
+  swh-b005b.slac.stanford.edu: null
+  swh-b006.slac.stanford.edu: null
+  swh-b015.slac.stanford.edu: null
+  swh-b016.slac.stanford.edu: null
+  swh-b023.slac.stanford.edu: null
+  swh-b024.slac.stanford.edu: null
+  swh-b025.slac.stanford.edu: null
+  swh-b025m.slac.stanford.edu: null
+  swh-b026.slac.stanford.edu: null
+  swh-b026mm.slac.stanford.edu: null
+  swh-b026s.slac.stanford.edu: null
+  swh-b028.slac.stanford.edu: null
+  swh-b030.slac.stanford.edu: null
+  swh-b031.slac.stanford.edu: null
+  swh-b033.slac.stanford.edu: null
+  swh-b034.slac.stanford.edu: null
+  swh-b035-lc01.slac.stanford.edu: null
+  swh-b035.slac.stanford.edu: null
+  swh-b040af1.slac.stanford.edu: null
+  swh-b040af2.slac.stanford.edu: null
+  swh-b040f1.slac.stanford.edu: null
+  swh-b040f2.slac.stanford.edu: null
+  swh-b040f3.slac.stanford.edu: null
+  swh-b040s.slac.stanford.edu: null
+  swh-b041f1.slac.stanford.edu: null
+  swh-b041f2.slac.stanford.edu: null
+  swh-b044f1.slac.stanford.edu: null
+  swh-b044f2.slac.stanford.edu: null
+  swh-b048f1.slac.stanford.edu: null
+  swh-b048f2.slac.stanford.edu: null
+  swh-b050f1-power.slac.stanford.edu: null
+  swh-b050f1.slac.stanford.edu: null
+  swh-b050f2-camera.slac.stanford.edu: null
+  swh-b050f2-power.slac.stanford.edu: null
+  swh-b050f2.slac.stanford.edu: null
+  swh-b050f3.slac.stanford.edu: null
+  swh-b050r362.slac.stanford.edu: null
+  swh-b052f1.slac.stanford.edu: null
+  swh-b052f2.slac.stanford.edu: null
+  swh-b052f3.slac.stanford.edu: null
+  swh-b055.slac.stanford.edu: null
+  swh-b060.slac.stanford.edu: null
+  swh-b062.slac.stanford.edu: null
+  swh-b081.slac.stanford.edu: null
+  swh-b082.slac.stanford.edu: null
+  swh-b083.slac.stanford.edu: null
+  swh-b084f1.slac.stanford.edu: null
+  swh-b084f2.slac.stanford.edu: null
+  swh-b085.slac.stanford.edu: null
+  swh-b086.slac.stanford.edu: null
+  swh-b088.slac.stanford.edu: null
+  swh-b088gate.slac.stanford.edu: null
+  swh-b102.slac.stanford.edu: null
+  swh-b104a.slac.stanford.edu: null
+  swh-b105.slac.stanford.edu: null
+  swh-b106.slac.stanford.edu: null
+  swh-b113.slac.stanford.edu: null
+  swh-b121.slac.stanford.edu: null
+  swh-b124.slac.stanford.edu: null
+  swh-b128.slac.stanford.edu: null
+  swh-b136.slac.stanford.edu: null
+  swh-b225.slac.stanford.edu: null
+  !!python/unicode swh-b233.slac.stanford.edu: null
+  swh-b235.slac.stanford.edu: null
+  swh-b243.slac.stanford.edu: null
+  !!python/unicode swh-b244-linac.slac.stanford.edu: null
+  swh-b244.slac.stanford.edu: null
+  swh-b245.slac.stanford.edu: null
+  swh-b267.slac.stanford.edu: null
+  swh-b280.slac.stanford.edu: null
+  swh-b282.slac.stanford.edu: null
+  swh-b285.slac.stanford.edu: null
+  swh-b292.slac.stanford.edu: null
+  swh-b299.slac.stanford.edu: null
+  !!python/unicode swh-b4111.slac.stanford.edu: null
+  swh-b420.slac.stanford.edu: null
+  swh-b443.slac.stanford.edu: null
+  swh-b482.slac.stanford.edu: null
+  swh-b519.slac.stanford.edu: null
+  swh-b522.slac.stanford.edu: null
+  swh-b621.slac.stanford.edu: null
+  swh-b641.slac.stanford.edu: null
+  swh-b646.slac.stanford.edu: null
+  swh-b660.slac.stanford.edu: null
+  swh-b680.slac.stanford.edu: null
+  swh-b685.slac.stanford.edu: null
+  swh-b721.slac.stanford.edu: null
+  swh-b726.slac.stanford.edu: null
+  swh-b751.slac.stanford.edu: null
+  swh-b901f1.slac.stanford.edu: null
+  swh-b901f2.slac.stanford.edu: null
+  swh-b911.slac.stanford.edu: null
+  swh-b912.slac.stanford.edu: null
+  swh-b913.slac.stanford.edu: null
+  swh-b921.slac.stanford.edu: null
+  swh-b950f1.slac.stanford.edu: null
+  swh-b950f2.slac.stanford.edu: null
+  swh-b999.slac.stanford.edu: null
+  swh-dr-nw01.slac.stanford.edu: null
+  swh-dr.slac.stanford.edu: null
+  swh-ela1.slac.stanford.edu: null
+  swh-ela2.slac.stanford.edu: null
+  swh-ela3.slac.stanford.edu: null
+  swh-ela4.slac.stanford.edu: null
+  swh-ela5.slac.stanford.edu: null
+  swh-ela6.slac.stanford.edu: null
+  swh-ela7.slac.stanford.edu: null
+  swh-ir10.slac.stanford.edu: null
+  swh-kavli1.slac.stanford.edu: null
+  swh-kavli2.slac.stanford.edu: null
+  swh-mccwapcore1.slac.stanford.edu: null
+  swh-mccwapcore2.slac.stanford.edu: null
+  swh-ryb407c.slac.stanford.edu: null
+  swh-sect00.slac.stanford.edu: null
+  !!python/unicode swh-sect07.slac.stanford.edu: null
+  swh-sect10-lab.slac.stanford.edu: null
+  swh-sect10.slac.stanford.edu: null
+  !!python/unicode swh-sect11.slac.stanford.edu: null
+  !!python/unicode swh-sect12.slac.stanford.edu: null
+  !!python/unicode swh-sect13.slac.stanford.edu: null
+  !!python/unicode swh-sect14.slac.stanford.edu: null
+  !!python/unicode swh-sect15.slac.stanford.edu: null
+  !!python/unicode swh-sect16.slac.stanford.edu: null
+  !!python/unicode swh-sect17.slac.stanford.edu: null
+  swh-sect18-lclsdev.slac.stanford.edu: null
+  !!python/unicode swh-sect18.slac.stanford.edu: null
+  swh-sect19.slac.stanford.edu: null
+  swh-sect20-rfhut.slac.stanford.edu: null
+  swh-sect20.slac.stanford.edu: null
+  swh-sect22.slac.stanford.edu: null
+  swh-sect23.slac.stanford.edu: null
+  swh-sect24.slac.stanford.edu: null
+  swh-sect25.slac.stanford.edu: null
+  swh-sect26.slac.stanford.edu: null
+  swh-sect27.slac.stanford.edu: null
+  swh-sect28.slac.stanford.edu: null
+  swh-sect29.slac.stanford.edu: null
+  swh-sect30.slac.stanford.edu: null
+settings:
+  schedule: default
+  snmp: default

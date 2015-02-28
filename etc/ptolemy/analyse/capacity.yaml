@@ -1,0 +1,8 @@
+# number of concurrent workers
+WORKERS: 2 
+
+POOL: 'capacity.default'
+KEYS:
+    - '#.ports.#'
+    - '#.port_stats.#'
+    - '#.layer1_peer.#'

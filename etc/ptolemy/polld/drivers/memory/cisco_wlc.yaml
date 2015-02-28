@@ -1,0 +1,31 @@
+---
+specification:  memory
+description:    memory statistics
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-SWITCHING-MIB
+
+definition:
+
+    stats:
+        
+        # how does this map to something meaningful?
+        
+        group_by_key:   True
+        
+        defs:
+            # - description:
+            #     ref:    ciscoMemoryPoolName
+            #     required:   False
+            - total:
+                ref:    agentTotalMemory
+            - free:
+                ref:    agentFreeMemory
+            # - largest_free:
+            #     ref:    ciscoMemoryPoolLargestFree
+            # - used:
+            #     ref:    ciscoMemoryPoolUsed

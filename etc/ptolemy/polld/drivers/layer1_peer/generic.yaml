@@ -1,0 +1,164 @@
+---
+specification:  layer1_peer
+description:    LLDP querier
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-CDP-MIB
+                - LLDP-MIB
+
+
+mappings:
+    
+    lldp_index_to_physical_port: &lldp_index_to_physical_port
+        - regexp:
+            key: ^\d+\.(?P<key>\d+)\.\d+$
+        - key_sub:
+            ref:    lldpLocPortId
+    
+    cdp_index_to_physical_port: &cdp_index_to_physical_port
+        - regexp:
+            key: ^(?P<key>\d+)\.\d+$
+        - key_sub:
+            ref:    ifName
+        - function:
+            key:   truncate_physical_port_name
+
+
+definition:
+
+    meta:
+        
+        group_by_key:   True
+        
+        defs:
+            - self_lldp:
+                ref:    lldpLocSysName
+                clean:  True
+                required:   False
+            - self_cdp:
+                ref:    cdpGlobalDeviceId
+                clean:  True
+                required:   False
+            
+            - self:
+                map:
+                    - merge_defs:
+                        self_lldp: []
+                        self_cdp: []
+                    - function:
+                        value:  normalise_devicename
+            
+            - description:
+                ref:    lldpLocSysDesc
+                required:   False
+                map:    *lldp_index_to_physical_port
+
+    neighbour:
+        
+        group_by_key: True
+        key_name:       physical_port
+    
+        defs:
+            
+            - peer_device_lldp:
+                ref:    lldpRemSysName
+                clean:  True
+                required:   False
+                map:    *lldp_index_to_physical_port
+            - peer_device_cdp:
+                ref:    cdpCacheDeviceId
+                clean:  True
+                required:   False
+                map:    *cdp_index_to_physical_port
+
+            - peer_device:
+                map:
+                    - merge_defs:
+                        peer_device_lldp: []
+                        peer_device_cdp:  []
+                    - function:
+                        value:  normalise_devicename
+
+            - peer_physical_port_lldp:
+                ref:    lldpRemPortId
+                clean:  True
+                required:   False
+                map:    *lldp_index_to_physical_port
+            - peer_physical_port_cdp:
+                ref:    cdpCacheDevicePort
+                clean:  True
+                required:   False
+                map:
+                    - *cdp_index_to_physical_port
+
+            - peer_physical_port:
+                map:
+                    - merge_defs:
+                        peer_physical_port_lldp: []
+                        peer_physical_port_cdp:  []
+                    - function:
+                        value:  truncate_physical_port_name
+
+            - peer_address_type_lldp:
+                ref:    lldpRemChassisIdSubtype
+                required:   False
+                clean:  True
+                map:    *lldp_index_to_physical_port
+            - peer_address_type_cdp:
+                ref:    cdpCacheAddressType
+                clean:  True
+                required:   False
+                map:    *cdp_index_to_physical_port
+
+            - peer_address_type:
+                map:
+                    - merge_defs:
+                        peer_address_type_lldp:   []
+                        peer_address_type_cdp:    []
+
+
+            - peer_address_lldp:
+                ref:    lldpRemChassisId
+                clean:  True
+                required:   False
+                map:
+                    - regexp:
+                        key: ^\d+\.(?P<key>\d+)\.\d+$
+                    - key_sub:
+                        ref:    lldpLocPortId
+            - peer_address_cdp:
+                ref:    cdpCacheAddress
+                clean:  True
+                map:
+                    -   *cdp_index_to_physical_port
+                    -   function:
+                            value:   hex_to_integers
+                required:   False
+                
+            - peer_address:
+                map:
+                    - merge_defs:
+                        peer_address_lldp:   []
+                        peer_address_cdp:    []
+                        
+            # - peer_capabilities_cdp:
+            #     ref:    cdpCacheCapabilities
+            #     map:
+            #         -   *cdp_index_to_physical_port
+            - peer_capabilities_lldp:
+                ref:    lldpRemSysCapEnabled
+                required: False
+                map:
+                    - *lldp_index_to_physical_port
+                    - function:
+                        value:  string_to_bits
+                
+        post:
+            map:
+                # organise the data so that we have full keys describing the data
+                - post_function:
+                    per_item:   post_normalise_layer1_peer

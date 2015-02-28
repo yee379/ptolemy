@@ -1,0 +1,47 @@
+#######################################################################
+# Agent Settings
+#######################################################################
+
+POOL: 'carbon.default'
+KEYS:
+    - '#.group.rfc2863.#'
+    - '#.spec.reachability.#'
+    - '#.spec.user_stats.group.neighbour.#'
+    - 'network.kpi.#'
+    - 'perfsonar.#'
+    - '#.stats.#'
+
+
+#######################################################################
+# Multicarbon Settings
+#######################################################################
+
+# CARBON_PICKLE: True
+CARBON_KEY_PREPEND: 'ptolemy.'
+CARBON_INSTANCES:
+    - 'net-graphite02.slac.stanford.edu:2004:a'
+    - 'net-graphite02.slac.stanford.edu:2104:b'
+    - 'net-graphite02.slac.stanford.edu:2204:c'
+    - 'net-graphite02.slac.stanford.edu:2304:d'
+    - 'net-graphite02.slac.stanford.edu:2404:e'
+    - 'net-graphite02.slac.stanford.edu:2504:f'
+    - 'net-graphite02.slac.stanford.edu:2604:g'
+    - 'net-graphite02.slac.stanford.edu:2704:h'
+    - 'net-graphite02.slac.stanford.edu:2804:i'
+    - 'net-graphite02.slac.stanford.edu:2904:j'
+    - 'net-graphite02.slac.stanford.edu:3004:k'
+    - 'net-graphite02.slac.stanford.edu:3104:l'
+    - 'net-graphite02.slac.stanford.edu:3204:m'
+    - 'net-graphite02.slac.stanford.edu:3304:n'
+    - 'net-graphite02.slac.stanford.edu:3404:o' 
+    - 'net-graphite02.slac.stanford.edu:3504:p'
+    - 'net-graphite02.slac.stanford.edu:3604:q' 
+    - 'net-graphite02.slac.stanford.edu:3704:r'
+    - 'net-graphite02.slac.stanford.edu:3804:s' 
+    - 'net-graphite02.slac.stanford.edu:3904:t'
+    - 'net-graphite02.slac.stanford.edu:4004:u'
+    - 'net-graphite02.slac.stanford.edu:4104:v'
+    - 'net-graphite02.slac.stanford.edu:4204:w'
+    - 'net-graphite02.slac.stanford.edu:4304:x'
+# required as carbon's hashing in the webapp relies on the carbonlink ports, so we add this offset value to each of the instance's port numbers to ensure that we bin each item into the cache that graphite expects it to be in
+CARBON_PORT_OFFSET:  4998

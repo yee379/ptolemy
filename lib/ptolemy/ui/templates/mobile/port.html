@@ -1,0 +1,42 @@
+{% extends "mobile/base.html" %}
+{% load str_tags %}
+
+{% block title %}Port Info{% endblock %}
+{% block content %}
+
+          <form action="#" data-theme="b">
+
+            <ul data-role="listview" data-inset="true">
+              <li data-role="list-divider">Port</li> 
+              <li><a href="/mobile/device/id/{{ port.device.id }}/ports/" data-ajax="false" rel="external">Device <p class="ui-li-aside">{{ port.device.name|dnsstrip }}</p></a></li>
+              <li>Port <p class="ui-li-aside">{{ port.physical_port }}</p></li>
+            </ul>
+
+            <ul data-role="listview" data-inset="true">
+              <li data-role="list-divider">Settings</li>
+              <li>Status <p class="ui-li-aside">{{ port.status }}</p></li>
+              <li>Alias <p class="ui-li-aside">{{ port.alias }}</p></li>
+              <li>VLAN <p class="ui-li-aside">{{ port.vlan }}</p></li>
+          
+              <li data-role="list-divider">Speed/Duplex</li> 
+              <li>Autoneg <p class="ui-li-aside">{% if port.autoneg %}Auto{% else %}Fixed{% endif %}</p></li>
+              <li>Current <p class="ui-li-aside">{{ port.speed }}/{{ port.duplex }}</p></li>
+            </ul>
+
+            <ul data-role="listview" data-inset="true">
+              <li data-role="list-divider">Port Peer</li> 
+              <li><a href="/mobile/host/">
+                <h3>{{ port.peer_name }}</h3>
+                <p>{{ port.peer_ip }}</p>
+                <p>{{ port.peer_param|formatmac }}</p>
+                <!-- <p class="ui-li-aside">{{ port.peer_last_seen }}</p>  -->
+              </a></li>
+            </ul>
+
+          </form>
+      
+          <fieldset>
+            <a href="/mobile/port/id/{{ port.id }}/edit/" data-role="button" rel="external" data-theme="e">Edit Port</a>
+          </fieldset>
+
+{% endblock %}

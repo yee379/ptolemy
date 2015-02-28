@@ -1,0 +1,281 @@
+hosts:
+  rtr-b720-bbrmms.slac.stanford.edu: null
+  rtr-bbrmms.slac.stanford.edu: null
+  rtr-bldgcore1.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+      port_stats: 148 +- 10
+  rtr-bldgcore2.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+      port_stats: 148 +- 10
+  rtr-block1.slac.stanford.edu: null
+  rtr-block2.slac.stanford.edu: null
+  rtr-border1.slac.stanford.edu: null
+  rtr-border2.slac.stanford.edu: null
+  rtr-core1.slac.stanford.edu: null
+  rtr-core2.slac.stanford.edu: null
+  rtr-core3old.slac.stanford.edu: null
+  rtr-core4old.slac.stanford.edu: null
+  rtr-devctlcore.slac.stanford.edu: null
+  rtr-external1.slac.stanford.edu: null
+  rtr-fac1.slac.stanford.edu: null
+  rtr-fac2.slac.stanford.edu: null
+  rtr-farm01.slac.stanford.edu: null
+  rtr-farm02.slac.stanford.edu: null
+  rtr-farm04.slac.stanford.edu:
+    schedule:
+      entity: 3600 +- 600
+      port_stats: 88 +- 4
+  rtr-farm08.slac.stanford.edu: null
+  rtr-farm09.slac.stanford.edu: null
+  rtr-farm10.slac.stanford.edu:
+    schedule:
+      entity: 3600 +- 600
+      port_stats: 88 +- 4
+  rtr-farm13.slac.stanford.edu: null
+  rtr-farm14.slac.stanford.edu: null
+  rtr-farm15.slac.stanford.edu: null
+  rtr-farm16.slac.stanford.edu: null
+  rtr-farm18.slac.stanford.edu: null
+  rtr-farm20.slac.stanford.edu: null
+  rtr-farm21.slac.stanford.edu: null
+  rtr-farmcore1.slac.stanford.edu: null
+  rtr-farmcore2.slac.stanford.edu: null
+  rtr-farmkly.slac.stanford.edu: null
+  rtr-farmltda.slac.stanford.edu: null
+  rtr-farmorange.slac.stanford.edu: null
+  rtr-farmsrcf01.slac.stanford.edu: null
+  !!python/unicode rtr-fwcore1.slac.stanford.edu: null
+  !!python/unicode rtr-fwcore2.slac.stanford.edu: null
+  !!python/unicode rtr-fwdmz-01.slac.stanford.edu: null
+  !!python/unicode rtr-fwdmz-02.slac.stanford.edu: null
+  rtr-fwepn2-01.slac.stanford.edu: null
+  rtr-fwepn2-02.slac.stanford.edu: null
+  rtr-fwepn3-01.slac.stanford.edu: null
+  rtr-fwepn3-02.slac.stanford.edu: null
+  rtr-fwepn4-01.slac.stanford.edu: null
+  rtr-fwepn4-02.slac.stanford.edu: null
+  rtr-fwerp-01.slac.stanford.edu: null
+  rtr-fwerp-02.slac.stanford.edu: null
+  rtr-fwpbx01.slac.stanford.edu: null
+  rtr-fwpbx02.slac.stanford.edu: null
+  rtr-fwpcdsn1.slac.stanford.edu: null
+  rtr-fwvpn1.slac.stanford.edu: null
+  rtr-fwvpn2.slac.stanford.edu: null
+  rtr-fwvpn3.slac.stanford.edu: null
+  rtr-fwvpn4.slac.stanford.edu: null
+  rtr-fwvpn5.slac.stanford.edu: null
+  rtr-hsrp-serv03-wcm-ifz.slac.stanford.edu: null
+  rtr-lbepn3-01.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbepn3-02.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbepn4-01.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lberp-01.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lberp-02.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbserv03-01.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbserv03-02.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbserv03-03.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-lbserv03-04.slac.stanford.edu:
+    schedule:
+      ha: 58 +- 4
+      user_stats: 296 +- 4
+  rtr-netmgmt.slac.stanford.edu: null
+  rtr-serv01-01.slac.stanford.edu:
+    schedule:
+      port_stats: 280 +- 40
+  rtr-serv01-02.slac.stanford.edu:
+    schedule:
+      port_stats: 280 +- 40
+  rtr-serv01.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  rtr-serv02.slac.stanford.edu: null
+  rtr-serv03.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  rtr-sitesec1.slac.stanford.edu: null
+  rtr-visitor1.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  rtr-visitor2.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  rtr-visitor3.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  rtr-visitor4.slac.stanford.edu:
+    schedule:
+      ip_sla: 58 +- 4
+  swh-bbox2r2.slac.stanford.edu: null
+  swh-bbox2r3.slac.stanford.edu: null
+  swh-bbox2r8.slac.stanford.edu: null
+  !!python/unicode swh-bro.slac.stanford.edu: null
+  swh-cgb1bd08.slac.stanford.edu: null
+  swh-cgb1bd10.slac.stanford.edu: null
+  swh-cgb1bd11.slac.stanford.edu: null
+  swh-cgb1bd13.slac.stanford.edu: null
+  swh-cgb1bd17.slac.stanford.edu: null
+  swh-cgb1bd19.slac.stanford.edu: null
+  swh-cgb1bd21.slac.stanford.edu: null
+  swh-cgb1bd22.slac.stanford.edu: null
+  swh-cgb1bi21.slac.stanford.edu: null
+  swh-cgb2ae29.slac.stanford.edu: null
+  swh-devctl1ac22.slac.stanford.edu: null
+  swh-devctl1af18.slac.stanford.edu: null
+  swh-devctl1ah25.slac.stanford.edu: null
+  swh-devctl1ar17.slac.stanford.edu: null
+  swh-devctl1ar20.slac.stanford.edu: null
+  swh-devctl1as22.slac.stanford.edu: null
+  swh-devctl1au05.slac.stanford.edu: null
+  swh-devctl1au20.slac.stanford.edu: null
+  swh-devctl1au26.slac.stanford.edu: null
+  swh-devctl1az22.slac.stanford.edu: null
+  swh-devctl1bi10.slac.stanford.edu: null
+  swh-devctl1bi11.slac.stanford.edu: null
+  swh-devctl1bi18.slac.stanford.edu: null
+  swh-devctl1bi19-01.slac.stanford.edu: null
+  swh-devctl1bi19-2.slac.stanford.edu: null
+  swh-devctl1bm12-1.slac.stanford.edu: null
+  swh-devctl1bm12-2.slac.stanford.edu: null
+  swh-devctl1bm18.slac.stanford.edu: null
+  swh-devctl1bm20-1.slac.stanford.edu: null
+  swh-devctl1bm20-2.slac.stanford.edu: null
+  swh-devctl1bm21-1.slac.stanford.edu: null
+  swh-devctl1bm21-2.slac.stanford.edu: null
+  swh-devctl1bm22-1.slac.stanford.edu: null
+  swh-devctl1bm22-2.slac.stanford.edu: null
+  swh-devctl2ae13.slac.stanford.edu: null
+  swh-devctl2ae14.slac.stanford.edu: null
+  swh-devctl2ae30.slac.stanford.edu: null
+  swh-devctl2af18-2.slac.stanford.edu: null
+  swh-devctl2af18.slac.stanford.edu: null
+  swh-devctl2ah07.slac.stanford.edu: null
+  swh-devctl2ah08.slac.stanford.edu: null
+  swh-devctl2ah09.slac.stanford.edu: null
+  swh-devctl2ah10.slac.stanford.edu: null
+  swh-devctl2ai26.slac.stanford.edu: null
+  swh-devctl2ai32.slac.stanford.edu: null
+  swh-devctl2al26-02.slac.stanford.edu: null
+  swh-devctl2al26.slac.stanford.edu: null
+  swh-devctl2al29.slac.stanford.edu: null
+  swh-devctl2am06.slac.stanford.edu: null
+  swh-devctl2am09.slac.stanford.edu: null
+  swh-devctl2am13.slac.stanford.edu: null
+  swh-devctl2ap25.slac.stanford.edu: null
+  swh-devctl2ap29.slac.stanford.edu: null
+  swh-devctl2aq11.slac.stanford.edu: null
+  swh-devctl2at08-2.slac.stanford.edu: null
+  swh-devctl2at09.slac.stanford.edu: null
+  swh-devctl2at32.slac.stanford.edu: null
+  swh-devctl2au27.slac.stanford.edu: null
+  swh-devctl2bd02.slac.stanford.edu: null
+  swh-devctl2bd04.slac.stanford.edu: null
+  swh-devctl2bd06.slac.stanford.edu: null
+  swh-devctl2bd08.slac.stanford.edu: null
+  swh-devctl2bd10.slac.stanford.edu: null
+  swh-devctl2be24.slac.stanford.edu: null
+  swh-devctl2be26-2.slac.stanford.edu: null
+  swh-devctl2be26.slac.stanford.edu: null
+  swh-devctl2bf40.slac.stanford.edu: null
+  swh-devctl2bj36.slac.stanford.edu: null
+  swh-devctl2bj37.slac.stanford.edu: null
+  swh-devctl2bj39.slac.stanford.edu: null
+  swh-devctl2bl25.slac.stanford.edu: null
+  swh-devctl2bl27.slac.stanford.edu: null
+  swh-devctl2bs29.slac.stanford.edu: null
+  swh-devctl2ca31-2.slac.stanford.edu: null
+  swh-devctl2ca31.slac.stanford.edu: null
+  swh-devctlcore-r116.slac.stanford.edu: null
+  swh-devctlcore-r127.slac.stanford.edu: null
+  swh-devctlepn3.slac.stanford.edu: null
+  swh-devctlepn4.slac.stanford.edu: null
+  swh-devctlir201.slac.stanford.edu: null
+  swh-devctlkavli01.slac.stanford.edu: null
+  swh-devctlpcdsn01.slac.stanford.edu: null
+  swh-devctlpcdsn02.slac.stanford.edu: null
+  swh-devctlpulse01.slac.stanford.edu: null
+  swh-devctlsl8500a.slac.stanford.edu: null
+  swh-devctlsl8500b.slac.stanford.edu: null
+  swh-devctlsrcfcore.slac.stanford.edu: null
+  swh-epn3.slac.stanford.edu: null
+  swh-epn4.slac.stanford.edu: null
+  swh-erp.slac.stanford.edu:
+    schedule:
+      port_stats: 280 +- 40
+  swh-fac.slac.stanford.edu: null
+  swh-farm01a.slac.stanford.edu: null
+  swh-farm04a.slac.stanford.edu: null
+  swh-farm21a.slac.stanford.edu: null
+  swh-farm22d.slac.stanford.edu: null
+  swh-farmorange1.slac.stanford.edu: null
+  swh-farmorange2.slac.stanford.edu: null
+  swh-farmorange3.slac.stanford.edu: null
+  swh-farmpulse01.slac.stanford.edu: null
+  swh-farmpulse02.slac.stanford.edu: null
+  swh-farmpulse03.slac.stanford.edu: null
+  swh-farmpulse04.slac.stanford.edu: null
+  swh-ibfarm01.slac.stanford.edu: null
+  swh-ibfarm02.slac.stanford.edu: null
+  swh-ibfarm03.slac.stanford.edu: null
+  swh-ibfarm04.slac.stanford.edu: null
+  swh-ibfarm05.slac.stanford.edu: null
+  swh-ibfarm06.slac.stanford.edu: null
+  swh-ibfarm07.slac.stanford.edu: null
+  swh-ibfarm08.slac.stanford.edu: null
+  swh-ibfarmcore1.slac.stanford.edu: null
+  swh-ibfarmcore2.slac.stanford.edu: null
+  swh-ibfarmcore3.slac.stanford.edu: null
+  swh-ibfarmcore4.slac.stanford.edu: null
+  swh-ibsimes01.slac.stanford.edu: null
+  swh-ibsimes02.slac.stanford.edu: null
+  swh-ibsimes03.slac.stanford.edu: null
+  swh-ibsimes04.slac.stanford.edu: null
+  swh-ibsimescore1.slac.stanford.edu: null
+  swh-netstaging.slac.stanford.edu: null
+  swh-pbx-elan01.slac.stanford.edu: null
+  swh-pbx-elan02.slac.stanford.edu: null
+  swh-pbx-tlan01.slac.stanford.edu: null
+  swh-pbx-tlan02.slac.stanford.edu: null
+  swh-serv04.slac.stanford.edu: null
+  swh-serv05.slac.stanford.edu: null
+  swh-serv05a.slac.stanford.edu: null
+  swh-serv05b.slac.stanford.edu: null
+  swh-serv05c.slac.stanford.edu: null
+  !!python/unicode swh-ssrlctrl-core2.slac.stanford.edu: null
+  swh-visitor1.slac.stanford.edu: null
+  swh-visitor2.slac.stanford.edu: null
+  swh-winmgmt2bf39.slac.stanford.edu: null
+  swh-winmgmt2bj36.slac.stanford.edu: null
+  swh-winmgmt2bs28.slac.stanford.edu: null
+  swh-winmgmt2bs32.slac.stanford.edu: null
+  swh-winmgmt2bw31.slac.stanford.edu: null
+  swh-winmgmt2bw33.slac.stanford.edu: null
+  swh-wlc1.slac.stanford.edu: null
+  swh-wlc2.slac.stanford.edu: null
+settings:
+  schedule: default
+  snmp: default

@@ -1,0 +1,17 @@
+---
+specification: power
+description: power status 
+
+defaults:
+    agent: NetConfig
+
+definition:
+
+    arps:
+        
+        group_by_key: True
+        key_name: relative_position
+        defs:
+
+            - slot:
+                ref:    system.fru.power.on_relative_position

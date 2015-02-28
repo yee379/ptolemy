@@ -1,0 +1,39 @@
+---
+specification:  performance
+description:    Dell Temperature Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - FASTPATH-BOXSERVICES-PRIVATE-MIB
+
+definition:
+
+    stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            - state:
+                ref:    boxServicesTempSensorState
+                map:
+                    - value_sub:
+                        dict:
+                            normal: 1
+                            warning:    2
+                            critical:   0
+                            shutdown:   2
+                            notpresent: 2
+                            notoperational: 0
+                            other: 2
+                required:   False
+            # - description:
+            #     ref:    boxServicesTempSensorIndex
+            - value:
+                ref:    boxServicesTempSensorTemperature
+            - threshold:
+                ref:    boxServicesNormalTempRangeMax
+                required:   False
+            

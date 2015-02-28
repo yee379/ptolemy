@@ -1,0 +1,12 @@
+{% extends "mobile/base.html" %}
+{% load str_tags %}
+
+{% block title %}{{ meta.item_type|capfirst }} in {{ meta.value|capfirst }}{% endblock %}
+{% block content %}
+        <ul data-role="listview" data-filter="true">
+          <!-- <li data-role="list-divider">A</li> -->
+          {% for d in devices %}
+          <li><a href="/mobile/device/id/{{ d.id }}/ports/" data-ajax="false" rel="external">{{ d.name|dnsstrip }} </a></li>
+          {% endfor %}
+        </ul>
+{% endblock %}

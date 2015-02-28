@@ -1,0 +1,17 @@
+POOL:   'telephone'
+KEYS:
+    - '#.layer1_peer.#'
+
+CACHE_POOL:
+    - net-amqp01.slac.stanford.edu:6379
+
+ALERT:
+    EMAIL:
+        SERVER: smtp.slac.stanford.edu
+        FROM_NAME: tcmaint
+        FROM_EMAIL:   tcmaint@slac.stanford.edu
+        SUBJECT_PREPEND:    '[TC] '
+        TO: 
+            - ytl@slac.stanford.edu
+            - cbrochon@slac.stanford.edu
+            - dcornely@slac.stanford.edu

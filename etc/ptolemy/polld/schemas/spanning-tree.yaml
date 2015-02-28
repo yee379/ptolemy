@@ -1,0 +1,16 @@
+---
+spanning-tree:
+    # describes the layer2 spanning trees on the device
+    vlans:
+        required:
+            - vtp_domain_name
+            - protocol
+            
+    root:
+        # for each index'd vlan number, enumerate the ports participating in the spanning tree
+        required:
+            - vlan_status
+            - designated_ports
+            - alternate_ports
+            - learning_ports
+--- 

@@ -1,0 +1,85 @@
+---
+specification:  performance
+description:    Cisco Router Switch Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENVMON-MIB
+                - CISCO-ENTITY-FRU-CONTROL-MIB
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            - admin_status:
+                ref:    cefcFRUPowerAdminStatus
+                map:
+                    - value_sub:
+                        dict:
+                            'on':  1
+                            'off':    0
+                            powerCycle:    2
+                            inlineAuto: 1
+                            inlineOn: 1
+
+            - status:
+                ref:    cefcFRUPowerOperStatus
+                map:
+                    - value_sub:
+                        dict:
+                            'on': 1
+                            offAdmin: 0
+                            offDenied: 0
+                            offEnvPower: 0
+                            offEnvTemp: 0
+                            offEnvFan: 0
+                            offEnvOther: 0
+                            failed: 0
+                            offCooling: 0
+                            offConnectorRating: 0
+                            onButFanFail: 2
+                            onButInlinePowerFail: 2
+            - type:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            powerSupply: power_supply
+                            other: null
+ 
+        post:
+        
+            map:
+                - post_remove:
+                    type:    null
+                - post_clean:
+                    type:   null
+
+    # voltage:
+    #     defs:
+    #         - voltage_input:
+    #             ref:    cefcPowerUnits
+    #         - voltage_avail:
+    #             ref:    currentTotalAvailable
+    # current:
+    #     defs:
+    #         - current_input:
+    #             ref:    cefcTotalAvailableCurrent
+    #         - current_draw:
+    #             ref:    cefcTotalDrawnCurrent
+    #             
+    # system-power:
+    #     defs:
+    #         - redundancy_admin:
+    #             ref:    cefcPowerRedundancyMode
+    #         - redundancy_op:
+    #             ref:    cefcPowerRedundancyMode
+    # 
+    # fan:
+    #     defs:
+    #         - fan_status:
+    #             ref:    cefcFanTrayOperStatus    

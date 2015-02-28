@@ -1,0 +1,46 @@
+---
+specification:  performance
+description:    Cisco Top Spin Power Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - TOPSPIN
+
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        
+        defs:
+            # - power_description:
+            #     ref:    tsDevPowerSupplyProductName
+            - power_admin:
+                required:   False
+            - power_op:
+                ref:    tsDevPowerSupplyOperStatus
+                map:
+                    - value_sub:
+                        dict:
+                            unknown: 2
+                            up: 1
+                            down: 0
+                            failure: 2
+            # - power_current:
+            #     required:   False
+            # # - power_source:
+            # #     ref:    tsDevPowerSupplyType
+            #     map: 
+            #         - value_sub:
+            #             dict:
+            #                 unknown:  0
+            #                 ac:   1
+            #                 dc:   2
+
+    # voltage:
+    #     defs:
+    #         - voltage_value:
+    #             ref:    voltageValue

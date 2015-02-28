@@ -1,0 +1,10 @@
+#######################################################################
+# reading of perfsonar metrics
+#######################################################################
+
+PSNR_HOST: 'psnr-viz01.slac.stanford.edu'
+PSNR_PORT: 5672
+PSNR_VHOST: '/perfsonar'
+PSNR_USER: 'psnr'
+PSNR_PASSWORD: 'psnr'
+

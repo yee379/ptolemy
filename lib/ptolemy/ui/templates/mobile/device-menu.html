@@ -1,0 +1,13 @@
+{% extends "mobile/base.html" %}
+
+{% block title %}Network Devices Menu{% endblock %}
+{% block content %}
+        <form>
+          <ul data-role="listview" data-filter="true" data-inset="true">
+            <!-- <li data-role="list-divider">A</li> -->
+            {% for i in items %}
+            <li><a href="/mobile/device/search/{{ i }}/">{{ i }}</a></li>
+            {% endfor %}
+          </ul>
+        </form>
+{% endblock %}

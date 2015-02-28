@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy watcher scannerd
+#
+# chkconfig: 2345 95 02
+# description:  fping subnets and analyse data
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="watcher"
+COMMAND="scannerd"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

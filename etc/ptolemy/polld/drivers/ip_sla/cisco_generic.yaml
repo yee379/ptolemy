@@ -1,0 +1,144 @@
+---
+specification:  ip slac
+description:    Generic Cisco IP SLAC Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-RTTMON-MIB
+                - CISCO-RTTMON-RTP-MIB
+
+mappings:
+    
+    cdp_index_to_physical_port: &cdp_index_to_physical_port
+        - regexp:
+            key: ^(?P<key>\d+)\.\d+$
+        - key_sub:
+            ref:    ifName
+        - function:
+            key:   truncate_physical_port_name
+
+definition:
+
+
+    meta:
+
+        group_by_key:   True
+        key_name:       id
+                
+        defs:
+
+            - test_type:
+                ref:    rttMonCtrlAdminRttType
+
+            # - tag:
+            #     ref:    rttMonCtrlAdminTag
+            #     required: false
+            
+            - desc:
+                ref:    rttMonLatestRttOperSenseDescription
+                required:   false
+                
+            
+
+            - source_address:
+                ref:    rttMonEchoAdminSourceAddress
+                map:
+                    - function:
+                        value:  hex_to_integers
+                        
+            - target_address_ip:
+                ref:    rttMonEchoAdminTargetAddress
+                required: False
+                clean:  true
+                map:
+                    - function:
+                        value:  hex_to_integers
+            - target_address_dns:
+                ref:    rttMonEchoAdminNameServer
+                required: False
+                clean:  true
+                map:
+                    - function:
+                        value:  hex_to_integers
+            - target_address_http:
+                ref:    rttMonEchoAdminURL
+                clean:  true
+                required: False
+
+            - target_address:
+                map:
+                    - merge_defs:
+                        target_address_ip:      []
+                        target_address_dns:     []
+                        target_address_http:    []
+
+
+    stats:
+        
+        group_by_key:   True
+        key_name:   id
+        
+        defs:
+
+            - value_echo:
+                ref:    rttMonLatestRttOperCompletionTime
+                clean:  true
+            - value_http:
+                ref:    rttMonLatestHTTPOperRTT
+                clean:  true
+            - value_rtp:
+                ref:    rttMonLatestRtpOperRTT
+                clean:  true
+                required: False
+            - value_jitter_mos:
+                ref:    rttMonLatestJitterOperMOS
+                clean:  true
+                required: False
+
+            - value:
+                map:
+                    - merge_defs:
+                        value_echo:
+                            - 0
+                        value_http:
+                            - 0
+                        value_rtp:
+                            - 0
+                        value_jitter_mos:
+                            - 0
+
+            - state_echo:
+                ref:    rttMonLatestRttOperSense
+                clean:  true
+            - state_http:
+                ref:    rttMonLatestHTTPOperSense
+                clean:  true
+            - state_rtp:
+                ref:    rttMonLatestRtpOperSense
+                clean:  true
+                required: False
+            - state_jitter:
+                ref:    rttMonLatestJitterOperSense
+                clean:  true
+                required: False
+
+            - state:
+                map:
+                    - merge_defs:
+                        state_echo:
+                            - other
+                        state_http:
+                            - other
+                        state_rtp:
+                            - other
+                        state_jitter:
+                            - other
+                    - value_sub:
+                        dict:
+                            ok: 1
+                            error: 0
+                            other: 2
+                        

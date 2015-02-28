@@ -1,0 +1,3 @@
+}{% for d in devices %}
+{{ d.id }},{{ d.name }},{{ d.software_version }},{{ d.model }}
+{% endfor %}

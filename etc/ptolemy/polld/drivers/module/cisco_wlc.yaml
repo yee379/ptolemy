@@ -1,0 +1,96 @@
+specification: stack
+description: provide status of switch stack items
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-WIRELESS-MIB
+                
+definition:
+    
+
+    ap_name:
+        clean: True
+        defs:
+            - device:
+                ref:    bsnAPName
+                map:
+                    - function:
+                        value:  fqdn
+    
+    
+    ap_stats:
+        group_by_key: True
+        remove_key: True
+        additional_key_names:
+            - device
+        defs:
+            # - device:
+            #     ref:    bsnAPName
+            - admin_state:
+                ref:    bsnAPAdminStatus
+                map:
+                    - value_sub:
+                        dict:
+                            enable: 1
+                            disable: 0
+            - oper_state:
+                ref:    bsnAPOperationStatus
+                map:
+                    - value_sub:
+                        dict:
+                            associated: 1
+                            disassociating: 2
+                            downloading: 0
+        post:
+            map:
+                - post_function:
+                    dataset: post_merge_wireless_apname_on_radio
+    
+    
+    
+    if_stats:
+
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            #     clean: True
+            - admin_status:
+                ref:    bsnAPIfAdminStatus
+            - status:
+                ref:    bsnAPIfOperStatus
+                required:   True
+            - model:
+                ref:    entPhysicalModelName
+
+            - type:
+                ref:    entPhysicalClass
+                map:
+                    - value_sub:
+                        dict:
+                            powerSupply: power_supply
+                            chassis: chassis
+                            port: transceiver
+                            container: container
+                            fan: fan
+                            sensor: sensor
+                            module: module
+                            stack: stack
+                            other: unknown
+
+            - parent_index:
+                ref:    entPhysicalContainedIn
+            - relative_position:
+                ref: entPhysicalParentRelPos
+            - description:
+                ref:    entPhysicalDescr
+            
+        post:
+            
+            map:
+                # remove things we don't really care about
+                - post_function:
+                    dataset:  post_normalise_entities
+

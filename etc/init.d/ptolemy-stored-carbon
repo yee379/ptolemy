@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy stored carbon
+#
+# chkconfig: 2345 95 02
+# description:  Run carbon storage backend for ptolemy
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="stored"
+COMMAND="carbon"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

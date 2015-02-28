@@ -1,0 +1,5998 @@
+TOPSPIN DEFINITIONS ::= BEGIN
+--
+-- Title:       Topspin Communications Enterprise MIB
+-- Date:        September 19, 2001 
+-- By:          Edwin Tsang
+-- Revision:
+-- 	v1  : 09/19/01 - Initial draft. 
+--	v2  : 11/07/01 - Added tsIp, tsError, tsTrap groups.
+--      v3  : 11/15/01 - Added tsIb group.  Modified tsSysUserTable
+--		 	 and tsDevPortTable to handle IB interfaces.
+--	v4  : 11/16/01 - Added "gateway" to tsDevPortType.
+--			 Added tsFcPortStat group.
+--	v5  : 11/19/01 - Added "topSpinTCPIP" as { tsMgmt 10 } used
+--			 at topspin-TCPIP.mib
+--      v6  : 12/03/01 - Added rcCardInsert and rcCardRemove traps.
+--	v7  : 01/22/02 - Added tsDevPortSrpEnable and tsIbSrpConnTable.
+--	v8  : 01/24/02 - Added topspinOSPF reference place-holder.
+--      v9  : 01/28/02 - Updated tsErrorCode values.
+--      v10 : 02/27/02 - Added tsDevCardGuid.
+--      v11 : 03/18/02 - Added tsIbNodeGuidToSlotMapTable.
+--      v12 : 03/19/02 - Modified definition of tsIbSdpTcpConnTable.
+--      v13 : 03/26/02 - Added tsIbSdpGlobal.
+--      v14 : 04/03/02 - Added support for FC ports.
+--                       Removed obsolete variables for tsDevPortTable.
+--      v15 : 04/05/02 - Added tsIbIfIndexToDevPortMapTable.
+--      v16 : 04/09/02 - Redefined tsSysGlobal group.
+--      v17 : 04/12/02 - Changed default value for tsIbSdpGlobalEnable.
+--                       Redefined tsFcPortStatTable.
+--      v18 : 04/18/02 - Updated tsErrorCode values.  Changed enumeration
+--			 for tsSysUserAccessLevel.
+--      v19 : 04/23/02 - Added tsDevMgmtEnetMacAddr, tsIbSdpGlobalIpoIbMtuSize.
+--      v20 : 04/26/02 - Added tsDevInternalFileTable, tsDevExternalFileTable.
+--      v21 : 05/21/02 - Added tsDevFileOperation.
+--      v22 : 06/03/02 - Added tsVlanTable.
+--      v23 : 06/04/02 - Changes to support IGR chassis.
+--		         Added "SlotId" as index to tsDevSensorTable. 
+--      v24 : 06/10/02 - Added tsDevInternalFileFileType, tsDevExternalFileFileType.
+--      v25 : 06/17/02 - Added tsVlanActivePortMembers.
+--      v26 : 07/12/02 - Added additional error-codes.
+--	v27 : 07/17/02 - Added tsDevPortCapability and tsVlanUntaggedPorts. 
+--      v28 : 07/28/02 - Added tsSysUserPermissionLevel and tsSysUserCommunityString.
+--      v29 : 07/31/02 - Added controllerIb12port4x.
+--      v30 : 09/05/02 - Changed fc6port2G to fc2port2G.
+--      v31 : 09/11/02 - Added tsDevFileOperationUsername, tsDevFileOperationPassword.
+--                       Added tsSysNtp.
+--      v32 : 09/23/02 - Added tsIpRedundancyTable.
+--      v33 : 09/25/02 - Added tsDevPortWwnn and tsDevPortWwpn.
+--      v34 : 10/26/02 - Added tsDevGlobalChassisId.
+--      v35 : 10/29/02 - Added tsDevBackplane.  Redefined SEEPROM fields.
+--      v36 : 12/12/02 - Added tsDevFileOperationPercentageCompleted.
+--      v37 : 12/21/02 - Added tsSC360 and tsSC90 OIDs. 
+--                       Added tsDevCardExtTable, tsDevMgmtIbPort,
+-- 			 tsDevMgmtIbPortTable, tsDevMgmtSerialPortStopBits,
+--                       tsDevMgmtSerialPortParity.
+--      v38 : 12/30/02 - Added tsDevCardExtUsedMemory and tsDevCardExtUsedDiskSpace.
+--      v39 : 01/13/03 - Added new enumerations to tsDevCardOperCode.
+--      v40 : 02/05/03 - Added new saveConfigAll and standby enumerated values.
+--      v41 : 02/20/03 - Added tsDevCardBootStage and tsDevCardBootStatus.
+--                       Added recoveryImage enumerated value.
+--      v42 : 02/21/03 - Added tsSysDns group.
+--      v43 : 02/25/03 - Added tsDevFanTemperature and tsDevFanSpeed.
+--      v44 : 03/31/03 - Added tsDevSensorSlotId to tsTemperature trap. 
+--	v45 : 04/07/03 - Added topSpinBridge MIB and removed tsBridge group. 
+--      v46 : 04/08/03 - Added tsSysGlobalEnableFtpServer and 
+--			 tsSysGlobalEnableTelnetServer.
+--      v47 : 05/20/03 - Added tsSysGlobalRemoteSyslogServer
+--      v48 : 05/21/03 - Added tsDevCardExtLastImageSource
+--      v49 : 06/17/03 - Added tsDevFileOperationErrorCode
+--      v50 : 07/15/03 - Added additional counters to tsFcPortStatTable.
+--      v51 : 07/30/03 - Added tftpCopy(7) to tsDevFileOperationAction.
+--      v52 : 08/06/03 - Added tsDevMgmtIbPortAddressOption.
+--                       Added tsSecRadiusServerTable.
+--      v53 : 08/18/03 - Added tsSysTrapRecvReceiveEvents.
+--                       Added tsEventGroup and tsEvent trap.
+--      v54 : 08/19/03 - Added 'rebootAll' to tsSysGlobalAction.
+--      v55 : 09/17/03 - Added new error codes.
+--	v56 : 09/22/03 - Added TS270 and TS120 support.
+--      v57 : 10/13/03 - Added tsSysGlobalEnableAutoInstall.
+--      v58 : 10/21/03 - Changed ib3port4x14port1x to ib14port1x4port4x.
+--      v59 : 11/15/03 - Added tsSysWeb group.
+--      v60 : 12/30/03 - Added tsDevBackplaneChassisGuid.
+--      v61 : 01/30/04 - Added enumerations to tsDevCardAdminType.
+--      v62 : 02/04/04 - Added tsDevFileOperationAction(install) enumeration.
+--      v63 : 02/19/04 - Added tsDevSensorOperCode.
+--      v64 : 02/25/04 - Added tsTCAFC4.
+--      v65 : 03/18/04 - Added tsEventSubtype and updated tsEventType. 
+--                       Added new field to tsEvent Notification Trap.
+--      v66 : 03/20/04 - Added tsSysWebEnablePolling.
+--      v67 : 03/30/04 - Added tsDevSensorAlarmTemperature and
+-- 			 tsDevSensorShutdownTemperature.
+--                       Added tsDevMgmtEnetPortAddressOption.
+--      v68 : 04/05/04 - Added tsDevGlobalPrimaryMgmtIoSlot. 
+--      v69 : 04/20/04 - Increased SlotIndex from 16 to 17 for TS270 chassis.
+--      v70 : 05/01/04 - Added topSpinIBPM.
+--      v71 : 05/04/04 - Added enumeration to tsEventCategory and tsEventGroup.
+--      v72 : 05/10/04 - Added tsSysWebHttpSecureServerPort and
+--			 tsSysWebEnableHttpSecure.
+--      v73 : 05/18/04 - Added tsSysWebHttpSecureCertCommName.
+--      v74 : 06/15/04 - Added tsDevPowerSupplyAdminStatus.
+--      v75 : 06/17/04 - Added tsDevFanPostStatus and tsDevFanErrorCode.
+--			 Added tsDevPowerSupplyPostStatus and tsDevPowerSupplyPostStatus. 
+-- 			 Added tsDevCardPostStatus and tsDevCardErrorCode. 
+--      v76 : 06/17/04 - Added tsDevPortPhyState.
+--      v77 : 07/01/04 - Added tsDevGlobalSystemLedState.
+--      v78 : 07/09/04 - Added tsSensor trap.
+--                       Obsolete tsTemperature trap.
+--      v79 : 07/15/04 - Added tsSysUserCliNumAccessViolation, tsSysUserCliLastViolation,
+--                       tsSysUserSnmpNumAccessViolation, tsSysUserSnmpLastViolation,
+--                       tsSysUserHttpNumAccessViolation, tsSysUserHttpLastViolation.
+--   	v80 : 08/05/04 - Added tsDevGlobalRackLocatorUid. 
+--      v81 : 08/09/04 - Added tsIbSmLidToDevPortMapTable.
+--	v82 : 08/10/04 - Added tsDevGlobalExternalChassisType.
+--    	v83 : 09/23/04 - Added tsDevFanPostErrorCodes, tsDevFanFruError.
+--		  	 Added tsDevPowerSupplyPostErrorCodes, tsDevPowerSupplyFruError.
+--			 Added tsDevCardPostErrorCodes, tsDevCardFruError.
+--			 Obsolete tsDevFanErrorCode, tsDevPowerSupplyErrorCode, and
+--			 tsDevCardErrorCode.
+--	v84 : 10/19/04 - Added tsDevMgmtIbPortMtu.
+--			 Added tsSysGlobalSystemSyncState. 
+--      v85 : 01/03/05 - Added tsDevPortExtOcmXX variables to support optical LIM card.
+--      v86 : 01/04/05 - Added ib24port4x (for BladeCenter2).
+--	v87 : 02/04/05 - Added tsSysGlobalSystemOperMode.
+--      v88 : 02/24/05 - Added tsDevCardAction::deleteInactiveImages.
+--      v89 : 06/02/05 - Added tsDevCardAction::scpCopy.
+--      v90 : 07/07/05 - Added tsDevPortFcPrincipleSwitchWwnn.
+--			 Added enumerations for tsDevPortAdminConnectionType
+--			 and tsDevPortOperConnectionType. 
+--	v91 : 07/25/05 - Added tsDevPortExtFcTable (for FCGW E-Port feature).
+--	v92 : 08/02/05 - Added tsDevPortPwrConnDongleType.
+--                       Added ib12port4xTXP card type (for TS270).
+--	v93 : 08/18/05 - Added controllerIb10port4x for DaVinci system.
+--      v94 : 08/25/05 - Added tsDevPortExtOcmTable.
+--      v95 : 09/26/05 - Added sfs7000 and sfs7008.
+--      v96 : 10/07/05 - Added tsSysGlobalEnableIbCounterReset. 
+--      v97 : 11/01/05 - Added tsPowerSupplyUp,tsFanUp traps.
+--	v98 : 11/04/05 - Added tsDevPortExtFcPortWwnn variable.		
+--	v99 : 2/27/06  - Added tsSecTacacsServerTable and modified all the variable
+--                       related to Tacacs.
+--     v100 : 03/09/06 - Added support for secondary syslog server.
+--     v101 : 03/23/06 - Adding tsDevCardProductVID.
+--     v102 : 03/31/06 - Added SNMP support for tsDevFanProductVID and tsDevPowerSupplyProductVID, 
+--                       tsDevCardExtUpTime, tsDevPortPwrConnDongleState.
+--     v103 : 04/05/06 - Added tsDevBackplaneProductVID.
+--     v104 : 06/02/06 - Added SFS7000D 
+--     v105 : 06/07/06 - Added tacacs(7) to tsSecAuthenticationMethod. 
+--     v106 : 06/09/06 - Fixed the default port for Tacacs.
+--     v107 : 07/07/06 - Added tsDevPortAdminLinkWidth, tsDevPortOperLinkWidth,
+--                       tsDevPortAdminLaneSpeed, tsDevPortOperLaneSpeed,
+--                       tsDevPortClearCounter
+--     v108 : 08/02/06 - Added controllerIb24port4xDDR(DDR cardType), ib4xTXPD(DDR portType),  
+--     v109 : 08/07/06 - Added SFS3012
+--     v110 : 08/16/06 - Added different Speeds for DDR and QDR support to tsDevPortAdminSpeed,
+--                       tsDevPortOperSpeed 
+--     v111 : 08/25/06 - Changed the range for tsDevFileOperationSource and tsDevFileOperationDestination 
+--                       from 128 to 256.
+--     v112 : 08/29/06 - Added tsDevMgmtIbPortPKey
+
+IMPORTS
+	MODULE-IDENTITY				FROM SNMPv2-SMI
+--	TEXTUAL-CONVENTION                  	FROM SNMPv2-TC
+	enterprises,  IpAddress, TimeTicks	FROM RFC1155-SMI
+	OBJECT-TYPE 				FROM RFC-1212
+	DisplayString, PhysAddress 		FROM RFC1213-MIB
+	RowStatus, TruthValue           	FROM SNMPv2-TC
+	Gauge32, NOTIFICATION-TYPE		FROM SNMPv2-SMI
+	Integer32, Counter32, Counter64		FROM SNMPv2-SMI;
+
+topSpin MODULE-IDENTITY
+	LAST-UPDATED    "200501040000Z"  -- 04 Jan 2005
+       	ORGANIZATION 	"Topspin Communications"
+       	CONTACT-INFO 	"
+				 	Edwin Tsang
+                	 Postal: 	515 Ellis Street 
+					Mountain View, CA 94043
+
+                   	 Tel: 		650-316-3309
+                   	 Fax: 		650-316-3269
+                	 E-mail:	edwin@topspin.com 
+			"
+       	DESCRIPTION 	"Enterprise MIB for the Topspin Cluster Switch Product Family" 
+       	::= { enterprises 6203 }
+
+-- 
+-- Local defines to avoid having to pull-in other RFC's.
+--
+BridgeId	::= OCTET STRING (SIZE (8))
+Timeout		::= Integer32
+EnableValue     ::= INTEGER { enable(1), disable(2) }
+
+--
+-- These variable types are used through out the Topspin enterprise
+-- MIB to denote the standard ifIndex in mib-2. 
+--
+SlotIndex	::= Integer32 (1..17)
+InterfaceIndex	::= Integer32
+
+--
+-- The string is 140 octets long, for a total of 1120 bits. Each bit
+-- corresponds to a port, as represented by its ifIndex value . When a
+-- bit has the value one(1), the corresponding port is a member of the
+-- set. When a bit has the value zero(0), the corresponding port is not
+-- a member of the set. The encoding is such that the most significant
+-- bit of octet #1 corresponds to ifIndex 0, while the least significant
+-- bit of octet #88 corresponds to ifIndex 703."
+--
+PortSet 	::= OCTET STRING (SIZE (140))
+IdList 		::= OCTET STRING
+
+
+--
+-- These variable types are used through out the Topspin enterprise
+-- MIB to denote the Infiniband types. 
+--
+IbGUID		::= OCTET STRING (SIZE (8))
+IbGID		::= OCTET STRING (SIZE (16))
+IbLID		::= OCTET STRING (SIZE (2))
+
+
+--
+-- Additions to resolve some SNMP V2 dependencies so we don't
+-- have to pull-in a lot of mib modules.
+--                  
+internet  	OBJECT IDENTIFIER ::= { iso org(3) dod(6) 1 }
+snmpV2 		OBJECT IDENTIFIER ::= { internet 6 }
+snmpModules 	OBJECT IDENTIFIER ::= { snmpV2 3 }
+snmpMIB 	OBJECT IDENTIFIER ::= { snmpModules 1 }
+snmpMIBObjects 	OBJECT IDENTIFIER ::= { snmpMIB 1 }
+snmpTraps 	OBJECT IDENTIFIER ::= { snmpMIBObjects 5 }
+
+
+--
+-- Enterprise specific MIB groups
+--
+tsMgmt                  OBJECT IDENTIFIER ::= { topSpin 1 }
+tsSC360                	OBJECT IDENTIFIER ::= { topSpin 3 }     -- TS360
+tsSC90                	OBJECT IDENTIFIER ::= { topSpin 4 }	-- TS90
+tsSC120                	OBJECT IDENTIFIER ::= { topSpin 5 }	-- TS120
+tsSC270                	OBJECT IDENTIFIER ::= { topSpin 6 }	-- TS270
+tsTCAEN                	OBJECT IDENTIFIER ::= { topSpin 10 }	-- EN TCA (4-port)
+tsTCAFC                	OBJECT IDENTIFIER ::= { topSpin 11 }	-- FC TCA (2-port)
+tsTCAEN6           	OBJECT IDENTIFIER ::= { topSpin 12 }	-- EN TCA (6-port)
+tsTCAFC4               	OBJECT IDENTIFIER ::= { topSpin 13 }	-- FC TCA (4-port)
+tsBC 	          	OBJECT IDENTIFIER ::= { topSpin 14 }	-- BladeCenter 
+tsBC2 	          	OBJECT IDENTIFIER ::= { topSpin 15 }	-- BladeCenter2 
+tsDaVinci          	OBJECT IDENTIFIER ::= { topSpin 16 }	-- DaVinci 
+sfs7000          	OBJECT IDENTIFIER ::= { topSpin 17 }	-- Cisco-120  
+sfs7008          	OBJECT IDENTIFIER ::= { topSpin 18 }	-- Cisco-270  
+sfs7000D          	OBJECT IDENTIFIER ::= { topSpin 19 }	-- Cisco-120D  
+sfs3012          	OBJECT IDENTIFIER ::= { topSpin 20 }	-- Cisco-3012  
+
+
+tsSys			OBJECT IDENTIFIER ::= { tsMgmt 1 }	-- System
+tsDev			OBJECT IDENTIFIER ::= { tsMgmt 2 }	-- Device
+tsBoot			OBJECT IDENTIFIER ::= { tsMgmt 3 }	-- Boot
+tsIb			OBJECT IDENTIFIER ::= { tsMgmt 4 }	-- Infiniband 
+tsFc		 	OBJECT IDENTIFIER ::= { tsMgmt 5 }	-- Fibre Channel 
+tsIp			OBJECT IDENTIFIER ::= { tsMgmt 7 }	-- IP 
+tsSec			OBJECT IDENTIFIER ::= { tsMgmt 8 }	-- Security
+-- topSpinDiag		OBJECT IDENTIFIER ::= { tsMgmt 9 }	Diagnostic
+-- topSpinTCPIP		OBJECT IDENTIFIER ::= { tsMgmt 10 }	TCPIP 
+-- topSpinOSPF		OBJECT IDENTIFIER ::= { tsMgmt 11 }	OSPF 
+-- topSpinIBSMA		OBJECT IDENTIFIER ::= { tsMgmt 12 }	IB-SMA 
+-- topSpinSRP		OBJECT IDENTIFIER ::= { tsMgmt 13 }	SRP 
+-- topSpinRNDIS		OBJECT IDENTIFIER ::= { tsMgmt 14 }	RNDIS 
+-- topSpinBridge	OBJECT IDENTIFIER ::= { tsMgmt 15 }	Bridge 
+-- topSpinIBDM		OBJECT IDENTIFIER ::= { tsMgmt 16 }	IB-DM 
+-- topSpinIBPM		OBJECT IDENTIFIER ::= { tsMgmt 17 }	IB-PM 
+tsVlan			OBJECT IDENTIFIER ::= { tsMgmt 20 }	-- VLAN	
+tsError			OBJECT IDENTIFIER ::= { tsMgmt 40 }	-- Error Codes 
+tsTraps			OBJECT IDENTIFIER ::= { tsMgmt 41 }	-- Traps
+tsEventGroup		OBJECT IDENTIFIER ::= { tsMgmt 42 }	-- Event Info.
+
+
+
+--
+-- System Global Group
+--
+tsSysGlobal	OBJECT IDENTIFIER ::= { tsSys 1 }
+
+tsSysGlobalCommReadWriteAll OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        ACCESS          read-write
+        STATUS          obsolete
+        DESCRIPTION     "When an SNMP message is received by this entity, the
+                        community string in the message is compared with this
+                        string first.  If it matches, read-write access is
+                        granted to all items in the MIB.  If it doesn't
+                        match, the tsSysGlobalCommReadWrite string is compared
+                        next."
+        ::= { tsSysGlobal 1 }
+
+tsSysGlobalCommReadWrite OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        ACCESS          read-write
+        STATUS          obsolete
+        DESCRIPTION     "When an SNMP message is received by this entity, the
+                        community string in the message is compared with this
+                        string second.  If it matches, read-write access is
+                        granted to all items in the MIB except community
+                        strings.  (Community strings appear empty when read
+                        and return a no such name error when an attempt is
+                        made to write them.)  If it doesn't match, the
+                        tsSysGlobalCommReadOnly string is compared next."
+        ::= { tsSysGlobal 2 }
+
+tsSysGlobalCommReadOnly OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        ACCESS          read-write
+        STATUS          obsolete
+        DESCRIPTION     "When an SNMP message is received by this entity, the
+                        community string in the message is compared with this
+                        string third.  If it matches, read-only access is
+                        granted to all items in the MIB except community
+                        strings.  (Community strings appear empty when read.)
+                        If it doesn't match, no access is granted, no
+                        response is sent back to the SNMP requester, and
+                        SNMP traps are sent to the SNMP trap receiver(s) if
+                        configured."
+        ::= { tsSysGlobal 3 }
+
+tsSysGlobalLastChange OBJECT-TYPE
+	SYNTAX		TimeTicks
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows when the last configuration change 
+			was performed.  
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time in which the configuration change 
+			happened from the current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastChange = (time(NULL) - TimeOfLastChange) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			configuration change by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+	::= { tsSysGlobal 4 }
+
+tsSysGlobalLastConfigSave OBJECT-TYPE
+	SYNTAX		TimeTicks
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "A time-tick indicator (measured in hundredths of a
+                        second) that shows when the last time the running
+			configuration was saved.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time in which the save configuration  
+			happened from the current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastConfigSave = (time(NULL) - TimeOfLastSave) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			configuration save by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+	::= { tsSysGlobal 5 }
+
+tsSysGlobalConfigFileName OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(0..63))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used in conjunction with the 'tsSysGlobalAction'
+			variable.  This variable is used to specify the name
+			of the file to be saved."
+	::= { tsSysGlobal 6 }
+
+tsSysGlobalAction OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),	   -- none of the following
+			resetCounters(2),
+			reboot(3),
+			saveConfig(4),     -- save configuration
+			saveConfigAll(5),  -- save configuration on all controllers
+			rebootAll(6)       -- reboot entire chassis
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to initiate a system-level action."
+	DEFVAL		{ none }
+	::= { tsSysGlobal 7 }
+
+tsSysGlobalResult OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			inProgress(2),
+			success(3),
+			fail(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Result from the last system-level action performed."
+	DEFVAL		{ none }
+	::= { tsSysGlobal 8 }
+
+tsSysGlobalEnableFtpServer OBJECT-TYPE
+	SYNTAX		TruthValue	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to enable/disable the FTP server."
+	DEFVAL		{ false }
+	::= { tsSysGlobal 9 }
+
+tsSysGlobalEnableTelnetServer OBJECT-TYPE
+	SYNTAX		TruthValue	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to enable/disable the Telnet server."
+	DEFVAL		{ true }
+	::= { tsSysGlobal 10 }
+
+tsSysGlobalRemoteSyslogServer OBJECT-TYPE
+	SYNTAX		IpAddress	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"This is obsolete. Replaced with 
+                         tsSysGlobalRemoteSyslogServerOne,
+                         tsSysGlobalRemoteSyslogServerTwo."
+	::= { tsSysGlobal 11 }
+
+tsSysGlobalEnableAutoInstall OBJECT-TYPE
+	SYNTAX		TruthValue	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to configure the automaticatic software
+			install feature.  When set to 'true' the system
+			will automatically install software onto an 
+			IO-card if the IO-card is using software that
+			is not the same version running on the master
+			controller card."
+	DEFVAL		{ false }
+	::= { tsSysGlobal 12 }
+
+tsSysGlobalSystemSyncState OBJECT-TYPE
+	SYNTAX		INTEGER	{
+			none(1),
+			notStarted(2),
+			inProgress(3),
+			complete(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the synchronization state 
+			on systems that have two system controller
+			cards and supports hot-standby capability." 
+	DEFVAL		{ none }
+	::= { tsSysGlobal 13 }
+
+tsSysGlobalSystemOperMode OBJECT-TYPE
+	SYNTAX		INTEGER	{
+			normal(1),
+			vframe210(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to configure the operational mode of
+			the system.  Depending on the operational mode
+			specified the system will behave differently.
+			See the TopspinOS User Guide document for a 
+			full description." 
+	DEFVAL		{ normal }
+	::= { tsSysGlobal 14 }
+
+tsSysGlobalEnableIbCounterReset OBJECT-TYPE
+	SYNTAX		TruthValue	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to configure whether IB counter registers
+		 	at the IB chip level should be reset after each 
+			read (clear on read).  Clearing these counter 
+			registers may confuse remote IB entities that
+			are monitoring IB statistics at the IB level.
+			This setting does not impact the higher level
+			interface counters (e.g, ifInOctets, ifOutOctets)." 
+	DEFVAL		{ true }
+	::= { tsSysGlobal 15 }
+
+tsSysGlobalRemoteSyslogServerOne OBJECT-TYPE
+	SYNTAX		IpAddress	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to configure remote logging.  If an IP 
+			address is specified the system will forward
+			log entries to the syslog deamon executing
+			at that address.  To disable remote logging
+			tsSysGlobalRemoteSyslogServerOne and 
+                        tsSysGlobalRemoteSyslogServerTwo should be set 
+                        to 0.0.0.0. This is the address of the first 
+                        syslog server."
+	::= { tsSysGlobal 16 }
+
+tsSysGlobalRemoteSyslogServerTwo OBJECT-TYPE
+	SYNTAX		IpAddress	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"IP address of the second Syslog server.
+                         To disable remote logging 
+                         tsSysGlobalRemoteSyslogServerOne and       
+                         tsSysGlobalRemoteSyslogServerTwo should be set
+			 0.0.0.0."
+	::= { tsSysGlobal 17 }
+
+
+--
+-- System User Table
+--
+tsSysUser	OBJECT IDENTIFIER ::= { tsSys 2 }
+
+tsSysUserTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSysUserEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the user accounts configured 
+			in the device."
+	::= { tsSysUser 1 }
+
+tsSysUserEntry OBJECT-TYPE
+	SYNTAX		TsSysUserEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"User table entry."
+	INDEX         	{ tsSysUserUsername }
+        ::= { tsSysUserTable 1 }
+ 
+TsSysUserEntry ::=
+	SEQUENCE {
+		tsSysUserUsername		DisplayString,
+		tsSysUserPassword		DisplayString,
+		tsSysUserPermissionLevel	INTEGER,
+		tsSysUserCommunityString	DisplayString,
+		tsSysUserAdminStatus		INTEGER,
+		tsSysUserNumLogins		Counter32,
+		tsSysUserNumBlockedLogins	Counter32,
+		tsSysUserLastLogin		TimeTicks,
+		tsSysUserLastBlockedLogin	TimeTicks,
+		tsSysUserRowStatus 		RowStatus,
+		tsSysUserAccessLevel		INTEGER
+        }
+ 
+tsSysUserUsername OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(1..20))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"User name for this account.  Each username
+			must be a least 3 alphanumeric characters
+			long.  Usernames cannot start with a decimal
+			value." 
+	::= { tsSysUserEntry 1 }
+ 
+tsSysUserPassword OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(1..50))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Password for this account.  Each password
+			must be at least 5 alphanumeric characters
+			long.  Passwords cannot start with a decimal 
+			value."
+	::= { tsSysUserEntry 2 }
+
+tsSysUserPermissionLevel OBJECT-TYPE
+	SYNTAX		INTEGER {
+			ibReadOnly(1),
+			ibReadWrite(2),
+			ipEthernetReadOnly(4),
+			ipEthernetReadWrite(8),
+			fcReadOnly(16),
+			fcReadWrite(32),
+			unrestrictedReadWrite(64)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Permission level for this user account.  This variable
+			is instrumented as a bit-set variable.  The user can
+			select one or more settings at the same time.  Some
+			combinations are invalid.  For instance, selecting
+			'ibReadyOnly' and 'ibReadWrite' is invalid since the
+			read-write attribute is a superset of the read-only
+			attribute.  
+
+			A 'superUser' user is a user account that has 
+			'ibReadWrite', 'ipEthernetReadWrite', 'fcReadWrite'
+			and 'restrictedReadWrite' selected at the same time."
+	::= { tsSysUserEntry 3 }
+
+tsSysUserCommunityString OBJECT-TYPE
+        SYNTAX        	DisplayString (SIZE (0..20))
+        ACCESS        	read-write
+        STATUS        	mandatory
+        DESCRIPTION   	"When a SNMP message is received by this device, the
+                      	community string in the message is compared with this
+                      	string.  If it matches, the permission level associated 
+                      	with this entry is granted to the user.
+
+			The community string value has to be unique amongst all
+			user accounts.  That is, the same community string can
+			not be specified in more than one user account."
+        ::= { tsSysUserEntry 4 }
+ 
+tsSysUserAdminStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			enable(1),
+			disable(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to enable/disable this account."
+	DEFVAL		{ enable }
+	::= { tsSysUserEntry 5 }
+ 
+tsSysUserNumLogins OBJECT-TYPE
+	SYNTAX		Counter32 
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of successful logins into this account since sysUp."
+	::= { tsSysUserEntry 6 }
+ 
+tsSysUserNumBlockedLogins OBJECT-TYPE
+	SYNTAX		Counter32 
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of login failures for this account since sysUp."
+	::= { tsSysUserEntry 7 }
+ 
+tsSysUserLastLogin OBJECT-TYPE
+	SYNTAX		TimeTicks 
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows the last time a user logged successfully
+			with this user account.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time of the last log-in from the current 
+			time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastLogin = (time(NULL) - TimeOfLastLogin) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			successful log-in by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+	::= { tsSysUserEntry 8 }
+ 
+tsSysUserLastBlockedLogin OBJECT-TYPE
+	SYNTAX		TimeTicks 
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows the last time a user was blocked 
+			from logging into this user account.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time of the last blocked attempt from the 
+			current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastBlockedLogin = (time(NULL) - TimeOfLastBlocked) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			blocked attempt by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+	::= { tsSysUserEntry 9 }
+ 
+tsSysUserRowStatus OBJECT-TYPE
+	SYNTAX		RowStatus
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to create/delete entries."
+	::= { tsSysUserEntry 10 }
+
+tsSysUserAccessLevel OBJECT-TYPE
+	SYNTAX		INTEGER {
+			readOnly(0),
+			readWrite(1),
+			superUser(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Access level for this account."
+	DEFVAL		{ readWrite }
+	::= { tsSysUserEntry 11 }
+
+tsSysUserTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"User table size."
+	::= { tsSysUser 2 }
+
+tsSysUserCliNumAccessViolation OBJECT-TYPE
+        SYNTAX          Counter32
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Number of CLI access violation."
+        ::= { tsSysUser 3 }
+
+tsSysUserCliLastViolation OBJECT-TYPE
+        SYNTAX          TimeTicks
+        ACCESS          read-only
+        STATUS          mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows the last time a user was blocked 
+			from logging into the CLI.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time of the last blocked attempt from the 
+			current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastViolation = (time(NULL) - TimeOfViolation) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			blocked attempt by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+        ::= { tsSysUser 4 }
+
+tsSysUserSnmpNumAccessViolation OBJECT-TYPE
+        SYNTAX          Counter32
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Number of SNMP access violation."
+        ::= { tsSysUser 5 }
+
+tsSysUserSnmpLastViolation OBJECT-TYPE
+        SYNTAX          TimeTicks
+        ACCESS          read-only
+        STATUS          mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows the last time a user was blocked 
+			from accessing the system via SNMP.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time of the last blocked attempt from the 
+			current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastViolation = (time(NULL) - TimeOfViolation) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			blocked attempt by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+        ::= { tsSysUser 6 }
+
+tsSysUserHttpNumAccessViolation OBJECT-TYPE
+        SYNTAX          Counter32
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Number of WEB access violation."
+        ::= { tsSysUser 7 }
+
+tsSysUserHttpLastViolation OBJECT-TYPE
+        SYNTAX          TimeTicks
+        ACCESS          read-only
+        STATUS          mandatory
+	DESCRIPTION	"A time-tick indicator (measured in hundredths of a 
+			second) that shows the last time a user was blocked 
+			from accessing the system via HTTP/HTTPS.
+
+			The value reported by this variable is relative to the
+			current time of the system.  This value is calculated by
+			subtracting the time of the last blocked attempt from the 
+			current time to get a time-delta-value.  
+
+			The following logic is used by the SNMP Agent to calculate 
+			the value reported by this variable:
+			  
+			  LastViolation = (time(NULL) - TimeOfViolation) * 100
+
+   			A SNMP Manager can display a wall clock time of the last 
+			blocked attempt by subtracting the time-delta-value 
+			from the current time of the local host (the system the
+			SNMP Manager is running on).  This wall clock time will
+			then be relative to the local host."
+        ::= { tsSysUser 8 }
+
+--
+-- System Trap Receiver Table
+--
+tsSysTrap	OBJECT IDENTIFIER ::= { tsSys 3 }
+
+tsSysTrapRecvTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSysTrapRecvEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"Trap receiver table (0 to 25 entries).  This
+                      	table list the addresses of Network Management
+                      	Stations that should receive trap messages from 
+                      	this entity when an exception condition occurs."
+	::= { tsSysTrap 1 }
+
+tsSysTrapRecvEntry OBJECT-TYPE
+	SYNTAX		TsSysTrapRecvEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Trap receiver table entry."
+	INDEX         	{ tsSysTrapRecvAddr }
+        ::= { tsSysTrapRecvTable 1 }
+ 
+TsSysTrapRecvEntry ::=
+	SEQUENCE {
+		tsSysTrapRecvAddr 		IpAddress,
+		tsSysTrapRecvVersion 		INTEGER,
+		tsSysTrapRecvCommunity 		DisplayString,
+		tsSysTrapRecvRowStatus 		RowStatus,
+		tsSysTrapRecvReceiveEvents	TruthValue
+        }
+ 
+tsSysTrapRecvAddr OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"IP address for trap receiver."
+	::= { tsSysTrapRecvEntry 1 }
+ 
+tsSysTrapRecvVersion OBJECT-TYPE
+	SYNTAX		INTEGER {
+			v1(1),          
+			v2c(2)
+			}
+	ACCESS		read-write
+        STATUS		mandatory
+	DESCRIPTION   	"Encoding used for sending trap messages to this
+			trap receiver."
+	DEFVAL		{ v2c }
+	::= { tsSysTrapRecvEntry 2 }
+
+tsSysTrapRecvCommunity OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..20))
+	ACCESS		read-write
+	STATUS		mandatory
+        DESCRIPTION	"Community string used for trap messages to this
+			trap receiver."
+        ::= { tsSysTrapRecvEntry 3 }
+
+tsSysTrapRecvRowStatus OBJECT-TYPE
+	SYNTAX		RowStatus
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to create/delete entries."
+	::= { tsSysTrapRecvEntry 5 }
+
+tsSysTrapRecvReceiveEvents OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to register to receive all event traps."
+	DEFVAL		{ false }
+	::= { tsSysTrapRecvEntry 6 }
+
+tsSysTrapRecvTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Trap receiver table size."
+	::= { tsSysTrap 2 }
+
+
+--
+-- System NTP Group
+--
+tsSysNtp	OBJECT IDENTIFIER ::= { tsSys 4 }
+
+tsSysNtpDate OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the date for the device.
+			The format should be MM/DD/YY."
+        ::= { tsSysNtp 1 }
+
+tsSysNtpTime OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..20))
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the time for the device.
+			The format should be HH:MM:SS."
+        ::= { tsSysNtp 2 }
+
+tsSysNtpServerOne OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			first NTP server."
+        ::= { tsSysNtp 3 }
+
+tsSysNtpServerTwo OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			second NTP server."
+        ::= { tsSysNtp 4 }
+
+tsSysNtpServerThree OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			third NTP server."
+        ::= { tsSysNtp 5 }
+
+
+--
+-- System DNS Group
+--
+tsSysDns	OBJECT IDENTIFIER ::= { tsSys 5 }
+
+tsSysDnsServerOne OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			first DNS server."
+        ::= { tsSysDns 1 }
+
+tsSysDnsServerTwo OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			second DNS server."
+        ::= { tsSysDns 2 }
+
+tsSysDnsServerThree OBJECT-TYPE
+        SYNTAX          IpAddress
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the IP address of the
+			third DNS server."
+        ::= { tsSysDns 3 }
+
+tsSysDnsDomain OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..128))
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the domain of the system." 
+        ::= { tsSysDns 4 }
+
+tsSysDnsSearch OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..128))
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the search order."
+        ::= { tsSysDns 5 }
+
+--
+-- System Web Group
+--
+tsSysWeb	OBJECT IDENTIFIER ::= { tsSys 6 }
+
+tsSysWebHttpServerName OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..64))
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the HTTP server's name.  If
+			no name is specified the HTTP server will use
+			the IP address assigned to the system as the
+			server's name." 
+        ::= { tsSysWeb 1 }
+
+tsSysWebHttpServerPort OBJECT-TYPE
+        SYNTAX          Integer32
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the port number the HTTP
+			server should listen on to receive HTTP PDUs." 
+	DEFVAL		{ 80 }
+        ::= { tsSysWeb 2 }
+
+tsSysWebEnableHttp OBJECT-TYPE
+        SYNTAX          TruthValue 
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to enable/disable the HTTP server."
+	DEFVAL		{ true }
+        ::= { tsSysWeb 3 }
+
+tsSysWebEnablePolling OBJECT-TYPE
+        SYNTAX          TruthValue 
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to enable/disable polling by the HTML client."
+	DEFVAL		{ true }
+        ::= { tsSysWeb 4 }
+
+tsSysWebHttpSecureServerPort OBJECT-TYPE
+        SYNTAX          Integer32
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the port number the HTTP
+			server should listen on to receive HTTP PDUs." 
+	DEFVAL		{ 443 }
+        ::= { tsSysWeb 5 }
+
+tsSysWebEnableHttpSecure OBJECT-TYPE
+        SYNTAX          TruthValue 
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to enable/disable the HTTP server."
+	DEFVAL		{ false }
+        ::= { tsSysWeb 6 }
+
+tsSysWebHttpSecureCertCommName OBJECT-TYPE
+        SYNTAX          INTEGER {
+			useSysName(1),
+			useMgmtEnetIpAddr(2),
+			useMgmtIbIpAddr(3)
+   			} 
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure where to get the common name 
+			to used to generate a SSL certificate."  
+	DEFVAL		{ useMgmtEnetIpAddr }
+        ::= { tsSysWeb 7 }
+
+
+--
+-- Device Global Group
+--
+tsDevGlobal	OBJECT IDENTIFIER ::= { tsDev 1 }
+
+tsDevGlobalNumCards OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Number of cards installed."
+	::= { tsDevGlobal 1 }
+ 
+tsDevGlobalNumControllerCards OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Number of controller cards installed."
+	::= { tsDevGlobal 2 }
+ 
+tsDevGlobalPrimaryControllerSlot OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The Slot number of the primary controller card."
+	::= { tsDevGlobal 3 }
+
+tsDevGlobalSecondaryControllerSlot OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The Slot number of the secondary controller card."
+	::= { tsDevGlobal 4 }
+
+tsDevGlobalEnetNumPorts OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Number of Ethernet ports installed.  Not including
+			management Ethernet ports on the Controller." 
+	::= { tsDevGlobal 5 }
+ 
+tsDevGlobalFcNumPorts OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Number of Fibre Channel ports installed."
+	::= { tsDevGlobal 6 }
+ 
+tsDevGlobalIbNumPorts OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Number of Infiniband ports installed."
+	::= { tsDevGlobal 7 }
+
+tsDevGlobalPrimaryMgmtIoSlot OBJECT-TYPE
+        SYNTAX          Integer32
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "This variable is primarily useful for the TS270
+ 			system.  This variable will show the Slot number 
+			of the mgmtIO card that is currently used to manage 
+			the chassis.  Each TS270 chassis can have up to two
+			mgmtIO cards.  Only one mgmtIO card is operational
+			at a time.  The second mgmtIO card acts as a backup."
+        ::= { tsDevGlobal 8 }
+
+tsDevGlobalSystemLedState OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unavailable(1),
+			unknown(2),
+			off(3),
+			yellow(4),
+			green(5),
+			red(6)
+			}	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This variable will show the state of the system LED.
+			Devices that do not have a system LED will return
+			'unavailable'.  Devices that do have a system LED but
+			the state is not accessible by software will return
+			'unknown'." 
+	::= { tsDevGlobal 9 }
+
+tsDevGlobalRackLocatorUid OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"A 48-bit rack locator UID value.  
+
+			Some Topspin devices contain a dallas 1-wire
+			connector.  This connector can be used to
+			retrieve a UID value that can be used to show
+			the physical location of the Topspin device and
+			the rack it is installed in." 
+	::= { tsDevGlobal 10 }
+
+tsDevGlobalExternalChassisType OBJECT-TYPE
+	SYNTAX		INTEGER	{
+			none(1),         -- Topspin chassis
+			bcEnterprise(2), -- BladeCenter Enterprise chassis
+			bcTelco(3)       -- BladeCenter Telco chassis
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate if this device is installed inside
+			a non-Topspin chassis."
+	DEFVAL		{ none }
+	::= { tsDevGlobal 11 }
+
+--
+-- Device Fan Table 
+--
+tsDevFan 	OBJECT IDENTIFIER ::= { tsDev 2 }
+
+tsDevFanTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevFanEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each fan installed in the chassis."  
+	::= { tsDevFan 1 }
+
+tsDevFanEntry OBJECT-TYPE
+	SYNTAX		TsDevFanEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Fan table entry."
+	INDEX         	{ tsDevFanFanId }
+        ::= { tsDevFanTable 1 }
+ 
+TsDevFanEntry ::=
+	SEQUENCE {
+		tsDevFanFanId			Integer32,
+		tsDevFanOperStatus		INTEGER,
+		tsDevFanProductName		DisplayString,
+		tsDevFanProductSerialNum	DisplayString,
+		tsDevFanPcaSerialNum		DisplayString,
+		tsDevFanPcaAssemblyNum		DisplayString,
+		tsDevFanFruNum			DisplayString,
+		tsDevFanTemperature		Integer32,
+		tsDevFanSpeed			Integer32,
+		tsDevFanPostStatus		INTEGER,
+		tsDevFanErrorCode		Integer32,
+		tsDevFanPostErrorCodes		DisplayString,	
+		tsDevFanFruError		DisplayString,
+		tsDevFanProductVID		DisplayString
+        }
+
+tsDevFanFanId OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Fan Identifier."
+	::= { tsDevFanEntry 1 }
+ 
+tsDevFanOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			up(2),
+			down(3),
+			failure(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevFanEntry 2 }
+ 
+tsDevFanProductName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product name."
+	::= { tsDevFanEntry 3 }
+ 
+tsDevFanProductSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product serial number."
+	::= { tsDevFanEntry 4 }
+ 
+tsDevFanPcaSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly serial number."
+	::= { tsDevFanEntry 5 }
+ 
+tsDevFanPcaAssemblyNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly number."
+	::= { tsDevFanEntry 6 }
+ 
+tsDevFanFruNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Field replaceable unit number."
+	::= { tsDevFanEntry 7 }
+
+tsDevFanTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Fan temperature in celsius."
+	::= { tsDevFanEntry 8 }
+
+tsDevFanSpeed OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Fan speed as a percentage of maximum performance."
+	::= { tsDevFanEntry 9 }
+
+tsDevFanPostStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			passed(1),
+			failed(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the result of POST (Power-on-self-test)."
+	DEFVAL          { unknown }
+	::= { tsDevFanEntry 10 }
+
+tsDevFanErrorCode OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This value is obsolete.  Replaced with tsDevFanPostErrorCodes."
+	::= { tsDevFanEntry 11 }
+
+tsDevFanPostErrorCodes OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show error(s) detected during POST."
+	::= { tsDevFanEntry 12 }
+
+tsDevFanFruError OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show the last hardware error (if any)
+			detected on this FRU.  The information returned
+			in this variable is read from the device's VPD." 
+	::= { tsDevFanEntry 13 }
+
+tsDevFanProductVID OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product version identifier."
+	::= { tsDevFanEntry 14 }
+
+tsDevFanTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Fan table size."
+	::= { tsDevFan 2 }
+
+--
+-- Device Power-supply Table 
+--
+tsDevPowerSupply 	OBJECT IDENTIFIER ::= { tsDev 3 }
+
+tsDevPowerSupplyTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevPowerSupplyEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each power-supply installed in 
+			the chassis."
+	::= { tsDevPowerSupply 1 }
+
+tsDevPowerSupplyEntry OBJECT-TYPE
+	SYNTAX		TsDevPowerSupplyEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Power-supply table entry."
+	INDEX         	{ tsDevPowerSupplyPsId }
+        ::= { tsDevPowerSupplyTable 1 }
+ 
+TsDevPowerSupplyEntry ::=
+	SEQUENCE {
+		tsDevPowerSupplyPsId			Integer32,
+		tsDevPowerSupplyType			INTEGER,
+		tsDevPowerSupplyOperStatus		INTEGER,
+		tsDevPowerSupplyUtilization     	Integer32,
+		tsDevPowerSupplyVoltage     		Integer32,
+		tsDevPowerSupplyProductName		DisplayString,
+		tsDevPowerSupplyProductSerialNum	DisplayString,
+		tsDevPowerSupplyPcaSerialNum		DisplayString,
+		tsDevPowerSupplyPcaAssemblyNum		DisplayString,
+		tsDevPowerSupplyFruNum			DisplayString,
+		tsDevPowerSupplyAdminStatus		INTEGER,
+		tsDevPowerSupplyPostStatus		INTEGER,
+		tsDevPowerSupplyErrorCode		Integer32,
+		tsDevPowerSupplyPostErrorCodes		DisplayString,	
+		tsDevPowerSupplyFruError		DisplayString,
+		tsDevPowerSupplyProductVID		DisplayString
+        }
+
+tsDevPowerSupplyPsId OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Power-supply Identifier."
+	::= { tsDevPowerSupplyEntry 1 }
+ 
+tsDevPowerSupplyType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			ac(2),
+			dc(3)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Type of power-supply."
+	::= { tsDevPowerSupplyEntry 2 }
+ 
+tsDevPowerSupplyOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			up(2),
+			down(3),
+			failure(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevPowerSupplyEntry 3 }
+ 
+tsDevPowerSupplyUtilization OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Percentage utilization."
+	::= { tsDevPowerSupplyEntry 4 }
+ 
+tsDevPowerSupplyVoltage OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Percentage utilization."
+	::= { tsDevPowerSupplyEntry 5 }
+ 
+tsDevPowerSupplyProductName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product name."
+	::= { tsDevPowerSupplyEntry 6 }
+ 
+tsDevPowerSupplyProductSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product serial number."
+	::= { tsDevPowerSupplyEntry 7 }
+ 
+tsDevPowerSupplyPcaSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly serial number."
+	::= { tsDevPowerSupplyEntry 8 }
+ 
+tsDevPowerSupplyPcaAssemblyNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly number."
+	::= { tsDevPowerSupplyEntry 9 }
+ 
+tsDevPowerSupplyFruNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Field replaceable unit number."
+	::= { tsDevPowerSupplyEntry 10 }
+
+tsDevPowerSupplyAdminStatus OBJECT-TYPE
+        SYNTAX          INTEGER {
+                        up(1),
+                        down(2)
+                        }
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Admin status."
+        ::= { tsDevPowerSupplyEntry 11 }
+ 
+tsDevPowerSupplyPostStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			passed(1),
+			failed(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the result of POST (Power-on-self-test)."
+	DEFVAL          { unknown }
+	::= { tsDevPowerSupplyEntry 12 }
+
+tsDevPowerSupplyErrorCode OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This value is obsolete.  Replaced with tsDevPowerSupplyPostErrorCodes."
+	::= { tsDevPowerSupplyEntry 13 }
+
+tsDevPowerSupplyPostErrorCodes OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show error(s) detected during POST."
+	::= { tsDevPowerSupplyEntry 14 }
+
+tsDevPowerSupplyFruError OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show the last hardware error (if any)
+			detected on this FRU.  The information returned
+			in this variable is read from the device's VPD." 
+	::= { tsDevPowerSupplyEntry 15 }
+
+tsDevPowerSupplyProductVID OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product version identifier."
+	::= { tsDevPowerSupplyEntry 16 }
+
+tsDevPowerSupplyTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Fan table size."
+	::= { tsDevPowerSupply 2 }
+
+
+--
+-- Device Sensor Table 
+--
+tsDevSensor	OBJECT IDENTIFIER ::= { tsDev 4 }
+
+tsDevSensorTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevSensorEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each temperature sensor installed 
+			in the chassis."  
+	::= { tsDevSensor 1 }
+
+tsDevSensorEntry OBJECT-TYPE
+	SYNTAX		TsDevSensorEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Sensor table entry."
+	INDEX         	{ tsDevSensorSlotId, tsDevSensorSensorId }
+        ::= { tsDevSensorTable 1 }
+ 
+TsDevSensorEntry ::=
+	SEQUENCE {
+		tsDevSensorSlotId		SlotIndex,
+		tsDevSensorSensorId		Integer32,
+		tsDevSensorOperStatus		INTEGER,
+		tsDevSensorTemperature		Integer32,
+		tsDevSensorOperCode     	INTEGER,
+		tsDevSensorAlarmTemperature	Integer32,
+		tsDevSensorShutdownTemperature	Integer32
+        }
+
+tsDevSensorSlotId OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Slot Identifier."
+	::= { tsDevSensorEntry 1 }
+ 
+tsDevSensorSensorId OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Sensor Identifier."
+	::= { tsDevSensorEntry 2 }
+ 
+tsDevSensorOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			up(2),
+			down(3),
+			failure(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevSensorEntry 3 }
+
+tsDevSensorTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Current temperature in celsius."
+	::= { tsDevSensorEntry 4 }
+
+tsDevSensorOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			normal(1),
+			tempAlert(2),           -- Warning temperature
+			currAlert(3),           -- Current
+			voltAlert(4),           -- Voltage
+			tempCritical(5)		-- Critical temperature
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational code of the sensor."
+	::= { tsDevSensorEntry 5 }
+
+tsDevSensorAlarmTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which an alarm
+			is generated for this device."
+	::= { tsDevSensorEntry 6 }
+
+tsDevSensorShutdownTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which this device 
+			is shutdown or taken out-of-service."
+	::= { tsDevSensorEntry 7 }
+ 
+tsDevSensorTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Sensor table size."
+	::= { tsDevSensor 2 }
+ 
+--
+-- Device Card Table 
+--
+tsDevCard 	OBJECT IDENTIFIER ::= { tsDev 5 }
+
+tsDevCardTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevCardEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each card installed in the chassis."  
+	::= { tsDevCard 1 }
+
+tsDevCardEntry OBJECT-TYPE
+	SYNTAX		TsDevCardEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Card table entry."
+	INDEX         	{ tsDevCardSlotId }
+        ::= { tsDevCardTable 1 }
+ 
+TsDevCardEntry ::=
+	SEQUENCE {
+		tsDevCardSlotId			SlotIndex,
+		tsDevCardAdminType		INTEGER,
+		tsDevCardOperType		INTEGER,
+		tsDevCardAdminStatus		INTEGER,
+		tsDevCardOperStatus		INTEGER,
+		tsDevCardOperCode		INTEGER,
+		tsDevCardAction			INTEGER,
+		tsDevCardResult			INTEGER,
+		tsDevCardGuid			OCTET STRING,
+		tsDevCardProductName		DisplayString,
+		tsDevCardProductSerialNum	DisplayString,
+		tsDevCardPcaSerialNum		DisplayString,
+		tsDevCardPcaAssemblyNum		DisplayString,
+		tsDevCardFruNum			DisplayString,
+                tsDevCardBootStage              INTEGER,
+                tsDevCardBootStatus             INTEGER,
+		tsDevCardPostStatus		INTEGER,
+		tsDevCardErrorCode		Integer32,
+		tsDevCardPostErrorCodes		DisplayString,	
+		tsDevCardFruError		DisplayString,
+		tsDevCardProductVID		DisplayString
+        }
+
+tsDevCardSlotId OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Slot Identifier."
+	::= { tsDevCardEntry 1 }
+ 
+tsDevCardAdminType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			controller(2),			-- TS360
+			ib8port1x(3),
+			ib2port4x(4),
+			en8port1G(5),
+			en4port1G(6),
+			fc4port2G(7),
+			ib12port4x(8),		     	-- TS360
+			en6port1G(9),		     	-- TS360
+			fc2port2G(10),		     	-- TS360
+			controllerIb12port4x(11),    	-- TS90
+			controllerStandby(12),       	-- TS360 (place-holder only)
+			mgmtIO(13),			-- TS270
+			ib12port4xTX(14),             	-- TS270
+			ib4port12xTX(15),             	-- TS270
+			ib4port12xFX(16),             	-- TS270
+			ib1port12xFX8port4xTX(17),    	-- TS270
+			fabric12x(18),                 	-- TS270
+			controllerFabric12x(19),	-- TS270
+			controllerIb24port4x(20),	-- TS120
+			ib14port1x4port4x(21),		-- BladeCenter
+			idModule(22),			-- TS270
+			controllerIb8port12x(23),	-- TS120
+			contIb12port4x4port12x(24),     -- TS120 (not supported yet)
+			ib24port4x(25),	     		-- BladeCenter-2 
+			ib12port4xTXP(26),             	-- TS270
+			controllerIb10port4x(27),	-- DaVinci
+                        controllerIb24port4xDDR(28)     -- TS120D
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative card type."
+	::= { tsDevCardEntry 2 }
+ 
+tsDevCardOperType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			controller(2),			-- TS360
+			ib8port1x(3),
+			ib2port4x(4),
+			en8port1G(5),
+			en4port1G(6),
+			fc4port2G(7),
+			ib12port4x(8),		     	-- TS360
+			en6port1G(9),		     	-- TS360
+			fc2port2G(10),		     	-- TS360
+			controllerIb12port4x(11),    	-- TS90
+			controllerStandby(12),       	-- TS360 (place-holder only)
+			mgmtIO(13),			-- TS270
+			ib12port4xTX(14),             	-- TS270
+			ib4port12xTX(15),             	-- TS270
+			ib4port12xFX(16),             	-- TS270
+			ib1port12xFX8port4xTX(17),    	-- TS270
+			fabric12x(18),                	-- TS270
+			controllerFabric12x(19),	-- TS270
+			controllerIb24port4x(20),	-- TS120
+			ib14port1x4port4x(21),		-- BladeCenter
+			idModule(22),			-- TS270
+			controllerIb8port12x(23),	-- TS120
+			contIb12port4x4port12x(24),     -- TS120 (not supported yet)
+			ib24port4x(25),	        	-- BladeCenter-2 
+			ib12port4xTXP(26),             	-- TS270
+			controllerIb10port4x(27),	-- DaVinci
+                        controllerIb24port4xDDR(28)     -- TS120D
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational card type."
+	::= { tsDevCardEntry 3 }
+ 
+tsDevCardAdminStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			up(1),
+			down(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative status."
+	DEFVAL		{ up }
+	::= { tsDevCardEntry 4 }
+ 
+tsDevCardOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			up(2),
+			down(3),
+			failure(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevCardEntry 5 }
+ 
+tsDevCardOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			normal(2),
+			bootFailed(3),
+			tooHot(4),
+			booting(5),
+			checkingBootImage(6),
+ 			wrongBootImage(7),
+			rebooting(8),
+			standby(9),
+			recoveryImage(10)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational code."
+	::= { tsDevCardEntry 6 }
+ 
+tsDevCardAction OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),		-- none of the following
+			reset(2),
+			deleteInactiveImages(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to initiate a card-level action."
+	DEFVAL		{ none }
+	::= { tsDevCardEntry 7 }
+
+tsDevCardResult OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			inProgress(2),
+			success(3),
+			fail(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Result from the last card-level action performed."
+	DEFVAL		{ none }
+	::= { tsDevCardEntry 8 }
+ 
+tsDevCardGuid OBJECT-TYPE
+	SYNTAX	        OCTET STRING (SIZE(8))	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The Infiniband GUID assigned to this card."
+	::= { tsDevCardEntry 9 }
+
+tsDevCardProductName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product name."
+	::= { tsDevCardEntry 10 }
+ 
+tsDevCardProductSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product serial number."
+	::= { tsDevCardEntry 11 }
+ 
+tsDevCardPcaSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly serial number."
+	::= { tsDevCardEntry 12 }
+ 
+tsDevCardPcaAssemblyNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly number."
+	::= { tsDevCardEntry 13 }
+ 
+tsDevCardFruNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Field replaceable unit number."
+	::= { tsDevCardEntry 14 }
+
+tsDevCardBootStage OBJECT-TYPE
+	SYNTAX		INTEGER {
+ 			none(1),
+			recovery(2),	-- using Recovery Image
+			ipl(3),
+			ppcboot(4),
+			fpga(5),
+			pic(6),
+			ib(7),		-- Tavor/Anafa
+			rootfs(8),
+			kernel(9),
+			exe(10),
+			done(11) 
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate a card's booting stage."
+	::= { tsDevCardEntry 15 }
+
+tsDevCardBootStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+ 			none(1),	
+			upgrading(2),
+			success(3),
+			failed(4),	-- generic error status
+			badVersion(5),
+			badCrc(6),
+			memoryError(7),
+			outOfSpace(8),
+			programmingError(9),
+			hardwareError(10),
+			fileNotFound(11),
+			inProgress(12)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate a card's booting status."
+	::= { tsDevCardEntry 16 }
+
+tsDevCardPostStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			passed(1),
+			failed(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the result of POST (Power-on-self-test)."
+	DEFVAL          { unknown }
+	::= { tsDevCardEntry 17 }
+
+tsDevCardErrorCode OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This value is obsolete.  Replaced with tsDevCardPostErrorCodes."
+	::= { tsDevCardEntry 18 }
+ 
+tsDevCardPostErrorCodes OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show error(s) detected during POST."
+	::= { tsDevCardEntry 19 }
+
+tsDevCardFruError OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to show the last hardware error (if any)
+			detected on this FRU.  The information returned
+			in this variable is read from the device's VPD." 
+	::= { tsDevCardEntry 20 }
+
+tsDevCardProductVID OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product version identifier."
+	::= { tsDevCardEntry 21 }
+
+tsDevCardTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Card table size."
+	::= { tsDevCard 2 }
+
+--
+-- Device Card Extension Table
+--
+tsDevCardExtTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevCardExtEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each card installed in the chassis."
+	::= { tsDevCard 3 }
+
+tsDevCardExtEntry OBJECT-TYPE
+	SYNTAX		TsDevCardExtEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Card table entry."
+	INDEX         	{ tsDevCardExtSlotId }
+        ::= { tsDevCardExtTable 1 }
+ 
+TsDevCardExtEntry ::=
+	SEQUENCE {
+		tsDevCardExtSlotId			SlotIndex,
+		tsDevCardExtUsedMemory			Integer32,
+		tsDevCardExtFreeMemory			Integer32,
+		tsDevCardExtUsedDiskSpace		Integer32,
+		tsDevCardExtFreeDiskSpace		Integer32,
+		tsDevCardExtPrimaryImageSource		DisplayString,
+		tsDevCardExtSecondaryImageSource	DisplayString,
+		tsDevCardExtImageOne			DisplayString,
+		tsDevCardExtImageTwo			DisplayString,
+		tsDevCardExtImageThree			DisplayString,
+		tsDevCardExtCpuDescr			DisplayString,
+		tsDevCardExtFlashDevDescr		DisplayString,
+		tsDevCardExtBootRomRev			DisplayString,
+		tsDevCardExtFpgaFirmwareRev		DisplayString,
+		tsDevCardExtPicFirmwareRev		DisplayString,
+		tsDevCardExtIbFirmwareRev		DisplayString, 
+		tsDevCardExtOtherInfoOne		DisplayString,
+		tsDevCardExtOtherInfoTwo		DisplayString,
+		tsDevCardExtLastImageSource		DisplayString,
+                tsDevCardExtUpTime			TimeTicks		 
+        }
+
+tsDevCardExtSlotId OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Slot Identifier."
+	::= { tsDevCardExtEntry 1 }
+
+tsDevCardExtUsedMemory OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The amount of used DRAM in kilo-bytes."
+	::= { tsDevCardExtEntry 2 }
+
+tsDevCardExtFreeMemory OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The amount of free DRAM in kilo-bytes."
+	::= { tsDevCardExtEntry 3 }
+
+tsDevCardExtUsedDiskSpace OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The amount of used disk-space in kilo-bytes."
+	::= { tsDevCardExtEntry 4 }
+
+tsDevCardExtFreeDiskSpace OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The amount of free disk-space in kilo-bytes."
+	::= { tsDevCardExtEntry 5 }
+
+tsDevCardExtPrimaryImageSource OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate the software image that will
+			be used the next time this card is booted."
+	::= { tsDevCardExtEntry 6 }
+
+tsDevCardExtSecondaryImageSource OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "This variable is not supported."
+	::= { tsDevCardExtEntry 7 }
+
+tsDevCardExtImageOne OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Image one."
+	::= { tsDevCardExtEntry 8 }
+
+tsDevCardExtImageTwo OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Image two - optional."
+	::= { tsDevCardExtEntry 9 }
+
+tsDevCardExtImageThree OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Image three - optional."
+	::= { tsDevCardExtEntry 10 }
+
+tsDevCardExtCpuDescr OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "CPU description."
+	::= { tsDevCardExtEntry 11 }
+
+tsDevCardExtFlashDevDescr OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Flash device description."
+	::= { tsDevCardExtEntry 12 }
+
+tsDevCardExtBootRomRev OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Boot-ROM software revision number."
+	::= { tsDevCardExtEntry 13 }
+
+tsDevCardExtFpgaFirmwareRev OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "FPGA chip firmware revision number."
+	::= { tsDevCardExtEntry 14 }
+
+tsDevCardExtPicFirmwareRev OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "PIC chip firmware revision number."
+	::= { tsDevCardExtEntry 15 }
+
+tsDevCardExtIbFirmwareRev OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "IB chip firmware revision number."
+	::= { tsDevCardExtEntry 16 }
+
+tsDevCardExtOtherInfoOne OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Additional information field."
+	::= { tsDevCardExtEntry 17 }
+
+tsDevCardExtOtherInfoTwo OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Additional information field."
+	::= { tsDevCardExtEntry 18 }
+
+tsDevCardExtLastImageSource OBJECT-TYPE
+	SYNTAX          DisplayString(SIZE(0..128))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate the software image used
+			when this card was booted-up."
+	::= { tsDevCardExtEntry 19 }
+
+tsDevCardExtUpTime OBJECT-TYPE
+	SYNTAX          TimeTicks 
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Indicates how long that the 
+                         has been running in seconds." 
+	::= { tsDevCardExtEntry 20 }
+
+
+--
+-- Device Port Table 
+--
+tsDevPort 	OBJECT IDENTIFIER ::= { tsDev 6 }
+
+tsDevPortTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevPortEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each IO-Port (carrying user traffic)
+			installed in the device."  
+	::= { tsDevPort 1 }
+
+tsDevPortEntry OBJECT-TYPE
+	SYNTAX		TsDevPortEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"IO-Port table entry."
+	INDEX         	{ tsDevPortIfIndex }
+        ::= { tsDevPortTable 1 }
+ 
+TsDevPortEntry ::=
+	SEQUENCE {
+		tsDevPortIfIndex			InterfaceIndex,
+		tsDevPortName				DisplayString,
+		tsDevPortType				INTEGER,
+		tsDevPortAutoNegotiationSupported	TruthValue,
+		tsDevPortEnableAutoNegotiation		TruthValue,
+		tsDevPortAdminSpeed			INTEGER,
+		tsDevPortOperSpeed			INTEGER,
+		tsDevPortAdminDuplex			INTEGER,
+		tsDevPortOperDuplex			INTEGER,
+		tsDevPortAdminConnectionType		INTEGER,
+		tsDevPortOperConnectionType		INTEGER,
+  		tsDevPortAction				INTEGER,
+		tsDevPortResult				INTEGER,
+		tsDevPortCapability			INTEGER,
+		tsDevPortWwpn				OCTET STRING,
+		tsDevPortWwnn				OCTET STRING,
+		tsDevPortPhyState			INTEGER,
+		tsDevPortPwrConnDongleType              INTEGER,
+		tsDevPortPwrConnDongleState		INTEGER,
+                tsDevPortAdminLinkWidth			INTEGER, 
+                tsDevPortOperLinkWidth			INTEGER, 
+                tsDevPortAdminLaneSpeed			INTEGER, 
+                tsDevPortOperLaneSpeed			INTEGER, 
+                tsDevPortClearCounter                   TruthValue 
+        }
+
+tsDevPortIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevPortEntry 1 }
+
+tsDevPortName OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(0..20))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Interface name."
+	::= { tsDevPortEntry 2 }
+ 
+tsDevPortType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			ib1xTX(2),
+			ib1xFX(3),
+			ib4xTX(4),
+			ib4xFX(5),
+			en1GTX(6),
+			en1GFX(7),
+			fc2GFX(8),
+			ipGateway(9),
+                        fcGateway(10),
+			ib12xTX(11),		-- TS270
+			ib12xFX(12),		-- TS270
+			ib4xTXP(13),		-- Powered interface
+			ib4xTXPD(14)		-- Powered interface DDR port
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Type of port."
+	::= { tsDevPortEntry 3 }
+
+tsDevPortAutoNegotiationSupported OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Indicate whether this port can support auto
+			negotiation."
+	DEFVAL		{ true }
+	::= { tsDevPortEntry 4 }
+ 
+tsDevPortEnableAutoNegotiation OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure auto-negotiation on this port."
+	DEFVAL		{ true }
+	::= { tsDevPortEntry 5 }
+ 
+tsDevPortAdminSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			mbps10(2),
+			mbps100(3),
+			gbps1(4),
+			gbps2(5),
+			mbps2500(6),
+			gbps10(7),
+			gbps30(8),
+			gbps1Preferred(9),
+			gbps2Preferred(10),
+			gbps20(11),
+			gbps5ddr1x(12),
+			gbps20ddr4x(13),
+			gbps40ddr8x(14),
+			gbps60ddr12x(15),
+			gbps10qdr1x(16),
+			gbps40qdr4x(17),
+			gbps80qdr8x(18),
+			gbps120qdr12x(19)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative speed.
+                         The values that are applicable for Ethernet ports :
+                         mbps10(2),
+                         mbps100(3),
+                         gbps1(4),
+                         The values that are applicable for IB ports :
+                         mbps2500(6)   - 2.5 Gbps(1xSDR)
+                         gbps10(7)     - 10 Gbps(4xSDR)
+                         gbps30(8)     - 30 Gbps(12xSDR)
+                         gbps20(11)    - 20 Gbps(8xSDR)
+                         gbps5ddr1x(12) - 5 Gbps(1xDDR)
+                         gbps20ddr4x(13) - 20 Gbps(4xDDR)
+                         gbps40ddr8x(14) - 40 Gbps(8XDDR)
+                         gbps60ddr12x(15)- 60 Gbps(12xDDR)
+                         gbps10qdr1x(16) - 10 Gbps(1xQDR)
+                         gbps40qdr4x(17) - 40 Gbps(4xQDR)
+                         gbps80qdr8x(18) - 80 Gbps(8xQDR)
+                         gbps120qdr12x(19)-120 Gbps(12xQDR)
+                         Not all settings are applicable all the ports, it is device
+                         dependant."
+	DEFVAL		{ gbps1 }
+	::= { tsDevPortEntry 6 }
+ 
+tsDevPortOperSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			mbps10(2),
+			mbps100(3),
+			gbps1(4),
+			gbps2(5),
+			mbps2500(6),
+			gbps10(7),
+			gbps30(8),
+			gbps20(9),
+			other(10),		-- add above this line
+			gbps5ddr1x(11),
+			gbps20ddr4x(12),
+			gbps40ddr8x(13),
+			gbps60ddr12x(14),
+			gbps10qdr1x(15),
+			gbps40qdr4x(16),
+			gbps80qdr8x(17),
+			gbps120qdr12x(18)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational speed."
+	::= { tsDevPortEntry 7 }
+ 
+tsDevPortAdminDuplex OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			half(2),
+			full(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative duplex."
+	DEFVAL		{ half }
+	::= { tsDevPortEntry 8 }
+ 
+tsDevPortOperDuplex OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			half(2),
+			full(3)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational duplex."
+	::= { tsDevPortEntry 9 }
+ 
+tsDevPortAdminConnectionType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			forceNLPort(1),
+			forceBPort(2),
+			forceFPort(3),
+			forceEPort(4),
+			autoEorFPort(5)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to administratively set the connection-type
+			for FibreChannel interfaces."
+	DEFVAL		{ forceNLPort }
+	::= { tsDevPortEntry 10 }
+
+tsDevPortOperConnectionType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			down(1),
+			operNLPort(2),
+			operBPort(3),
+			operEPort(4),
+			operFPort(5),
+			operIsolated(6)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational connection-type."
+	::= { tsDevPortEntry 11 }
+
+tsDevPortAction OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),		-- none of the following
+			flushArp(2),
+			flushAll(3)	
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to initiate a port-level action."
+	DEFVAL		{ none }
+	::= { tsDevPortEntry 12 }
+
+tsDevPortResult OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			inProgress(2),
+			success(3),
+			fail(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Result from the last port-level action performed."
+	DEFVAL		{ none }
+	::= { tsDevPortEntry 13 }
+
+tsDevPortCapability OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(0),
+			router(1),
+			rndis(2),
+			bridge(4)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the capabilities of this port.
+			One or more options can be selected at the same time.
+			However, some combinations may not be valid."
+	DEFVAL		{ router }
+	::= { tsDevPortEntry 14 }
+
+tsDevPortWwnn OBJECT-TYPE
+	SYNTAX          OCTET STRING (SIZE(8))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate a FibreChannel Gateway's 64-bit 
+	 		Wide Node Name (WWNN).  This field is not relevant
+			for non-FibreChannel ports."
+	::= { tsDevPortEntry 15 }
+ 
+tsDevPortWwpn OBJECT-TYPE
+	SYNTAX          OCTET STRING (SIZE(8))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate a FibreChannel port's 64-bit 
+	 		Wide Port Name (WWPN).  This field is not relevant
+			for non-FibreChannel ports."
+	::= { tsDevPortEntry 16 }
+
+tsDevPortPhyState OBJECT-TYPE
+	SYNTAX		INTEGER {
+                       	noStateChange(0),
+                       	sleep(1),
+                       	polling(2),
+                       	disabled(3),
+                       	portConfigurationTraining(4),
+                       	linkup(5),
+                       	linkErrorRecovery(6),
+                       	reserved(7)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate physical link state of IB ports.
+			This variable is a mirror of the 'smPortPhyState'
+			variable in the ib_sm.mib.
+
+			This variable is set to 'noStateChange' for all
+			non-IB port types."
+	::= { tsDevPortEntry 17 }
+
+tsDevPortPwrConnDongleType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			ib4xFX(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the type of dongle (if any) that
+			is attached to a powered interface connector."
+	::= { tsDevPortEntry 18 }
+
+tsDevPortPwrConnDongleState OBJECT-TYPE
+	SYNTAX		INTEGER {
+                       	noStateChange(0),
+                       	on(1),
+                       	off(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate power control state of dongle that
+                        is attached to a powered interface connector."
+	::= { tsDevPortEntry 19 }
+
+tsDevPortAdminLinkWidth OBJECT-TYPE
+	SYNTAX		INTEGER {
+			notApplicable(1),
+			width1x(2),
+			width4x(3),
+			width8x(4),
+			width12x(5)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Link-width is number of lanes available or in use on 
+                         a link between 2 IB ports. 
+                         This object allows the desired link-width to be set.
+                         The value is notApplicable(1) for non-IB ports as this
+                         object is irrelevant to non-IB ports."
+	DEFVAL		{ width4x }
+	::= { tsDevPortEntry 20 }
+
+tsDevPortOperLinkWidth OBJECT-TYPE
+	SYNTAX		INTEGER {
+			notApplicable(1),
+			width1x(2),
+			width4x(3),
+			width8x(4),
+			width12x(5)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This object gives the operational link-width on the port.
+                         The value is notApplicable(1) for non-IB ports as this
+                         object is irrelevant to non-IB ports."
+	::= { tsDevPortEntry 21 }
+
+tsDevPortAdminLaneSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			notApplicable(1),
+			sdr(2),
+			ddr(3),
+			qdr(4)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Lane-speed is the rate (in Gbps) of transmission on each 
+                         lane of the link between 2 IB ports.
+                         This object allows the desired lane-speed to be set.
+                         The value is notApplicable(1) for non-IB ports as this
+                         object is irrelevant to non-IB ports."
+	::= { tsDevPortEntry 22 }
+
+tsDevPortOperLaneSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			notApplicable(1),
+			sdr(2),
+			ddr(3),
+			qdr(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"This object has the operational lane speed on the port.
+                         The value is notApplicable(1) for non-IB ports."
+	::= { tsDevPortEntry 23 }
+
+tsDevPortClearCounter OBJECT-TYPE 
+	SYNTAX		TruthValue	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to clear the port counters. The action takes place 
+                         when this object is set. Once the counters are cleared
+                         the object is reset to false."
+	DEFVAL		{ false }
+	::= { tsDevPortEntry 24 }
+
+tsDevPortTableSize OBJECT-TYPE 
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Port table size."
+	::= { tsDevPort 2 }
+
+
+-- Device Port Extension FibreChannel Table 
+--
+tsDevPortExtFcTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevPortExtFcEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each FC Port (carrying user traffic)
+			installed in the device."  
+	::= { tsDevPort 3 }
+
+tsDevPortExtFcEntry OBJECT-TYPE
+	SYNTAX		TsDevPortExtFcEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"FC-Port table entry."
+	INDEX         	{ tsDevPortExtFcIfIndex }
+        ::= { tsDevPortExtFcTable 1 }
+ 
+TsDevPortExtFcEntry ::=
+	SEQUENCE {
+		tsDevPortExtFcIfIndex			InterfaceIndex,
+		tsDevPortExtFcPrincipleSwitchWwnn	OCTET STRING,
+		tsDevPortExtFcDistServicesTimeout	Integer32,
+		tsDevPortExtFcErrDetectTimeout		Integer32,
+		tsDevPortExtFcFabricStabilityTimeout	Integer32,
+		tsDevPortExtFcRcvTransTimeout		Integer32,
+		tsDevPortExtFcResourceAllocTimeout	Integer32,
+		tsDevPortExtFcCheckAge			Integer32,
+		tsDevPortExtFcHelloDeadInterval		Integer32,
+		tsDevPortExtFcHelloInterval		Integer32,
+		tsDevPortExtFcLinkStateAckInterval	Integer32,
+		tsDevPortExtFcLinkStateRefreshTime	Integer32,
+		tsDevPortExtFcMaxAge			Integer32,
+		tsDevPortExtFcAdminDomainId		Integer32,
+		tsDevPortExtFcOperDomainId		Integer32, 
+		tsDevPortExtFcInteropMode		Integer32, 
+		tsDevPortExtFcConnectionErrorCode	Integer32,
+		tsDevPortExtFcPortWwnn			OCTET STRING
+        }
+
+tsDevPortExtFcIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevPortExtFcEntry 1 }
+
+tsDevPortExtFcPrincipleSwitchWwnn OBJECT-TYPE
+	SYNTAX          OCTET STRING (SIZE(8))
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate a 64-bit WWNN of the principle 
+			fibre-channel switch this port is associated with."
+	::= { tsDevPortExtFcEntry 2 }
+ 
+tsDevPortExtFcDistServicesTimeout OBJECT-TYPE
+	SYNTAX		Integer32 (5000..100000)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port d_s_tov in milliseconds."
+   	DEFVAL          { 5000 }
+	::= { tsDevPortExtFcEntry 3 }
+
+tsDevPortExtFcErrDetectTimeout OBJECT-TYPE
+	SYNTAX		Integer32 (1000..100000)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port e_d_tov in milliseconds."
+   	DEFVAL          { 2000 }
+	::= { tsDevPortExtFcEntry 4 }
+
+tsDevPortExtFcFabricStabilityTimeout OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port f_s_tov in milliseconds."
+   	DEFVAL          { 5000 }
+	::= { tsDevPortExtFcEntry 5 }
+
+tsDevPortExtFcRcvTransTimeout OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port r_t_tov in milliseconds."
+   	DEFVAL          { 100 }
+	::= { tsDevPortExtFcEntry 6 }
+
+tsDevPortExtFcResourceAllocTimeout OBJECT-TYPE
+	SYNTAX		Integer32 (5000..100000)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port r_a_tov in milliseconds."
+   	DEFVAL          { 10000 }
+	::= { tsDevPortExtFcEntry 7 }
+
+tsDevPortExtFcCheckAge OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port CheckAge in minutes."
+   	DEFVAL          { 5 }
+	::= { tsDevPortExtFcEntry 8 }
+
+tsDevPortExtFcHelloDeadInterval OBJECT-TYPE
+	SYNTAX		Integer32 (2..65535)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port HelloDeadInterval in seconds."
+   	DEFVAL          { 80 }
+	::= { tsDevPortExtFcEntry 9 }
+
+tsDevPortExtFcHelloInterval OBJECT-TYPE
+	SYNTAX		Integer32 (2..65535)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port HelloInterval in seconds."
+   	DEFVAL          { 20 }
+	::= { tsDevPortExtFcEntry 10 }
+
+tsDevPortExtFcLinkStateAckInterval OBJECT-TYPE
+	SYNTAX		Integer32 (1..65535)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port l_t_tov in seconds."
+   	DEFVAL          { 5 }
+	::= { tsDevPortExtFcEntry 11 }
+
+tsDevPortExtFcLinkStateRefreshTime OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port l_r_tov in minutes."
+   	DEFVAL          { 30 }
+	::= { tsDevPortExtFcEntry 12 }
+
+tsDevPortExtFcMaxAge OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port m_a_tov in minutes."
+   	DEFVAL          { 60 }
+	::= { tsDevPortExtFcEntry 13 }
+
+tsDevPortExtFcAdminDomainId OBJECT-TYPE
+	SYNTAX		Integer32 (0..255)
+	ACCESS		read-write
+	STATUS		mandatory
+        DESCRIPTION     "The Fibre Channel E_Port configured DomainId.  Its 
+                        range is determined by the InteropMode:
+                        InteropMode 0: domain id ranges 1-239,
+                        InteropMode 1: domain id ranges 97-127,
+                        InteropMode 2: domain id ranges 1-239,
+                        InteropMode 3: domain id ranges 1-239,
+                        InteropMode 4: domain id ranges 1-31.
+                        The value '0' is used if no DomainId is confgiured, and
+                        the FC Gateway will try get an assigned OperDomainId 
+                        from the Fabric.
+                        If a non-zero value is configured, the value is used
+                        as a static DomainId."
+   	DEFVAL          { 0 }
+	::= { tsDevPortExtFcEntry 14 }
+
+tsDevPortExtFcOperDomainId OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel port runtime DomainId."
+   	DEFVAL          { 0 }
+	::= { tsDevPortExtFcEntry 15 }
+
+tsDevPortExtFcInteropMode OBJECT-TYPE 
+	SYNTAX		Integer32 
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel E_Port Interop Mode.  
+			Supported modes are:
+			
+			0 : Cisco Native mode.
+			1 : Cisco/Brocade/McData in interop mode.
+			2 : Brocade native with 16 or less ports.
+			3 : Brocade native with more than 16 ports.
+                        4 : McData native.
+			"
+   	DEFVAL          { 0 }
+	::= { tsDevPortExtFcEntry 16 }
+
+tsDevPortExtFcConnectionErrorCode OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The Fibre Channel port connection error code."
+	::= { tsDevPortExtFcEntry 17 }
+
+tsDevPortExtFcPortWwnn OBJECT-TYPE
+	SYNTAX          OCTET STRING (SIZE(8))
+	ACCESS          read-write
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate a FibreChannel port's 64-bit WWNN. 
+                   The initial value is eight zero bytes.  When the port
+                   is in InteropMode 4 to connect with McData native mode,
+                   the admin needs to assign a FibreChannel fabric-wise
+                   unique WWNN to the port.  This WWNN is used to identify
+                   the virtual switch this port represents." 
+	::= { tsDevPortExtFcEntry 18 }
+	
+
+--
+-- Device Port Extension Optical Connector Module(OCM) Table 
+--
+tsDevPortExtOcmTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevPortExtOcmEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list each port installed in the device
+			that can support an Optical Connector Module (OCM)."
+	::= { tsDevPort 4 }
+
+tsDevPortExtOcmEntry OBJECT-TYPE
+	SYNTAX		TsDevPortExtOcmEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"IO-Port table entry."
+	INDEX         	{ tsDevPortExtOcmIfIndex }
+        ::= { tsDevPortExtOcmTable 1 }
+ 
+TsDevPortExtOcmEntry ::=
+	SEQUENCE {
+		tsDevPortExtOcmIfIndex				InterfaceIndex,
+		tsDevPortExtOcmTxOperCode			INTEGER,
+		tsDevPortExtOcmRxOperCode			INTEGER,
+		tsDevPortExtOcmTxVpdInfo			DisplayString,
+		tsDevPortExtOcmRxVpdInfo			DisplayString,
+		tsDevPortExtOcmTxPostStatus			INTEGER,
+		tsDevPortExtOcmRxPostStatus			INTEGER,
+		tsDevPortExtOcmTxPostErrorCodes			DisplayString,
+		tsDevPortExtOcmRxPostErrorCodes			DisplayString,
+		tsDevPortExtOcmTxFruError			DisplayString,
+		tsDevPortExtOcmRxFruError			DisplayString,
+		tsDevPortExtOcmTxSensorTemperature		Integer32,
+		tsDevPortExtOcmRxSensorTemperature		Integer32,
+		tsDevPortExtOcmTxSensorOperCode	 		INTEGER,	
+		tsDevPortExtOcmRxSensorOperCode	 		INTEGER,	
+		tsDevPortExtOcmTxSensorAlarmTemperature		Integer32,
+		tsDevPortExtOcmRxSensorAlarmTemperature		Integer32,
+		tsDevPortExtOcmTxSensorShutdownTemperature	Integer32,
+		tsDevPortExtOcmRxSensorShutdownTemperature	Integer32
+        }
+
+tsDevPortExtOcmIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevPortExtOcmEntry 1 }
+
+tsDevPortExtOcmTxOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			present(1),
+			notPresent(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if a TX OCM (Optical Component Module)
+			is inserted into a optical IB port."
+	::= { tsDevPortExtOcmEntry 2 }
+
+tsDevPortExtOcmRxOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			present(1),
+			notPresent(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if a RX OCM (Optical Component Module)
+			is inserted into a optical IB port."
+	::= { tsDevPortExtOcmEntry 3 }
+
+tsDevPortExtOcmTxVpdInfo OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the content of the TX OCM VPD."
+	::= { tsDevPortExtOcmEntry 4 }
+
+tsDevPortExtOcmRxVpdInfo OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the content of the RX OCM VPD."
+	::= { tsDevPortExtOcmEntry 5 }
+
+tsDevPortExtOcmTxPostStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			passed(1),
+			failed(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if POST passed or failed on
+			the TX OCM."
+	::= { tsDevPortExtOcmEntry 6 }
+
+tsDevPortExtOcmRxPostStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			passed(1),
+			failed(2)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if POST passed or failed on
+			the RX OCM."
+	::= { tsDevPortExtOcmEntry 7 }
+
+tsDevPortExtOcmTxPostErrorCodes OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the error(s) that were found when 
+			POST was executed on the TX OCM."
+	::= { tsDevPortExtOcmEntry 8 }
+
+tsDevPortExtOcmRxPostErrorCodes OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the error(s) that were found when 
+			POST was executed on the RX OCM."
+	::= { tsDevPortExtOcmEntry 9 }
+
+tsDevPortExtOcmTxFruError OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the last error detected on the TX OCM."
+	::= { tsDevPortExtOcmEntry 10 }
+
+tsDevPortExtOcmRxFruError OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the last error detected on the RX OCM."
+	::= { tsDevPortExtOcmEntry 11 }
+
+tsDevPortExtOcmTxSensorTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the current temperature (in celsius)
+			of the TX OCM sensor."
+	::= { tsDevPortExtOcmEntry 12 }
+
+tsDevPortExtOcmRxSensorTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the current temperature (in celsius)
+			of the RX OCM sensor."
+	::= { tsDevPortExtOcmEntry 13 }
+
+tsDevPortExtOcmTxSensorOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			normal(1),
+			tempAlert(2),           -- Warning temperature
+			tempCritical(3)		-- Critical temperature
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the operational code of the TX OCM 
+			sensor."
+	::= { tsDevPortExtOcmEntry 14 }
+
+tsDevPortExtOcmRxSensorOperCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(0),
+			normal(1),
+			tempAlert(2),           -- Warning temperature
+			tempCritical(3)		-- Critical temperature
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to show the operational code of the RX OCM 
+			sensor."
+	::= { tsDevPortExtOcmEntry 15 }
+
+tsDevPortExtOcmTxSensorAlarmTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which an alarm
+			is generated for the TX OCM."
+	::= { tsDevPortExtOcmEntry 16 }
+
+tsDevPortExtOcmRxSensorAlarmTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which an alarm
+			is generated for the RX OCM."
+	::= { tsDevPortExtOcmEntry 17 }
+
+tsDevPortExtOcmTxSensorShutdownTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which the TX OCM
+			is shutdown or taken out-of-service."
+	::= { tsDevPortExtOcmEntry 18 }
+ 
+tsDevPortExtOcmRxSensorShutdownTemperature OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The temperature (in celsius) at which the RX OCM
+			is shutdown or taken out-of-service."
+	::= { tsDevPortExtOcmEntry 19 }
+
+
+
+--
+-- Device Management Ethernet Port Table 
+--
+tsDevMgmtEnetPort 	OBJECT IDENTIFIER ::= { tsDev 7 }
+
+tsDevMgmtEnetPortTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevMgmtEnetPortEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the management Ethernet ports
+			on the installed Controller card(s)."
+	::= { tsDevMgmtEnetPort 1 }
+
+tsDevMgmtEnetPortEntry OBJECT-TYPE
+	SYNTAX		TsDevMgmtEnetPortEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Management Ethernet port table entry."
+	INDEX         	{ tsDevMgmtEnetPortIfIndex }
+        ::= { tsDevMgmtEnetPortTable 1 }
+ 
+TsDevMgmtEnetPortEntry ::=
+	SEQUENCE {
+		tsDevMgmtEnetPortIfIndex		InterfaceIndex,
+		tsDevMgmtEnetPortDescr			DisplayString,
+		tsDevMgmtEnetPortAdminStatus		INTEGER,
+		tsDevMgmtEnetPortOperStatus		INTEGER,
+		tsDevMgmtEnetPortIpAddr			IpAddress,
+		tsDevMgmtEnetPortNetmask		IpAddress,
+		tsDevMgmtEnetPortGateway		IpAddress,
+		tsDevMgmtEnetPortNetwork		IpAddress,
+		tsDevMgmtEnetPortEnableAutoNegotiation	TruthValue,
+		tsDevMgmtEnetPortAdminSpeed		INTEGER,
+		tsDevMgmtEnetPortOperSpeed		INTEGER,
+		tsDevMgmtEnetPortAdminDuplex		INTEGER,
+		tsDevMgmtEnetPortOperDuplex		INTEGER,
+		tsDevMgmtEnetPortMacAddr                PhysAddress,
+		tsDevMgmtEnetPortAddressOption		INTEGER 
+        }
+
+tsDevMgmtEnetPortIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevMgmtEnetPortEntry 1 }
+
+tsDevMgmtEnetPortDescr OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(0..63))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Interface description"
+	::= { tsDevMgmtEnetPortEntry 2 }
+ 
+tsDevMgmtEnetPortAdminStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			up(1),
+			down(2),
+			testing(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative status."
+  	DEFVAL          { up }
+	::= { tsDevMgmtEnetPortEntry 3 }
+ 
+tsDevMgmtEnetPortOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			up(1),
+			down(2),
+			testing(3),
+			unknown(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevMgmtEnetPortEntry 4 }
+
+tsDevMgmtEnetPortIpAddr OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the IP address of this port."
+	::= { tsDevMgmtEnetPortEntry 5 }
+
+tsDevMgmtEnetPortNetmask OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the IP netmask of this port."
+	::= { tsDevMgmtEnetPortEntry 6 }
+
+tsDevMgmtEnetPortGateway OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the default gateway.  The 
+			default gateway is used when IP packets are
+			sent out this port to a remote network."
+	::= { tsDevMgmtEnetPortEntry 7 }
+
+tsDevMgmtEnetPortNetwork OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the remote network that can
+			can be used to remotely manage this device."
+	::= { tsDevMgmtEnetPortEntry 8 }
+ 
+tsDevMgmtEnetPortEnableAutoNegotiation OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure auto-negotiation on this port."
+	DEFVAL		{ true }
+	::= { tsDevMgmtEnetPortEntry 9 }
+ 
+tsDevMgmtEnetPortAdminSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			mbps10(2),
+			mbps100(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative speed."
+	DEFVAL		{ mbps100 }
+	::= { tsDevMgmtEnetPortEntry 10 }
+ 
+tsDevMgmtEnetPortOperSpeed OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			mbps10(2),
+			mbps100(3),
+			other(5)		-- add above this line
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational speed."
+	::= { tsDevMgmtEnetPortEntry 11 }
+ 
+tsDevMgmtEnetPortAdminDuplex OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			half(2),
+			full(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative duplex."
+	DEFVAL		{ full }
+	::= { tsDevMgmtEnetPortEntry 12 }
+ 
+tsDevMgmtEnetPortOperDuplex OBJECT-TYPE
+	SYNTAX		INTEGER {
+			unknown(1),
+			half(2),
+			full(3)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational duplex."
+	::= { tsDevMgmtEnetPortEntry 13 }
+
+tsDevMgmtEnetPortMacAddr OBJECT-TYPE
+	SYNTAX		PhysAddress	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"MAC address of this interface."
+	::= { tsDevMgmtEnetPortEntry 14 }
+
+tsDevMgmtEnetPortAddressOption OBJECT-TYPE
+	SYNTAX		INTEGER {
+			static(1),
+			dhcp(2),
+			auto(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure how an IP address can be assigned
+			to this management Ethernet port.  This option is not 
+			supported on all Topspin products."
+	::= { tsDevMgmtEnetPortEntry 15 }
+ 
+tsDevMgmtEnetPortTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Management ethernet port table size."
+	::= { tsDevMgmtEnetPort 2 }
+ 
+--
+-- Device Management Serial Port Table 
+--
+tsDevMgmtSerialPort 	OBJECT IDENTIFIER ::= { tsDev 8 }
+
+tsDevMgmtSerialPortTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevMgmtSerialPortEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the management Serial ports
+			on the installed Controller card(s)."
+	::= { tsDevMgmtSerialPort 1 }
+
+tsDevMgmtSerialPortEntry OBJECT-TYPE
+	SYNTAX		TsDevMgmtSerialPortEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Management Serial port table entry."
+	INDEX         	{ tsDevMgmtSerialPortIfIndex }
+        ::= { tsDevMgmtSerialPortTable 1 }
+ 
+TsDevMgmtSerialPortEntry ::=
+	SEQUENCE {
+		tsDevMgmtSerialPortIfIndex	InterfaceIndex,
+		tsDevMgmtSerialPortDescr	DisplayString,
+		tsDevMgmtSerialPortBaudRate	INTEGER,
+		tsDevMgmtSerialPortDataBits	INTEGER,
+      		tsDevMgmtSerialPortStopBits	INTEGER,
+		tsDevMgmtSerialPortParity	INTEGER
+        }
+
+tsDevMgmtSerialPortIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevMgmtSerialPortEntry 1 }
+
+tsDevMgmtSerialPortDescr OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(0..63))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Interface description"
+	::= { tsDevMgmtSerialPortEntry 2 }
+ 
+tsDevMgmtSerialPortBaudRate OBJECT-TYPE
+	SYNTAX		INTEGER {
+			baud2400(2400),
+			baud4800(4800),
+			baud9600(9600),
+			baud19200(19200),
+			baud38400(38400),
+			baud57600(57600),
+			baud115200(115200)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the baud-rate for the management 
+			serial port."
+	::= { tsDevMgmtSerialPortEntry 3 }
+ 
+tsDevMgmtSerialPortDataBits OBJECT-TYPE
+	SYNTAX		INTEGER {
+			seven(1),
+			eight(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the number of data bits for the
+			management serial port."
+	::= { tsDevMgmtSerialPortEntry 4 }
+
+tsDevMgmtSerialPortStopBits OBJECT-TYPE
+	SYNTAX		INTEGER {
+			one(1),
+			two(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the number of stop bits for the
+			management serial port."
+	::= { tsDevMgmtSerialPortEntry 5 }
+
+tsDevMgmtSerialPortParity OBJECT-TYPE
+	SYNTAX		INTEGER {
+			off(1),
+			on(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the parity setting for the 
+			management serial port."
+	::= { tsDevMgmtSerialPortEntry 6 }
+
+tsDevMgmtSerialPortTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Management serial port table size."
+	::= { tsDevMgmtSerialPort 2 }
+ 
+
+--
+-- Device Memory Table 
+--
+tsDevMemory 	OBJECT IDENTIFIER ::= { tsDev 9 }
+
+tsDevMemoryTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevMemoryEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list Flash memory and PCMCIA memory
+			information for installed Controller card(s)."
+	::= { tsDevMemory 1 }
+
+tsDevMemoryEntry OBJECT-TYPE
+	SYNTAX		TsDevMemoryEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Memory table entry."
+	INDEX         	{ tsDevMemorySlotId }
+        ::= { tsDevMemoryTable 1 }
+ 
+TsDevMemoryEntry ::=
+	SEQUENCE {
+		tsDevMemorySlotId	SlotIndex,
+		tsDevMemoryFlashSize	Integer32,
+		tsDevMemoryFlashUsed	Integer32,
+		tsDevMemoryFlashFree	Integer32,
+		tsDevMemoryPcmciaSize	Integer32,
+		tsDevMemoryPcmciaUsed	Integer32,
+		tsDevMemoryPcmciaFree	Integer32,
+		tsDevMemoryAction	INTEGER,
+		tsDevMemoryResult	INTEGER
+        }
+
+tsDevMemorySlotId OBJECT-TYPE
+	SYNTAX		SlotIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Slot Identifier."
+	::= { tsDevMemoryEntry 1 }
+
+tsDevMemoryFlashSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Flash memory size in bytes."
+	::= { tsDevMemoryEntry 2 }
+ 
+tsDevMemoryFlashUsed OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of bytes used in flash memory."
+	::= { tsDevMemoryEntry 3 }
+ 
+tsDevMemoryFlashFree OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of bytes free in flash memory."
+	::= { tsDevMemoryEntry 4 }
+ 
+tsDevMemoryPcmciaSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"PCMCIA memory size in bytes.  If there is
+			no PCMCIA memory card installed this value
+			will be zero."
+	DEFVAL		{ 0 }
+	::= { tsDevMemoryEntry 5 }
+ 
+tsDevMemoryPcmciaUsed OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of bytes used in PCMCIA."
+	DEFVAL		{ 0 }
+	::= { tsDevMemoryEntry 6 }
+ 
+tsDevMemoryPcmciaFree OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The number of bytes free in PCMCIA."
+	DEFVAL		{ 0 }
+	::= { tsDevMemoryEntry 7 }
+
+tsDevMemoryAction OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),		-- none of the following
+			resetPcmcia(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to initiate an action."
+	DEFVAL		{ none }
+	::= { tsDevMemoryEntry 8 }
+
+tsDevMemoryResult OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			inProgress(2),
+			success(3),
+			fail(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Result from the last action performed."
+	DEFVAL		{ none }
+	::= { tsDevMemoryEntry 9 }
+
+tsDevMemoryTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Memory table size."
+	::= { tsDevMemory 2 }
+
+--
+-- Device File-System 
+--
+tsDevInternalFile OBJECT IDENTIFIER ::= { tsDev 10 }
+
+tsDevInternalFileTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevFileSystemInternalEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table contains one entry for each
+			file stored on the internal disk-on-chip
+			memory device."
+	::= { tsDevInternalFile 1 }
+
+tsDevInternalFileEntry OBJECT-TYPE
+	SYNTAX		TsDevFileSystemInternalEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Internal file entry."
+	INDEX         	{ tsDevInternalFileSlotId, tsDevInternalFileName }
+        ::= { tsDevInternalFileTable 1 }
+ 
+TsDevFileSystemInternalEntry ::=
+	SEQUENCE {
+		tsDevInternalFileSlotId		SlotIndex,
+		tsDevInternalFileName		DisplayString,
+		tsDevInternalFileFileType	INTEGER,
+		tsDevInternalFileDate		DisplayString,
+		tsDevInternalFileSize		Integer32
+        }
+ 
+tsDevInternalFileSlotId OBJECT-TYPE
+	SYNTAX	 	SlotIndex	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Slot Identifier."
+	::= { tsDevInternalFileEntry 1 }
+ 
+tsDevInternalFileName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..64))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"File name."
+	::= { tsDevInternalFileEntry 2 }
+
+tsDevInternalFileFileType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			config(2),
+			image(3),
+			log(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "Used to indicate the type of this file."
+	::= { tsDevInternalFileEntry 3 }
+ 
+tsDevInternalFileDate OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Date and time string showing when the file
+			was last updated."
+	::= { tsDevInternalFileEntry 4 }
+ 
+tsDevInternalFileSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the size of the file in bytes."
+	::= { tsDevInternalFileEntry 5 }
+ 
+tsDevInternalFileTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Internal table size."
+	::= { tsDevInternalFile 2 }
+
+
+tsDevExternalFile OBJECT IDENTIFIER ::= { tsDev 11 }
+
+tsDevExternalFileTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevFileSystemExternalEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table contains one entry for each
+			file stored on the external SD memory device."
+	::= { tsDevExternalFile 1 }
+
+tsDevExternalFileEntry OBJECT-TYPE
+	SYNTAX		TsDevFileSystemExternalEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"External file entry."
+	INDEX         	{ tsDevExternalFileSlotId, tsDevExternalFileName }
+        ::= { tsDevExternalFileTable 1 }
+ 
+TsDevFileSystemExternalEntry ::=
+	SEQUENCE {
+		tsDevExternalFileSlotId		SlotIndex,
+		tsDevExternalFileName		DisplayString,
+		tsDevExternalFileFileType	INTEGER,
+		tsDevExternalFileDate		DisplayString,
+		tsDevExternalFileSize		Integer32
+        }
+ 
+tsDevExternalFileSlotId OBJECT-TYPE
+	SYNTAX	 	SlotIndex	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Slot Identifier."
+	::= { tsDevExternalFileEntry 1 }
+ 
+tsDevExternalFileName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..64))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"File name."
+	::= { tsDevExternalFileEntry 2 }
+
+tsDevExternalFileFileType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			config(2),
+			image(3),
+			log(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "Used to indicate the type of this file."
+	::= { tsDevExternalFileEntry 3 }
+ 
+tsDevExternalFileDate OBJECT-TYPE
+	SYNTAX		DisplayString
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Date and time string showing when the file
+			was last updated."
+	::= { tsDevExternalFileEntry 4 }
+ 
+tsDevExternalFileSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the size of the file in bytes."
+	::= { tsDevExternalFileEntry 5 }
+ 
+tsDevExternalFileTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"External table size."
+	::= { tsDevExternalFile 2 }
+
+
+tsDevFileOperation OBJECT IDENTIFIER ::= { tsDev 12 }
+
+tsDevFileOperationFileType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			config(2),
+			image(3),
+			log(4)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+        DESCRIPTION     "Used to specify the type of file to operate on."
+	DEFVAL		{ none }
+	::= { tsDevFileOperation 1 }
+
+tsDevFileOperationSource OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..256))
+	ACCESS		read-write
+        STATUS		mandatory
+        DESCRIPTION     "Used to specify a source file's path and name."
+        ::= { tsDevFileOperation 2 }
+
+tsDevFileOperationDestination OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..256))
+	ACCESS		read-write
+        STATUS		mandatory
+        DESCRIPTION     "Used to specify a destination file's path and name."
+        ::= { tsDevFileOperation 3 }
+
+tsDevFileOperationAction OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			delete(2),
+			copy(3),	-- using FTP
+			cancel(4),
+			install(5),
+			tftpCopy(7),	-- using TFTP
+			scpCopy(8)	-- using SCP
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+        DESCRIPTION     "Used to initiate a file action."
+	DEFVAL		{ none }
+	::= { tsDevFileOperation 4 }
+ 
+tsDevFileOperationResult OBJECT-TYPE
+	SYNTAX		INTEGER {
+                        none(1),
+                        inProgress(2),
+                        success(3),
+                        fail(4),
+			invalidSource(5),
+			invalidDestination(6),
+			outOfMemory(7),
+			outOfDiskSpace(8),
+			fileNotFound(9)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "Result from the last file action performed."
+	::= { tsDevFileOperation 5 }
+ 
+tsDevFileOperationUsername OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..128))
+	ACCESS		read-write
+        STATUS		mandatory
+        DESCRIPTION     "Used to specify a username to use when transfering
+			files to/from a remote server (e.g., tftp, ftp, etc)."
+        ::= { tsDevFileOperation 6 }
+
+tsDevFileOperationPassword OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..128))
+	ACCESS		read-write
+        STATUS		mandatory
+        DESCRIPTION     "Used to specify a password to use when transfering
+			files to/from a remote server (e.g., tftp, ftp, etc)."
+        ::= { tsDevFileOperation 7 }
+
+tsDevFileOperationPercentageCompleted OBJECT-TYPE
+	SYNTAX	 	Gauge32	
+	ACCESS		read-only
+        STATUS		mandatory
+        DESCRIPTION     "Used to indicate the percentage completed of the
+			current action." 
+        ::= { tsDevFileOperation 8 }
+
+tsDevFileOperationErrorCode OBJECT-TYPE
+	SYNTAX		Integer32	
+	ACCESS		read-only
+        STATUS		mandatory
+        DESCRIPTION     "Used to provide additional information as to the
+			cause of a failed operation.  This variable is only
+			valid when tsDevFileOperationResult returns a failure
+			condition.  The value stored in this variable is a
+			enumerated value corresponding to tsErrorCode." 
+        ::= { tsDevFileOperation 9 }
+
+
+--
+-- Device Backplane 
+--
+tsDevBackplane 	OBJECT IDENTIFIER ::= { tsDev 13 }
+
+tsDevBackplaneProductName OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product name."
+	::= { tsDevBackplane 1 }
+ 
+tsDevBackplaneProductSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product serial number."
+	::= { tsDevBackplane 2 }
+ 
+tsDevBackplanePcaSerialNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly serial number."
+	::= { tsDevBackplane 3 }
+ 
+tsDevBackplanePcaAssemblyNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Printed circuit assembly number."
+	::= { tsDevBackplane 4 }
+ 
+tsDevBackplaneFruNum OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Field replaceable unit number."
+	::= { tsDevBackplane 5 }
+ 
+tsDevBackplaneChassisId OBJECT-TYPE
+	SYNTAX	 	Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"64-bit unique chassis identifier."
+	::= { tsDevBackplane 6 }
+ 
+tsDevBackplaneBaseMacAddr OBJECT-TYPE
+	SYNTAX		PhysAddress	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"24-bit base MAC address of this chassis."
+	::= { tsDevBackplane 7 }
+
+tsDevBackplaneChassisGuid OBJECT-TYPE
+	SYNTAX	 	Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"64-bit unique chassis GUID."
+	::= { tsDevBackplane 8 }
+
+tsDevBackplaneProductVID OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..32))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Product version identifier."
+	::= { tsDevBackplane 9 }
+ 
+
+--
+-- Device Management Infiniband Port Table 
+--
+tsDevMgmtIbPort 	OBJECT IDENTIFIER ::= { tsDev 14 }
+
+tsDevMgmtIbPortTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsDevMgmtIbPortEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the management Infiniband ports
+			on the installed Controller card(s)."
+	::= { tsDevMgmtIbPort 1 }
+
+tsDevMgmtIbPortEntry OBJECT-TYPE
+	SYNTAX		TsDevMgmtIbPortEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Management Ethernet port table entry."
+	INDEX         	{ tsDevMgmtIbPortIfIndex }
+        ::= { tsDevMgmtIbPortTable 1 }
+ 
+TsDevMgmtIbPortEntry ::=
+	SEQUENCE {
+		tsDevMgmtIbPortIfIndex		InterfaceIndex,
+		tsDevMgmtIbPortDescr		DisplayString,
+		tsDevMgmtIbPortAdminStatus	INTEGER,
+		tsDevMgmtIbPortOperStatus	INTEGER,
+		tsDevMgmtIbPortIpAddr		IpAddress,
+		tsDevMgmtIbPortNetmask		IpAddress,
+		tsDevMgmtIbPortGateway		IpAddress,
+                tsDevMgmtIbPortOperSpeed	INTEGER,
+                tsDevMgmtIbPortOperDuplex	INTEGER,
+                tsDevMgmtIbPortAddressOption	INTEGER,
+                tsDevMgmtIbPortMtu	 	Integer32,
+                tsDevMgmtIbPortPKey	 	OCTET STRING
+        }
+
+tsDevMgmtIbPortIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsDevMgmtIbPortEntry 1 }
+
+tsDevMgmtIbPortDescr OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE(0..63))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Interface description"
+	::= { tsDevMgmtIbPortEntry 2 }
+ 
+tsDevMgmtIbPortAdminStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			up(1),
+			down(2),
+			testing(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Administrative status."
+  	DEFVAL          { up }
+	::= { tsDevMgmtIbPortEntry 3 }
+ 
+tsDevMgmtIbPortOperStatus OBJECT-TYPE
+	SYNTAX		INTEGER {
+			up(1),
+			down(2),
+			testing(3),
+			unknown(4)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Operational status."
+	::= { tsDevMgmtIbPortEntry 4 }
+
+tsDevMgmtIbPortIpAddr OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the IP address of this port."
+	::= { tsDevMgmtIbPortEntry 5 }
+
+tsDevMgmtIbPortNetmask OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the IP netmask of this port."
+	::= { tsDevMgmtIbPortEntry 6 }
+
+tsDevMgmtIbPortGateway OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the default gateway.  The 
+			default gateway is used when IP packets are
+			sent out this port to a remote network."
+	::= { tsDevMgmtIbPortEntry 7 }
+
+tsDevMgmtIbPortOperSpeed OBJECT-TYPE
+        SYNTAX          INTEGER {
+                        unknown(1),
+                        mbps10(2),
+                        mbps100(3),
+                        gbps1(4),
+                        gbps2(5),
+                        mbps2500(6),
+                        gbps10(7),
+                        gbps30(8),
+                        other(9)                -- add above this line
+                        }
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Operational speed."
+        ::= { tsDevMgmtIbPortEntry 8 }
+
+tsDevMgmtIbPortOperDuplex OBJECT-TYPE
+        SYNTAX          INTEGER {
+                        unknown(1),
+                        half(2),
+                        full(3)
+                        }
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Operational duplex."
+        ::= { tsDevMgmtIbPortEntry 9 }
+
+tsDevMgmtIbPortAddressOption OBJECT-TYPE
+	SYNTAX		INTEGER {
+			static(1),
+			dhcp(2),
+			auto(3)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure how an IP address can be assigned
+			to this management IB port.  This option is not 
+			supported on all Topspin products."
+	::= { tsDevMgmtIbPortEntry 10 }
+
+tsDevMgmtIbPortMtu OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the MTU of the interface."
+	::= { tsDevMgmtIbPortEntry 11 }
+
+tsDevMgmtIbPortPKey OBJECT-TYPE
+	SYNTAX		OCTET STRING (SIZE(2))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to specify a 16-bit partition key value of
+                         the partition that this interface will be a part
+                         of."
+	::= { tsDevMgmtIbPortEntry 12 }
+
+tsDevMgmtIbPortTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Management IB port table size."
+	::= { tsDevMgmtIbPort 2 }
+ 
+--
+-- tsBoot
+--
+tsBootConfigTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsBootConfigEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table contains one entry for each controller
+			installed in the device."
+	::= { tsBoot 1 }
+
+tsBootConfigEntry OBJECT-TYPE
+	SYNTAX		TsBootConfigEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Boot configuration entry."
+	INDEX         	{ tsBootConfigSlotId }
+        ::= { tsBootConfigTable 1 }
+ 
+TsBootConfigEntry ::=
+	SEQUENCE {
+		tsBootConfigSlotId	 		SlotIndex,
+		tsBootConfigSwVersion			DisplayString,
+		tsBootConfigLastImageSource		DisplayString,
+		tsBootConfigLastConfigSource		DisplayString,
+		tsBootConfigPrimaryImageSource		DisplayString,
+		tsBootConfigPrimaryConfigSource		DisplayString,
+		tsBootConfigSecondaryImageSource	DisplayString,
+		tsBootConfigSecondaryConfigSource	DisplayString
+        }
+ 
+tsBootConfigSlotId OBJECT-TYPE
+	SYNTAX	 	SlotIndex	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Slot Identifier."
+	::= { tsBootConfigEntry 1 }
+ 
+tsBootConfigSwVersion OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the version of software currently 
+			executing."
+	::= { tsBootConfigEntry 2 }
+ 
+tsBootConfigLastImageSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the location of the image files
+			used for the last boot."
+	::= { tsBootConfigEntry 3 }
+ 
+tsBootConfigLastConfigSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to indicate the location of the configuration 
+			file used for the last boot."
+	::= { tsBootConfigEntry 4 }
+ 
+tsBootConfigPrimaryImageSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to specify the primary location of the image files
+			to boot the system."
+	::= { tsBootConfigEntry 5 }
+ 
+tsBootConfigPrimaryConfigSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to specify the primary location of the configuration 
+			file to restore the system configuration during the next
+			system boot."
+	::= { tsBootConfigEntry 6 }
+ 
+tsBootConfigSecondaryImageSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to specify the secondary location of the image files
+			to boot the system.  The location is used if the primary
+			location is not available."
+	::= { tsBootConfigEntry 7 }
+ 
+tsBootConfigSecondaryConfigSource OBJECT-TYPE
+	SYNTAX		DisplayString(SIZE(0..128))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION	"Used to specify the secondary location of the configuration 
+			file to restore the system configuration during the next
+			system boot.  The location is used if the primary location 
+			is not available."
+	::= { tsBootConfigEntry 8 }
+ 
+
+--
+-- IB Group 
+--
+tsIbSdpFilter	OBJECT IDENTIFIER ::= { tsIb 1 }
+
+tsIbSdpFilterTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSdpFilterEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list Socket Direct Protocol(SDP) access filters."
+	::= { tsIbSdpFilter 1 }
+
+tsIbSdpFilterEntry OBJECT-TYPE
+	SYNTAX		TsSdpFilterEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"SDP filter table entry."
+	INDEX         	{ tsIbSdpFilterIfIndex, 
+			  tsIbSdpFilterSrcAddr, tsIbSdpFilterSrcNetmask, 
+			  tsIbSdpFilterSrcPort, tsIbSdpFilterDstAddr, 
+			  tsIbSdpFilterDstNetmask, tsIbSdpFilterDstPort }
+        ::= { tsIbSdpFilterTable 1 }
+ 
+TsSdpFilterEntry ::=
+	SEQUENCE {
+		tsIbSdpFilterIfIndex	InterfaceIndex,
+		tsIbSdpFilterSrcAddr	IpAddress,
+		tsIbSdpFilterSrcNetmask	IpAddress,
+		tsIbSdpFilterSrcPort	Integer32,
+		tsIbSdpFilterDstAddr	IpAddress,
+		tsIbSdpFilterDstNetmask	IpAddress,
+		tsIbSdpFilterDstPort	Integer32,
+		tsIbSdpFilterName	DisplayString,
+		tsIbSdpFilterMode	INTEGER,
+		tsIbSdpFilterEnable	TruthValue,
+		tsIbSdpFilterRowStatus	RowStatus
+        }
+
+tsIbSdpFilterIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsIbSdpFilterEntry 1 }
+
+tsIbSdpFilterSrcAddr OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Source IP address."
+	::= { tsIbSdpFilterEntry 2 }
+
+tsIbSdpFilterSrcNetmask OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Source netmask."
+	::= { tsIbSdpFilterEntry 3 }
+
+tsIbSdpFilterSrcPort OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Source port number."
+	::= { tsIbSdpFilterEntry 4 }
+
+tsIbSdpFilterDstAddr OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Destination IP address."
+	::= { tsIbSdpFilterEntry 5 }
+
+tsIbSdpFilterDstNetmask OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Destination netmask."
+	::= { tsIbSdpFilterEntry 6 }
+
+tsIbSdpFilterDstPort OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Destination port number."
+	::= { tsIbSdpFilterEntry 7 }
+
+tsIbSdpFilterName OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..32))
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Filter name."
+	::= { tsIbSdpFilterEntry 8 }
+
+tsIbSdpFilterMode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			allow(1),
+			deny(2)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Filter name."
+	DEFVAL		{ allow }
+	::= { tsIbSdpFilterEntry 9 }
+
+tsIbSdpFilterEnable OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Destination port number."
+	DEFVAL		{ true }
+	::= { tsIbSdpFilterEntry 10 }
+
+tsIbSdpFilterRowStatus OBJECT-TYPE
+	SYNTAX          RowStatus
+	ACCESS          read-write
+	STATUS          mandatory
+	DESCRIPTION     "Used to create/delete entries"
+	::= { tsIbSdpFilterEntry 11 }
+
+tsIbSdpFilterTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"SDP filter table size."
+	::= { tsIbSdpFilter 2 }
+
+
+tsIbSdpTcpConn	OBJECT IDENTIFIER ::= { tsIb 2 }
+
+tsIbSdpTcpConnTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSdpTcpConnEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list all connections being serviced by the IB
+			Gateway.  Each connection is made-up of two segments
+			(IpHost<->Gateway<->IbHost).
+
+			This table is a concatentation of the tcpConnTable (RFC1213)
+			and the ibConnCTable (draft-ib-conn-mib)."
+	::= { tsIbSdpTcpConn 1 }
+
+tsIbSdpTcpConnEntry OBJECT-TYPE
+	SYNTAX		TsSdpTcpConnEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"SDP TCP connection table entry."
+	INDEX         	{ tsIbSdpTcpConnIfIndex, 
+			  tsIbSdpTcpConnSdpAddress, tsIbSdpTcpConnSdpPort,
+			  tsIbSdpTcpConnTcpAddress, tsIbSdpTcpConnTcpPort,
+			  tsIbSdpTcpConnLGID, tsIbSdpTcpConnLLID,
+			  tsIbSdpTcpConnLQPN, tsIbSdpTcpConnRGID,
+			  tsIbSdpTcpConnRLID, tsIbSdpTcpConnRQPN }
+        ::= { tsIbSdpTcpConnTable 1 }
+ 
+TsSdpTcpConnEntry ::=
+	SEQUENCE {
+		tsIbSdpTcpConnIfIndex		InterfaceIndex,
+		tsIbSdpTcpConnTcpConnState	INTEGER,
+		tsIbSdpTcpConnSdpAddress 	IpAddress,
+		tsIbSdpTcpConnSdpPort 		Integer32,
+		tsIbSdpTcpConnTcpAddress 	IpAddress,
+		tsIbSdpTcpConnTcpPort 		Integer32,
+		tsIbSdpTcpConnLGID 		IbGID,
+		tsIbSdpTcpConnLLID 		IbLID,
+		tsIbSdpTcpConnLQPN 		Integer32,
+		tsIbSdpTcpConnRGID 		IbGID,
+		tsIbSdpTcpConnRLID 		IbLID,
+		tsIbSdpTcpConnRQPN 		Integer32,
+		tsIbSdpTcpConnIbConnState	INTEGER,
+		tsIbSdpTcpConnIbReliable	TruthValue,
+		tsIbSdpTcpConnOctets		Counter64
+        }
+
+tsIbSdpTcpConnIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsIbSdpTcpConnEntry 1 }
+
+tsIbSdpTcpConnTcpConnState OBJECT-TYPE
+	SYNTAX		INTEGER {
+			closed(1),
+			listen(2),
+			synSent(3),
+			synReceived(4),
+			established(5),
+			finWait1(6),
+			finWait2(7),
+			closeWait(8),
+			lastAck(9),
+			closing(10),
+			timeWait(11),
+			deleteTCB(12)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"TCP connection state."
+	::= { tsIbSdpTcpConnEntry 2 }
+
+tsIbSdpTcpConnSdpAddress OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local IP address."
+	::= { tsIbSdpTcpConnEntry 3 }
+
+tsIbSdpTcpConnSdpPort OBJECT-TYPE
+	SYNTAX		Integer32 (0..65535)
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local port number."
+	::= { tsIbSdpTcpConnEntry 4 }
+
+tsIbSdpTcpConnTcpAddress OBJECT-TYPE
+	SYNTAX		IpAddress
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote IP address."
+	::= { tsIbSdpTcpConnEntry 5 }
+
+tsIbSdpTcpConnTcpPort OBJECT-TYPE
+	SYNTAX		Integer32 (0..65535)
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote port number."
+	::= { tsIbSdpTcpConnEntry 6 }
+
+tsIbSdpTcpConnLGID OBJECT-TYPE
+	SYNTAX		IbGID
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local GID."
+	::= { tsIbSdpTcpConnEntry 7 }
+
+tsIbSdpTcpConnLLID OBJECT-TYPE
+	SYNTAX		IbLID	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local LID."
+	::= { tsIbSdpTcpConnEntry 8 }
+
+tsIbSdpTcpConnLQPN OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local queue-pair number."
+	::= { tsIbSdpTcpConnEntry 9 }
+
+tsIbSdpTcpConnRGID OBJECT-TYPE
+	SYNTAX		IbGID
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote GID."
+	::= { tsIbSdpTcpConnEntry 10 }
+
+tsIbSdpTcpConnRLID OBJECT-TYPE
+	SYNTAX		IbLID	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote LID."
+	::= { tsIbSdpTcpConnEntry 11 }
+
+tsIbSdpTcpConnRQPN OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote queue-pair number."
+	::= { tsIbSdpTcpConnEntry 12 }
+
+tsIbSdpTcpConnIbConnState OBJECT-TYPE
+	SYNTAX		INTEGER {
+			listen(1),
+			reqSent(2),
+			reqRcvd(3),
+			repRcvd(4),
+			established(5),
+			dreqSent(6),
+			dreqRcvd(7),
+			timeWait(8),
+			rtuTimeout(9),
+			peerCompare(10),
+			timeout(11),
+			repWait(12),
+			mraREPSent(13),
+			drepTimeout(14)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"IB connection state."
+	::= { tsIbSdpTcpConnEntry 13 }
+
+tsIbSdpTcpConnIbReliable OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if the IB connection is reliable."
+	::= { tsIbSdpTcpConnEntry 14 }
+
+tsIbSdpTcpConnOctets OBJECT-TYPE
+	SYNTAX		Counter64
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of octets transfered on
+			this connection." 
+	::= { tsIbSdpTcpConnEntry 15 }
+
+tsIbSdpTcpConnTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"SDP TCP connection table size."
+	::= { tsIbSdpTcpConn 2 }
+
+
+tsIbSrpConn	OBJECT IDENTIFIER ::= { tsIb 3 }
+
+tsIbSrpConnTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsIbSdpConnEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list all connections being serviced by the IB
+			Gateway.  Each connection is made-up of two segments
+			(IpHost<->Gateway<->IbHost).
+
+			This table is a concatentation of the tcpConnTable (RFC1213)
+			and the ibConnCTable (draft-ib-conn-mib)."
+	::= { tsIbSrpConn 1 }
+
+tsIbSrpConnEntry OBJECT-TYPE
+	SYNTAX		TsIbSdpConnEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"SDP filter table entry."
+	INDEX         	{ tsIbSrpConnIfIndex, 
+			  tsIbSrpConnHostWorldWidePathName, 
+			  tsIbSrpConnLGID, tsIbSrpConnLLID,
+			  tsIbSrpConnLQPN, tsIbSrpConnRGID,
+			  tsIbSrpConnRLID, tsIbSrpConnRQPN }
+        ::= { tsIbSrpConnTable 1 }
+ 
+TsIbSdpConnEntry ::=
+	SEQUENCE {
+		tsIbSrpConnIfIndex			InterfaceIndex,
+		tsIbSrpConnHostWorldWidePathName 	OCTET STRING,
+		tsIbSrpConnHostPortAddr 		OCTET STRING,
+		tsIbSrpConnLGID 			IbGID,
+		tsIbSrpConnLLID 			IbLID,
+		tsIbSrpConnLQPN 			Integer32,
+		tsIbSrpConnRGID 			IbGID,
+		tsIbSrpConnRLID 			IbLID,
+		tsIbSrpConnRQPN 			Integer32,
+		tsIbSrpConnIbConnState			INTEGER,
+		tsIbSrpConnIbReliable			TruthValue
+        }
+
+tsIbSrpConnIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsIbSrpConnEntry 1 }
+
+tsIbSrpConnHostWorldWidePathName OBJECT-TYPE
+	SYNTAX		OCTET STRING (SIZE(8))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"64-bit World Wide Path Name (WWPN)."
+	::= { tsIbSrpConnEntry 2 }
+
+tsIbSrpConnHostPortAddr OBJECT-TYPE
+	SYNTAX		OCTET STRING (SIZE(3))
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"24-bit host port address."
+	::= { tsIbSrpConnEntry 3 }
+
+tsIbSrpConnLGID OBJECT-TYPE
+	SYNTAX		IbGID
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local GID."
+	::= { tsIbSrpConnEntry 4 }
+
+tsIbSrpConnLLID OBJECT-TYPE
+	SYNTAX		IbLID	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local LID."
+	::= { tsIbSrpConnEntry 5 }
+
+tsIbSrpConnLQPN OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Local queue-pair number."
+	::= { tsIbSrpConnEntry 6 }
+
+tsIbSrpConnRGID OBJECT-TYPE
+	SYNTAX		IbGID
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote GID."
+	::= { tsIbSrpConnEntry 7 }
+
+tsIbSrpConnRLID OBJECT-TYPE
+	SYNTAX		IbLID	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote LID."
+	::= { tsIbSrpConnEntry 8 }
+
+tsIbSrpConnRQPN OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Remote queue-pair number."
+	::= { tsIbSrpConnEntry 9 }
+
+tsIbSrpConnIbConnState OBJECT-TYPE
+	SYNTAX		INTEGER {
+			listen(1),
+			reqSent(2),
+			reqRcvd(3),
+			repRcvd(4),
+			established(5),
+			dreqSent(6),
+			dreqRcvd(7),
+			timeWait(8),
+			rtuTimeout(9),
+			peerCompare(10),
+			timeout(11),
+			repWait(12),
+			mraREPSent(13),
+			drepTimeout(14)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"IB connection state."
+	::= { tsIbSrpConnEntry 10 }
+
+tsIbSrpConnIbReliable OBJECT-TYPE
+	SYNTAX		TruthValue
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate if the IB connection is reliable."
+	::= { tsIbSrpConnEntry 11 }
+
+tsIbSrpConnTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"SRP connection table size."
+	::= { tsIbSrpConn 2 }
+
+
+--
+-- This table is used to locate the slot (in the IGR chassis) where an
+-- IB node is installed at.  Only IB node(s) that are in Topspin devices
+-- are in this table.
+--
+tsIbNodeGuidToSlotMapTable    OBJECT-TYPE
+	SYNTAX      	SEQUENCE OF TsIbNodeGuidToSlotMapEntry
+	ACCESS		not-accessible
+	STATUS          mandatory
+	DESCRIPTION 	"Table definition."
+	::= { tsIb 4 }
+
+tsIbNodeGuidToSlotMapEntry    OBJECT-TYPE
+	SYNTAX          TsIbNodeGuidToSlotMapEntry
+	ACCESS      	not-accessible
+	STATUS          mandatory
+	DESCRIPTION 	"Entry for tsIbNodeGuidToSlotMapTable."
+	INDEX        { tsIbNodeGuidToSlotMapNodeGuid }
+	::= { tsIbNodeGuidToSlotMapTable 1 }
+
+TsIbNodeGuidToSlotMapEntry ::= 
+	SEQUENCE {
+    		tsIbNodeGuidToSlotMapNodeGuid	OCTET STRING,
+    		tsIbNodeGuidToSlotMapSlotId     Integer32,
+    		tsIbNodeGuidToSlotMapType      	INTEGER
+     	}
+
+tsIbNodeGuidToSlotMapNodeGuid OBJECT-TYPE
+	SYNTAX          OCTET STRING (SIZE(8))
+	ACCESS      	read-only
+	STATUS          mandatory
+	DESCRIPTION 	"The 64-bit Guid of this node."
+	::= { tsIbNodeGuidToSlotMapEntry 1 }   
+
+tsIbNodeGuidToSlotMapSlotId OBJECT-TYPE
+	SYNTAX          Integer32
+	ACCESS      	read-only
+	STATUS          mandatory
+	DESCRIPTION 	"Used to identify the slot, in the device, in which 
+			this IB node is located." 
+	::= { tsIbNodeGuidToSlotMapEntry 2 }
+
+tsIbNodeGuidToSlotMapType OBJECT-TYPE
+	SYNTAX          INTEGER {
+				switch(1),
+				ca(2)		-- channel adapter
+			}
+	ACCESS      	read-only
+	STATUS          mandatory
+	DESCRIPTION 	"Used to identify the type of IB node."
+	::= { tsIbNodeGuidToSlotMapEntry 3 }
+
+
+--
+-- This scalar group is used to configure SDP in the device.
+--
+tsIbSdpGlobal     OBJECT IDENTIFIER ::= { tsIb 5 }
+
+tsIbSdpGlobalEnable OBJECT-TYPE
+        SYNTAX          TruthValue
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to enable/disable SDP on a system-wide basis."
+        DEFVAL          { false }
+        ::= { tsIbSdpGlobal 1 }
+
+tsIbSdpGlobalIpoIbMtuSize OBJECT-TYPE
+        SYNTAX          INTEGER {
+			mtu256(1),
+			mtu512(2),
+			mtu1024(3),
+			mtu2048(4),
+			mtu4096(5)
+			}
+        ACCESS          read-write
+        STATUS          mandatory
+        DESCRIPTION     "Used to configure the MTU size for IP-over-IB traffic." 
+	DEFVAL		{ mtu256 }
+        ::= { tsIbSdpGlobal 2 }
+
+
+--
+-- This table is used to translate a Topspin IfIndex (slot/port) encoded value
+-- into the corresponding NodeGuid and PortId (IB local port number).
+--
+tsIbIfIndexToDevPortMapTable    OBJECT-TYPE
+    	SYNTAX       	SEQUENCE OF TsIbIfIndexToDevPortMapEntry
+    	ACCESS      	not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION  	"Given an IfIndex value corresponding to a physical
+			interface in the device, this table can be used to
+			identify a IB NodeGuid and Port Number.   The IB
+			NodeGuid and Port Number values uniquely identify
+			an IB interface in the device.  
+
+			This table is only relevant for IB interfaces.
+			Other types of interfaces (e.g., Ethernet, Fibre
+			Channel) will not have entries in this table."
+    ::= { tsIb 6 }
+
+tsIbIfIndexToDevPortMapEntry    OBJECT-TYPE
+    	SYNTAX          TsIbIfIndexToDevPortMapEntry
+    	ACCESS          not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION     "Entry for tsIbIfIndexToDevPortMapTable."
+    	INDEX        	{ tsIbIfIndexToDevPortMapIfIndex }
+    	::= { tsIbIfIndexToDevPortMapTable 1 }
+
+TsIbIfIndexToDevPortMapEntry ::=
+    	SEQUENCE {
+		tsIbIfIndexToDevPortMapIfIndex		InterfaceIndex,
+            	tsIbIfIndexToDevPortMapNodeGuid   	OCTET STRING,
+            	tsIbIfIndexToDevPortMapPortId     	Integer32
+        }
+
+tsIbIfIndexToDevPortMapIfIndex OBJECT-TYPE
+    	SYNTAX          InterfaceIndex
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "The IfIndex of this entry."
+    	::= { tsIbIfIndexToDevPortMapEntry 1 }
+
+tsIbIfIndexToDevPortMapNodeGuid OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the IB node, in which this IfIndex
+			is located."
+    	::= {tsIbIfIndexToDevPortMapEntry 2 }
+
+tsIbIfIndexToDevPortMapPortId OBJECT-TYPE
+    	SYNTAX          Integer32(0..255)
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the port id of the IB node, in
+			which this IfIndex is located."
+    	::= { tsIbIfIndexToDevPortMapEntry 3 }
+ 
+
+--
+-- This table is used to indicate all neighbor connectivity in an IB network.
+-- The IB SM (Subnet Manager) will populate this table with all IB nodes that
+-- it discovers.
+--
+tsIbSmNeighborTable    OBJECT-TYPE
+    	SYNTAX       	SEQUENCE OF TsIbSmNeighborEntry
+    	ACCESS      	not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION  	"This table is used to indicate all neighbor connectivity 
+			in an IB network.  The IB Subnet Manager(SM) will populate
+			this table with all IB nodes that it discovers."
+    ::= { tsIb 7 }
+
+tsIbSmNeighborEntry    OBJECT-TYPE
+    	SYNTAX          TsIbSmNeighborEntry
+    	ACCESS          not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION     "Entry for tsIbSmNeighborTable."
+    	INDEX        	{ tsIbSmNeighborSubnetPrefix, tsIbSmNeighborLocalNodeGuid, 
+                          tsIbSmNeighborLocalPortId }
+    	::= { tsIbSmNeighborTable 1 }
+
+TsIbSmNeighborEntry ::=
+    	SEQUENCE {
+            	tsIbSmNeighborSubnetPrefix   		OCTET STRING,
+            	tsIbSmNeighborLocalNodeGuid   		OCTET STRING,
+            	tsIbSmNeighborLocalPortId     		Integer32,
+            	tsIbSmNeighborLocalNodeType    		INTEGER,
+            	tsIbSmNeighborRemoteNodeGuid   		OCTET STRING,
+            	tsIbSmNeighborRemotePortId     		Integer32,
+            	tsIbSmNeighborRemoteNodeType   		INTEGER,
+            	tsIbSmNeighborLinkState   		INTEGER,
+		tsIbSmNeighborLinkWidthActive   	INTEGER
+        }
+
+tsIbSmNeighborSubnetPrefix OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify IB subnet this IB node is
+			located in."
+    	::= {tsIbSmNeighborEntry 1 }
+
+tsIbSmNeighborLocalNodeGuid OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify an IB node."
+    	::= {tsIbSmNeighborEntry 2 }
+
+tsIbSmNeighborLocalPortId OBJECT-TYPE
+    	SYNTAX          Integer32(0..255)
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the port id of the IB node."
+    	::= { tsIbSmNeighborEntry 3 }
+
+tsIbSmNeighborLocalNodeType OBJECT-TYPE
+    	SYNTAX          INTEGER {
+			reserved(0),
+			channelAdapter(1),
+			switch(2),
+			router(3),
+			error(4)
+			}
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the IB node's node-type."
+    	::= { tsIbSmNeighborEntry 4 }
+
+tsIbSmNeighborRemoteNodeGuid OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify an IB node."
+    	::= { tsIbSmNeighborEntry 5 }
+
+tsIbSmNeighborRemotePortId OBJECT-TYPE
+    	SYNTAX          Integer32(0..255)
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the port id of the IB node."
+    	::= { tsIbSmNeighborEntry 6 }
+
+tsIbSmNeighborRemoteNodeType OBJECT-TYPE
+    	SYNTAX          INTEGER {
+			reserved(0),
+			channelAdapter(1),
+			switch(2),
+			router(3),
+			error(4)
+			}
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the IB node's node-type."
+    	::= { tsIbSmNeighborEntry 7 }
+
+tsIbSmNeighborLinkState OBJECT-TYPE
+    	SYNTAX          INTEGER {
+                       	noStateChange(0),
+                       	down(1),
+                       	initialize(2),
+                       	armed(3),
+                       	active(4),
+                       	reserved(5)
+			}
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the state of the link
+			connecting the neighbors." 
+    	::= { tsIbSmNeighborEntry 8 }
+
+tsIbSmNeighborLinkWidthActive OBJECT-TYPE
+    	SYNTAX          INTEGER {
+			reserved(0),
+			width1x(1),
+			width4x(2),
+			width12x(8)
+			}
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the width of the link
+			connecting the neighbors."
+    	::= { tsIbSmNeighborEntry 9 }
+
+
+--
+-- This table is used to find the NodeGuid and PortNum of a port in the
+-- IB subnet that has Lid assigned to it.
+--
+tsIbSmLidToDevPortMapTable    OBJECT-TYPE
+    	SYNTAX       	SEQUENCE OF TsIbSmLidToDevPortMapEntry
+    	ACCESS      	not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION  	"This table is used to find the NodeGuid and PortNum of 
+			a port in the IB subnet that has Lid assigned to it."
+    ::= { tsIb 8 }
+
+tsIbSmLidToDevPortMapEntry    OBJECT-TYPE
+    	SYNTAX          TsIbSmLidToDevPortMapEntry
+    	ACCESS          not-accessible
+    	STATUS          mandatory
+    	DESCRIPTION     "Entry for tsIbSmLidToDevPortMapTable."
+    	INDEX        	{ tsIbSmLidToDevPortMapSubnetPrefix, tsIbSmLidToDevPortMapLid }
+    	::= { tsIbSmLidToDevPortMapTable 1 }
+
+TsIbSmLidToDevPortMapEntry ::=
+    	SEQUENCE {
+            	tsIbSmLidToDevPortMapSubnetPrefix   	OCTET STRING,
+            	tsIbSmLidToDevPortMapLid      		OCTET STRING,
+            	tsIbSmLidToDevPortMapNodeGuid  		OCTET STRING,
+            	tsIbSmLidToDevPortMapPortNum  		Integer32
+        }
+
+tsIbSmLidToDevPortMapSubnetPrefix OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to specify IB subnet the IB node of interest."
+    	::= {tsIbSmLidToDevPortMapEntry 1 }
+
+tsIbSmLidToDevPortMapLid OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(2))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to specify the LID."
+    	::= {tsIbSmLidToDevPortMapEntry 2 }
+
+tsIbSmLidToDevPortMapNodeGuid OBJECT-TYPE
+    	SYNTAX          OCTET STRING(SIZE(8))
+    	ACCESS         	read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify an IB node."
+    	::= {tsIbSmLidToDevPortMapEntry 3 }
+
+tsIbSmLidToDevPortMapPortNum OBJECT-TYPE
+    	SYNTAX          Integer32(0..255)
+    	ACCESS          read-only
+    	STATUS          mandatory
+    	DESCRIPTION     "Used to identify the local port number of the IB node."
+    	::= { tsIbSmLidToDevPortMapEntry 4 }
+
+
+--
+-- FibreChannel Group 
+--
+tsFcPortStat 	OBJECT IDENTIFIER ::= { tsFc 1 }
+
+tsFcPortStatTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsFcPortStatEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list statistics for all FibreChannel
+			ports in the device."
+	::= { tsFcPortStat 1 }
+
+tsFcPortStatEntry OBJECT-TYPE
+	SYNTAX		TsFcPortStatEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Fibre Channel port statistics table entry."
+	INDEX         	{ tsFcPortStatIfIndex }
+        ::= { tsFcPortStatTable 1 }
+ 
+TsFcPortStatEntry ::=
+	SEQUENCE {
+		tsFcPortStatIfIndex		            InterfaceIndex,
+		tsFcPortStatLinkEvents    	            Counter64,
+		tsFcPortStatFcpCmdsOutstanding              Counter64,
+		tsFcPortStatFcpCmdsCompleted   	            Counter64,
+		tsFcPortStatFcpErrors     	            Counter64,
+		tsFcPortStatFcInitiatorIO	            Counter64,
+                tsFcPortStatFcSecondsSinceLastReset         Counter64,
+                tsFcPortStatFcTxFrames                      Counter64,
+                tsFcPortStatFcTxWords                       Counter64,
+                tsFcPortStatFcRxFrames                      Counter64,
+                tsFcPortStatFcRxWords                       Counter64,
+                tsFcPortStatFcLIPCount                      Counter64,
+                tsFcPortStatFcNOSCount                      Counter64,
+                tsFcPortStatFcErrorFrames                   Counter64,
+                tsFcPortStatFcDumpedFrames                  Counter64,
+                tsFcPortStatFcLinkFailureCount              Counter64,
+                tsFcPortStatFcLossOfSyncCount               Counter64,
+                tsFcPortStatFcLossOfSignalCount             Counter64,
+                tsFcPortStatFcPrimitiveSeqProtocolErrCount  Counter64,
+                tsFcPortStatFcInvalidTxWordCount            Counter64,
+                tsFcPortStatFcInvalidCRCCount               Counter64
+        }
+
+tsFcPortStatIfIndex OBJECT-TYPE
+	SYNTAX		InterfaceIndex
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Interface Identifier."
+	::= { tsFcPortStatEntry 1 }
+
+tsFcPortStatLinkEvents OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "The total number of link events processed by
+                        the port."
+	::= { tsFcPortStatEntry 2 }
+
+tsFcPortStatFcpCmdsOutstanding OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "The total number of FCP commands outstanding
+                        on the port."
+	::= { tsFcPortStatEntry 3 }
+
+tsFcPortStatFcpCmdsCompleted OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "The total number of FCP commands completed
+                        on the port."
+	::= { tsFcPortStatEntry 4 }
+
+tsFcPortStatFcpErrors OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+        DESCRIPTION     "The total number of FCP errors encountered
+                        on the port."
+	::= { tsFcPortStatEntry 5 }
+
+tsFcPortStatFcInitiatorIO OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 6 }
+
+tsFcPortStatFcSecondsSinceLastReset OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 7 }
+
+tsFcPortStatFcTxFrames OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 8 }
+
+tsFcPortStatFcTxWords OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 9 }
+
+tsFcPortStatFcRxFrames OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 10 }
+
+tsFcPortStatFcRxWords OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 11 }
+
+tsFcPortStatFcLIPCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 12 }
+
+tsFcPortStatFcNOSCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 13 }
+
+tsFcPortStatFcErrorFrames OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 14 }
+
+tsFcPortStatFcDumpedFrames OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 15 }
+
+tsFcPortStatFcLinkFailureCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 16 }
+
+tsFcPortStatFcLossOfSyncCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 17 }
+
+tsFcPortStatFcLossOfSignalCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 18 }
+
+tsFcPortStatFcPrimitiveSeqProtocolErrCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 19 }
+
+tsFcPortStatFcInvalidTxWordCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 20 }
+
+tsFcPortStatFcInvalidCRCCount OBJECT-TYPE
+	SYNTAX		Counter64	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	""
+	::= { tsFcPortStatEntry 21 }
+
+
+--
+-- IP Group 
+--
+tsIpAddr	OBJECT IDENTIFIER ::= { tsIp 1 }
+
+tsIpAddrTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsIpAddrEntry
+        ACCESS        	not-accessible
+        STATUS        	mandatory
+        DESCRIPTION   	"This table is identical to the ipAddrTable in 
+                      	MIB2 except the columns tsIpAddrIfIndex and 
+                      	tsIpAddrAddr are reversed.  Also, the table 
+                      	is indexed by both these variables."
+	::= { tsIpAddr 1 }
+
+tsIpAddrEntry OBJECT-TYPE
+	SYNTAX        	TsIpAddrEntry
+	ACCESS 	      	not-accessible
+	STATUS 	      	mandatory
+	DESCRIPTION   	"The addressing information for one of this
+                      	entity's IP addresses."
+	INDEX         	{ tsIpAddrIfIndex, tsIpAddrAddr }
+	::= { tsIpAddrTable 1 }
+
+TsIpAddrEntry ::=
+    	SEQUENCE {
+		tsIpAddrIfIndex 	InterfaceIndex,
+	        tsIpAddrAddr 		IpAddress,
+	        tsIpAddrNetmask 	IpAddress,
+	        tsIpAddrBcastAddrFormat	INTEGER,
+	        tsIpAddrReasmMaxSize 	Integer32,
+                tsIpAddrRowStatus 	RowStatus,
+	        tsIpAddrType		INTEGER,
+	        tsIpAddrStatus		INTEGER
+    	}
+
+tsIpAddrIfIndex OBJECT-TYPE
+   	SYNTAX		InterfaceIndex
+  	ACCESS        	read-only
+  	STATUS        	mandatory
+	DESCRIPTION   	"The index value which uniquely identifies the
+                      	interface to which this entry is applicable.  The
+                      	interface identified by a particular value of this
+                      	index is the same interface as identified by the
+                      	same value of ifIndex."
+	::= { tsIpAddrEntry 1 }
+
+tsIpAddrAddr OBJECT-TYPE
+	SYNTAX        	IpAddress
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"The IP address to which this entry's addressing
+                      	information pertains."
+	::= { tsIpAddrEntry 2 }
+
+tsIpAddrNetmask OBJECT-TYPE
+        SYNTAX        	IpAddress
+        ACCESS        	read-write
+        STATUS        	mandatory
+        DESCRIPTION   	"The subnet mask associated with the IP address of
+                      	this entry.  The value of the mask is an IP
+                      	address with all the network bits set to 1 and all
+                      	the hosts bits set to 0."
+	::= { tsIpAddrEntry 3 }
+
+tsIpAddrBcastAddrFormat OBJECT-TYPE
+        SYNTAX        	INTEGER {
+			zeros(0),	-- use zeros
+			ones(1)	   	-- use ones
+		      	}
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"The IP broadcast address format used on this 
+                      	interface."
+	::= { tsIpAddrEntry 4 }
+
+tsIpAddrReasmMaxSize OBJECT-TYPE
+        SYNTAX        	Integer32 (0..65535)
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"The size of the largest IP datagram which this
+                      	entity can re-assemble from incoming IP fragmented
+                      	datagrams received on this interface."
+        ::= { tsIpAddrEntry 5 }
+
+tsIpAddrRowStatus OBJECT-TYPE
+        SYNTAX        	RowStatus
+        ACCESS        	read-write
+        STATUS        	mandatory
+        DESCRIPTION   	"Used to create/delete entries"
+        ::= { tsIpAddrEntry 6 }
+
+tsIpAddrType OBJECT-TYPE
+        SYNTAX        	INTEGER {
+			primary(0),
+			backup(1) 
+		      	}
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"Used to indicate whether this interface is
+			acting as the 'primary' or 'backup' interface
+			for the given IP address." 
+	::= { tsIpAddrEntry 7 }
+
+tsIpAddrStatus OBJECT-TYPE
+        SYNTAX        	INTEGER {
+			active(0),
+			inactive(1) 
+		      	}
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"Used to indicate the status of this interface.
+			'active' means this interface actively servicing
+			IP packets addressed to the given IP address.
+			'backup' means this interface is not actively
+			servicing IP packets addressed to the given IP
+			address."
+	::= { tsIpAddrEntry 8 }
+
+tsIpAddrTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"IP address table size."
+	::= { tsIpAddr 2 }
+
+
+tsIpRedundancy	OBJECT IDENTIFIER ::= { tsIp 2 }
+
+tsIpRedundancyTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsIpRedundancyEntry
+        ACCESS        	not-accessible
+        STATUS        	mandatory
+        DESCRIPTION   	"This table is used to configure the IP address a 
+			port will back-up.  A port can back-up zero or more 
+			IP addresses.  A priority can also be assigned to 
+			faciliate an election process if more than one port 
+			is configured as a potential back-up port."
+	::= { tsIpRedundancy 1 }
+
+tsIpRedundancyEntry OBJECT-TYPE
+	SYNTAX        	TsIpRedundancyEntry
+	ACCESS 	      	not-accessible
+	STATUS 	      	mandatory
+	DESCRIPTION   	"Table entry."
+	INDEX         	{ tsIpRedundancyIfIndex, tsIpRedundancyBackupAddr }
+	::= { tsIpRedundancyTable 1 }
+
+TsIpRedundancyEntry ::=
+    	SEQUENCE {
+		tsIpRedundancyIfIndex 		InterfaceIndex,
+	        tsIpRedundancyBackupAddr 	IpAddress,
+		tsIpRedundancyPriority		Integer32,
+                tsIpRedundancyRowStatus 	RowStatus
+    	}
+
+tsIpRedundancyIfIndex OBJECT-TYPE
+   	SYNTAX		InterfaceIndex
+  	ACCESS        	read-only
+  	STATUS        	mandatory
+	DESCRIPTION   	"The index value which uniquely identifies the
+                      	interface to which this entry is applicable.  The
+                      	interface identified by a particular value of this
+                      	index is the same interface as identified by the
+                      	same value of ifIndex."
+	::= { tsIpRedundancyEntry 1 }
+
+tsIpRedundancyBackupAddr OBJECT-TYPE
+	SYNTAX        	IpAddress
+        ACCESS        	read-only
+        STATUS        	mandatory
+        DESCRIPTION   	"The IP address this interface is backing-up." 
+	::= { tsIpRedundancyEntry 2 }
+
+tsIpRedundancyPriority OBJECT-TYPE
+        SYNTAX        	Integer32 (1..255)
+        ACCESS        	read-write
+        STATUS        	mandatory
+        DESCRIPTION   	"The priority assigned to this interface during
+			the back-up election process.  A higher value
+			represents a higher priority.  If two interfaces
+			have the same priority, the interface on the
+			same card (as the primary interface) is given
+			preference.  If there is no back-up interface on
+			the same card, the interface with the lowest
+			IfIndex value is given preference." 
+	DEFVAL		{ 10 }
+        ::= { tsIpRedundancyEntry 3 }
+
+tsIpRedundancyRowStatus OBJECT-TYPE
+        SYNTAX        	RowStatus
+        ACCESS        	read-write
+        STATUS        	mandatory
+        DESCRIPTION   	"Used to create/delete entries"
+        ::= { tsIpRedundancyEntry 4 }
+
+tsIpRedundancyTableSize OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"IP address table size."
+	::= { tsIpRedundancy 2 }
+
+--
+-- Security 
+--
+tsSecAuthenticationMethod OBJECT-TYPE
+	SYNTAX		INTEGER {
+			local(1),
+			radius(2),
+			localThenRadius(3),
+			radiusThenLocal(4),
+			localThenTacacs(5),
+			tacacsThenLocal(6),
+                        tacacs(7)
+			}
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the authentication method
+			for the system.  "
+	DEFVAL		{ local }
+	::= { tsSec 1 }
+
+tsSecRadiusServerTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSecRadiusServerEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the Radius Servers configured 
+			for the system." 
+	::= { tsSec 2 }
+
+tsSecRadiusServerEntry OBJECT-TYPE
+	SYNTAX		TsSecRadiusServerEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Radius Server table entry."
+	INDEX         	{ tsSecRadiusServerAddress }
+        ::= { tsSecRadiusServerTable 1 }
+ 
+TsSecRadiusServerEntry ::=
+	SEQUENCE {
+		tsSecRadiusServerAddress		IpAddress,
+		tsSecRadiusServerPriority		Integer32,
+		tsSecRadiusServerUdpPort		Integer32,
+		tsSecRadiusServerEncryptionKey		DisplayString,
+		tsSecRadiusServerTimeout		Integer32,
+		tsSecRadiusServerMaxRetries		Integer32,
+		tsSecRadiusServerAccessRequest		Counter32,
+		tsSecRadiusServerAccessAccepts		Counter32,
+		tsSecRadiusServerAccessRejects		Counter32,
+		tsSecRadiusServerServerTimeout		Counter32,
+		tsSecRadiusServerRowStatus		RowStatus
+        }
+
+tsSecRadiusServerAddress OBJECT-TYPE
+	SYNTAX	  	IpAddress	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The IP address of a Radius server."
+	::= { tsSecRadiusServerEntry 1 }
+ 
+tsSecRadiusServerPriority OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the priority of this entry.
+			If multiple Radius servers are specified the 
+			server with a higher priority (higher number)
+			will be used before a server with a lower priority
+			(lower number).  No two Radius servers can have 
+			the same priority."
+	DEFVAL		{ 1 }
+	::= { tsSecRadiusServerEntry 2 }
+ 
+tsSecRadiusServerUdpPort OBJECT-TYPE
+	SYNTAX		Integer32 (1..65535)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the UDP port this Radius
+			server is listening on to receive Radius 
+			authentication request."
+	DEFVAL		{ 1812 }
+	::= { tsSecRadiusServerEntry 3 }
+
+tsSecRadiusServerEncryptionKey OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..20))	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the encryption key that is
+			used to encrypt/decrypt Radius messages." 
+	::= { tsSecRadiusServerEntry 4 }
+
+tsSecRadiusServerTimeout OBJECT-TYPE
+	SYNTAX		Integer32 (2..3600)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the amount of time to wait
+			before resending a authentication request to this
+			Radius server."
+	DEFVAL		{ 5 }
+	::= { tsSecRadiusServerEntry 5 }
+
+tsSecRadiusServerMaxRetries OBJECT-TYPE
+	SYNTAX		Integer32 (1..30)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the maximum number of retry
+			attempts to this Radius server."
+	DEFVAL		{ 2 }
+	::= { tsSecRadiusServerEntry 6 }
+
+tsSecRadiusServerAccessRequest OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was sent to this Radius server."
+	::= { tsSecRadiusServerEntry 7 }
+
+tsSecRadiusServerAccessAccepts OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was accepted by this Radius server."
+	::= { tsSecRadiusServerEntry 8 }
+
+tsSecRadiusServerAccessRejects OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was rejected by this Radius server."
+	::= { tsSecRadiusServerEntry 9 }
+
+tsSecRadiusServerServerTimeout OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was sent to this Radius server but
+			no response was received."
+	::= { tsSecRadiusServerEntry 10 }
+
+tsSecRadiusServerRowStatus OBJECT-TYPE
+	SYNTAX		RowStatus
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Row status."
+	::= { tsSecRadiusServerEntry 11 }
+
+tsSecTacacsServerTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsSecTacacsServerEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table lists the Tacacs Servers configured 
+			for the system." 
+	::= { tsSec 3 }
+
+tsSecTacacsServerEntry OBJECT-TYPE
+	SYNTAX		TsSecTacacsServerEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"Tacacs Server table entry."
+	INDEX         	{ tsSecTacacsServerAddress }
+        ::= { tsSecTacacsServerTable 1 }
+ 
+TsSecTacacsServerEntry ::=
+	SEQUENCE {
+		tsSecTacacsServerAddress		IpAddress,
+		tsSecTacacsServerPriority		Integer32,
+		tsSecTacacsServerUdpPort		Integer32,
+		tsSecTacacsServerEncryptionKey		DisplayString,
+		tsSecTacacsServerTimeout		Integer32,
+		tsSecTacacsServerMaxRetries		Integer32,
+		tsSecTacacsServerAccessRequest		Counter32,
+		tsSecTacacsServerAccessAccepts		Counter32,
+		tsSecTacacsServerAccessRejects		Counter32,
+		tsSecTacacsServerServerTimeout		Counter32,
+		tsSecTacacsServerRowStatus		RowStatus
+        }
+
+tsSecTacacsServerAddress OBJECT-TYPE
+	SYNTAX	  	IpAddress	
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"The IP address of a Tacacs server."
+	::= { tsSecTacacsServerEntry 1 }
+ 
+tsSecTacacsServerPriority OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the priority of this entry.
+			If multiple Tacacs servers are specified the 
+			server with a higher priority (higher number)
+			will be used before a server with a lower priority
+			(lower number).  No two Tacacs servers can have 
+			the same priority."
+	DEFVAL		{ 1 }
+	::= { tsSecTacacsServerEntry 2 }
+ 
+tsSecTacacsServerUdpPort OBJECT-TYPE
+	SYNTAX		Integer32 (1..65535)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the UDP port this Tacacs
+			server is listening on to receive Tacacs 
+			authentication request."
+	DEFVAL		{ 49 }
+	::= { tsSecTacacsServerEntry 3 }
+
+tsSecTacacsServerEncryptionKey OBJECT-TYPE
+	SYNTAX		DisplayString (SIZE (0..20))	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the encryption key that is
+			used to encrypt/decrypt Tacacs messages." 
+	::= { tsSecTacacsServerEntry 4 }
+
+tsSecTacacsServerTimeout OBJECT-TYPE
+	SYNTAX		Integer32 (2..3600)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the amount of time to wait
+			before resending a authentication request to this
+			Tacacs server."
+	DEFVAL		{ 10 }
+	::= { tsSecTacacsServerEntry 5 }
+
+tsSecTacacsServerMaxRetries OBJECT-TYPE
+	SYNTAX		Integer32 (1..30)
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to configure the maximum number of retry
+			attempts to this Tacacs server."
+	DEFVAL		{ 2 }
+	::= { tsSecTacacsServerEntry 6 }
+
+tsSecTacacsServerAccessRequest OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was sent to this Tacacs server."
+	::= { tsSecTacacsServerEntry 7 }
+
+tsSecTacacsServerAccessAccepts OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was accepted by this Tacacs server."
+	::= { tsSecTacacsServerEntry 8 }
+
+tsSecTacacsServerAccessRejects OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was rejected by this Tacacs server."
+	::= { tsSecTacacsServerEntry 9 }
+
+tsSecTacacsServerServerTimeout OBJECT-TYPE
+	SYNTAX		Counter32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of authentication
+			request that was sent to this Tacacs server but
+			no response was received."
+	::= { tsSecTacacsServerEntry 10 }
+
+tsSecTacacsServerRowStatus OBJECT-TYPE
+	SYNTAX		RowStatus
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Row status."
+	::= { tsSecTacacsServerEntry 11 }
+
+--
+-- VLAN 
+--
+tsVlanNumVlans OBJECT-TYPE
+	SYNTAX		Integer32
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Used to indicate the number of VLANs currently
+			configured in the system."
+	::= { tsVlan 1 }
+ 
+tsVlanTable OBJECT-TYPE
+	SYNTAX		SEQUENCE OF TsVlanEntry
+        ACCESS		not-accessible
+        STATUS		mandatory
+        DESCRIPTION	"This table list the VLANs configured in the system." 
+	::= { tsVlan 2 }
+
+tsVlanEntry OBJECT-TYPE
+	SYNTAX		TsVlanEntry
+	ACCESS		not-accessible
+	STATUS		mandatory
+	DESCRIPTION	"VLAN table entry."
+	INDEX         	{ tsVlanId }
+        ::= { tsVlanTable 1 }
+ 
+TsVlanEntry ::=
+	SEQUENCE {
+		tsVlanId		Integer32,
+		tsVlanName		DisplayString,
+		tsVlanPortMembers	PortSet,
+		tsVlanActivePortMembers	PortSet,
+		tsVlanUntaggedPorts	PortSet,
+		tsVlanRowStatus		RowStatus
+        }
+
+tsVlanId OBJECT-TYPE
+	SYNTAX		Integer32 (1..4094)
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"VLAN Identifier."
+	::= { tsVlanEntry 1 }
+ 
+tsVlanName OBJECT-TYPE
+	SYNTAX	 	DisplayString(SIZE(0..20))	
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"VLAN name."
+	::= { tsVlanEntry 2 }
+ 
+tsVlanPortMembers OBJECT-TYPE
+	SYNTAX		PortSet
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to specify the Ethernet ports that are
+			members of this VLAN.  The Ethernet port's IfIndex
+			value is used to index into this bit-array.  For
+			instance, if Ethernet port 2/1, whose IfIndex value 
+			is 129, is a member of this VLAN, then bit 129 of
+			this bit-array will be set to 1." 
+	::= { tsVlanEntry 3 }
+
+tsVlanUntaggedPorts OBJECT-TYPE
+	SYNTAX		PortSet
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Used to specify the Ethernet ports, that are 
+			members of this VLAN, that should process untagged 
+			frames.
+
+			Each Ethernet port can be a member of one or more
+			VLANs.  However, each port can only be configured
+			as untagged for only one VLAN."
+	::= { tsVlanEntry 4 }
+
+tsVlanActivePortMembers OBJECT-TYPE
+	SYNTAX          PortSet
+	ACCESS          read-only
+	STATUS          mandatory
+	DESCRIPTION     "Used to indicate the Ethernet ports that are
+       	         	active members of this VLAN.  Typically, the value
+                	of this variable is equivalent to -or- is a subset
+                	of 'tsVlanPortMembers'."
+	::= { tsVlanEntry 5 }
+ 
+tsVlanRowStatus OBJECT-TYPE
+	SYNTAX		RowStatus
+	ACCESS		read-write
+	STATUS		mandatory
+	DESCRIPTION   	"Row status."
+	::= { tsVlanEntry 6 }
+ 
+
+--
+-- Error Group 
+--
+tsErrorCode OBJECT-TYPE
+	SYNTAX		INTEGER {
+			noError(0),
+                        tooBig(1),
+			noSuchName(2),
+			badValue(3),
+			readOnly(4),
+			genErr(5),
+			noAccess(6),
+			wrongType(7),
+			wrongLength(8),
+			wrongEncoding(9),
+			wrongValue(10),
+			noCreation(11),
+			inconsistentValue(12),
+			resourceUnavailable(13),
+			commitFailed(14),
+			undoFailed(15),
+			authorizationError(16),
+			notWritable(17),
+			inconsistentName(18),	
+			noSuchEntry(19),
+			notSupported(20),
+			badAddress(21),
+			badNetmask(22),
+			badPort(23),
+			resourceNotAvailable(24),
+			operationInProgress(25),
+			operationNotAllowed(26),
+			tableIsFull(27),
+			duplicateAddress(28),
+			destinationNotReachable(29),
+			entryAlreadyExist(30),
+			badGateway(31),
+			stringTooLong(32),
+			badCard(33),
+			badMacAddress(34),
+			duplicateMacAddress(35),
+			cardIsUp(36),
+			cardIsDown(37),
+			valueOutOfRange(38),
+			resourceInUse(39),	
+                        outOfMemory(40),
+			tooMuchData(41),
+			systemError(42),
+			operationFailed(43),
+			operationTemporarilyFailed(44),
+			operationTimedOut(45),
+			adminOnly(46),
+			permissionDenied(47),
+			duplicateName(48),
+			outOfSubnetRange(49),
+			subnetRangeOverlay(50),
+			notAllowedWhenEntryIsEnabledOrActive(51),
+			invalidUserName(52),
+			unknownUser(53),
+			invalidPassword(54),
+			passwordMismatch(55),
+			invalidAccessLevel(56),
+			invalidAdminStatus(57),
+			specificGUIDIsNeeded(58),
+			invalidVlanId(59),
+			invalidEgressPorts(60),
+			invalidForbiddenEgressPorts(61),
+			invalidUntaggedPorts(62),
+			configurationNotComplete(63),
+			loginFailed(64),
+			operationAborted(65),
+			cannotDeleteSelf(66),
+			cardNotPresent(67),
+			portNotPresent(68),
+			invalidGUID(69),
+			invalidSMKey(70),
+			operationAllowedOnSingleInterfaceOnly(71),
+			specificTcpConnectionMustBeSpecified(72),
+			invalidIbSubnetPrefix(73),
+			addressIsNotAssignedToAPortYet(74),
+			cannotEnableRoutingOnALogicalPort(75),
+			invalidGuidOrSlotNumber(76),
+			invalidLidRange(77),
+			switchNotFound(78),
+			valueIsOutOfRange(79),
+			thisAreaIsNotConfiguredAsAStubArea(80),
+			createEntryBeforeUsingThisCommand(81),
+			invalidModule(82),
+			cardTypeMismatch(83),
+			invalidExtension(84),
+			invalidWwnn(85),
+			invalidNumTargets(86),
+			invalidWwnnList(87),
+			invalidPolicyMask(88),
+			invalidGuidOrExtension(89),
+			maxLimitReached(90),
+			unknownInitiator(91),
+			invalidIpSubnet(92),
+			onlyOneIpInterfaceCouldBeCreatedOnAGatewayPort(93),
+      			missingParameter(94),
+			noIpAddressConfigured(95),
+			noNetmaskConfigured(96),
+			configDoesNotExist(97),
+			cannotSetSpeedOrDuplexWhenAutoNegotiationIsEnabled(98),
+			invalidPortTypeAndSpeedCombination(99),
+			invalidSpeedAndDuplexCombination(100),
+			invalidPortCapabilityCombination(101),
+			cannotRemoveRouterCapabilityWhenAnIpAddressIsDefined(102),
+			noPortCapabilitySelectedOrSpecified(103),
+ 			invalidGid(104),
+			invalidSubnetPrefix(105),
+			missingSpecificSubnetPrefix(106),
+			invalidFilename(107),
+			incorrectUsernameOrPasswordForRemoteMachine(108),
+			theFileSpecifiedIsNotAConfigurationFile(109),	
+			noSuchFileOnRemoteMachine(110),
+			invalidDateFormat(111),
+			invalidTimeFormat(112),
+			changePolicyToRestrictedForThisOperation(113),
+			invalidImageFilename(114),
+			invalidConfigurationFilename(115),
+			fileDoesNotExist(116),
+			invalidFileSystem(117),
+		 	invalidRowStatus(118),
+			duplicateWwnn(119),
+			missingWwnn(120),
+			logicalIdRequiredForITLCreation(121),
+			logicalIdReadOnlyAfterRowCreation(122),
+			missingCustomData(123),
+			invalidAction(124),
+			invalidCommunitStringLen(125),
+			communityStringAlreadyInUse(126),
+			noSpacesAllowed(127),
+			wwnnCannotBeModified(128),
+			initiatorAlreadyExist(129),
+			initlatorDoesNotExist(130),
+			srpLunIdRequiredForITLCreation(131),
+			invalidWwpn(132),
+			invalidSrpLunId(133),
+			serviceNameCannotBeModified(134),
+			useMaskNotSupported(135),
+			invalidServiceName(136),
+			missingIocGuid(137),
+			iocGuidCannotBeModified(138),
+			cannotDeleteActiveBootImage(139),
+			cannotDeleteCurrentlyBootedBootImage(140),
+			bootImageMustBeSpecified(141),
+			operationNotAllowedForFibreChannelGateway(142),
+			exceededMaximumNumberOfImageFiles(143),
+			fileAlreadyExist(144),
+			userDoesNotHaveRemoteAccess(145),
+			invalidSyslogFileName(146),
+			invalidRemoteFilePath(147),
+			invalidFibreChannelLunId(148),
+			invalidFibreChannelLogicalId(149),
+			invalidIocGuid(150),
+			initiatorAndTargetMustExistBeforeItlCanBeCreated(151),
+			initiatorMustBeInactiveToBeDeleted(152),
+			targetMustbeInactiveToBeDeleted(153),
+			itlMustbeInactiveToBeDeleted(154),
+			duplicateWwpn(155),
+		 	cannotModifyWwpn(156),
+			invalidSrpItlLogicalId(157),	
+			managementEthernetAndIbIpAddressCannotBeOnTheSameNetwork(158),
+			imageFilesCannotBeCopiedOutOfTheSystem(159),
+			syslogFilesCannotBeCopiedOutOfTheSystem(160),
+			invalidResponseReceivedFromFtpServer(161),
+			noActionIsCurrentlyInProgress(162),
+			notEnoughSpaceToPerformInstallation(163),
+			notEnoughSpaceOnCard1ToPerformInstallation(164),
+			notEnoughSpaceOnCard2ToPerformInstallation(165),
+			notEnoughSpaceOnCard3ToPerformInstallation(166),
+			notEnoughSpaceOnCard4ToPerformInstallation(167),
+			notEnoughSpaceOnCard5ToPerformInstallation(168),
+			notEnoughSpaceOnCard6ToPerformInstallation(169),
+			notEnoughSpaceOnCard7ToPerformInstallation(170),
+			notEnoughSpaceOnCard8ToPerformInstallation(171),
+			notEnoughSpaceOnCard9ToPerformInstallation(172),
+			notEnoughSpaceOnCard10ToPerformInstallation(173),
+			notEnoughSpaceOnCard11ToPerformInstallation(174),
+			notEnoughSpaceOnCard12ToPerformInstallation(175),
+			notEnoughSpaceOnCard13ToPerformInstallation(176),
+			notEnoughSpaceOnCard14ToPerformInstallation(177),
+			notEnoughSpaceOnCard15ToPerformInstallation(178),
+			notEnoughSpaceOnCard16ToPerformInstallation(179),
+ 			filesOnThisFileSystemAreNotReadable(180),
+			errorOpeningFileForReading(181),
+			imageIsNotInstalledOnOneOrMoreCards(182),
+			operationNotAllowedOnConsole(183),
+			operationNotAllowedOnThisCard(184),
+			fileNotAsciiReadable(185),
+			cannotDeleteSuperAccount(186),
+			cannotDeleteYourOwnAccount(187),
+			sourceFileDoesNotExist(188),
+			invalidDestinationFilename(189),
+			ftpServerNotReachable(190),
+			invalidFtpUrlFormat(191),
+			invalidDirectorySpecification(192),
+			invalidSystemFileType(193),
+			invalidConfigFileType(194),
+			operationNotAllowedInRecoveryMode(195),
+			incompleteCommand(196),
+--			portFailoverAndLoadBalancingAndPathAffinityAreMutuallyExclusive(197),
+--			storagePortFailoverAndLoadBalancingNotSupported(198),
+			invalidBridgeGroup(199),
+			portAlreadyAssignedToABridgeGroup(200),
+			bridgeGroupHasPortAssigned(201),
+		 	cannotAssignBridgePortOnSeparateCards(202),
+			invalidPkeyValue(203),
+			pkeyAlreadyUsed(204),
+			invalidSrpLuDeviceCategory(205),
+			cannotModify(206),
+			cannotConfigurePortForBridging(207),
+			portIsConfiguredForBridging(208),
+			badSoftwareDetected(209),
+			invalidGatewayPortIdentifier(210),
+			noSuchGatewayPort(211),
+			failedUnpackingSystemImage(212),
+			badSystemImage(213),
+			failedToTransferSystemImageComponentToACard(214),
+			invalidTimeoutValue(215),
+		 	invalidTrunkGroup(216),	
+			trunkGroupPortMembersMustBeOnTheSameCard(217),
+			trunkGroupNotEnabledOrNoPortMembersAssigned(218),
+			missingTestTypeInput(219),
+			missingActionInput(220),
+			missingSourceIdInput(221),
+			missingTargetIdInput(222),
+			testNotAllowedOnThisPortType(223),
+			testNotAllowedWhenPortIsInService(224),
+			testNotAllowedWhenPortIsOutOfService(225),
+			portIsInDiagnosticMode(226),
+			portIsAMemberOfAnotherTrunkGroup(227),
+			initiatorOrTargetDoesNotExist(228),
+			initiatorAndTargetMustBeInactive(229),
+			modificationNotAllowedAfterSMIsStarted(230),
+			trunkGroupIsAMemberOfABridgeGroup(231),
+			portCannotBeAddedToATrunkGroup(232),
+			invalidConfigurationCombination(233),
+			invalidWhenAddressIsAssigned(234),
+			invalidDataPattern(235),
+			invalidId(236),
+			invalidRadiusAuthenticationMethod(237),
+			exceededMaximumNumberOfRadiusServers(238),
+			invalidRadiusPort(239),
+			invalidRadiusTimeout(240),
+			invalidRadiusMaxRetry(241),
+			targetsAreEitherInvalidOrMissing(242),
+			cannotBeModifiedAfterCreation(243),
+			cannotCopyCompleteFileCheckDiskSpace(244),
+			testNotAllowedOnThisCardType(245),
+			testNotAllowedWhenCardIsInService(246),
+			testNotAllowedWhenCardIsOutOfService(247),
+			entryIsPhysicallyAccessible(248),
+			pkeyDoesNotExist(249),
+			cannotDeleteDefaultPkey(250),
+			cannotRemovePortFromDefaultPkey(251),
+			exceedingPortPartitionCapability(252),
+			exceedingPortPartitionLimit(253),
+			exceedingPartitionMemberLimit(254),
+			exceedingMaxNumberOfBridgeGroupsAllowed(255),
+			lowOnDiskSpace(256),
+			exceedingMaxNumberOfLogCopiesAllowed(257),
+			operationNotAllowedWhenCardIsGettingUpgraded(258),
+			unknownXMLRequestType(259),
+			failedParsingXMLRequest(260),
+			unknownMIBGroupNameInXMLRequest(261),
+			unknownXMLTagInXMLRequest(262),
+			bridgeGroupIsAMemberOfRedundancyGroup(263),
+			bridgeGroupIsNotFullyConfigured(264),
+			htmlAccessDenied(265),
+			operationNotAllowedWhenHTMLServerIsActive(266),
+			invalidUseOfTableIndexes(267),
+			invalidLIDValueSpecified(268),
+			canOnlyChangeAddressWhenAddressOptionIsStatic(269),
+			noSuchRedundancyGroupDefined(270),
+			addressAlreadyAssigned(271),
+			unrecognizedCommand(272),
+			ambiguousCommand(273),
+			outOfDiskSpace(274),
+			invalidModuleType(275),
+			notAllowedWhenHttpSecureServerIsActive(276),
+			xmlSchemaVersionMismatch(277),
+			useLuCommandsToModifyLuAttributes(278),
+			invalidTypeForHttpCertificateCommonName(279),
+			canOnlyChangeAdminStatusWhenAddressOptionIsStatic(280),
+			notAllowedWhenOnlyOnePowerSupplyIsActive(281),
+			notAllowedWhenPortIsInTheDormantState(282),
+			noExclamationCharAllowedInUsernamePasswordCommunityString(283),
+			invalidModuleNumber(284),
+			initiatorIsActiveViaThePort(285),
+			invalidThresholdValue(286),
+			lidValuesAreNotUnique(287),
+			exceededMaxNumOfSubnetsPerBridgeGroup(288),
+			exceededMaxNumOfRoutesPerPerBridgeGroup(289),
+			syncWithStandbyControllerIsIncomplete(290),
+			systemReloadIsInProgress(291),
+			exceededMaxNumOfSubnetManagers(292),
+			userUpdatesNotAllowedOnSynchronizedDatabase(293),
+			notAllowedUseReloadInstead(294),
+			invalidSystemOperationMode(295),
+			obsoleteCardTypeDetectedRemoveCardBeforeInstalling(296),
+			invalidMGIDValue(297),
+			invalidQKeyValue(298),
+			imageCannotBeUsedWithAnafa2ChipsInstalled(299),
+			invalidTacacsAuthenticationMethod(300),
+			exceededMaximumNumberOfTacacsServers(301),
+			invalidTacacsPort(302),
+			invalidTacacsTimeout(303),
+			invalidTacacsMaxRetry(304)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION	"Used to enumerate proprietary error codes
+			this unit can return to SNMP management stations
+			in response to a failed SNMP operation."
+	::= { tsError 1 }
+
+--
+-- Event Group 
+--
+tsEventSeverity OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			config(2),   	-- significant configuration change event
+			info(3),     	-- informational event
+			warning(4),  	-- warning event
+			error(5),    	-- error event
+			fatal(6)  	-- fatal event
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Event severity enumeration"
+	::= { tsEventGroup 1 }
+ 
+tsEventCategory OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			ibSm(2),	-- IB Subnet Manager	
+			ibSma(3),	-- IB Subnet Administration
+			fc(4),		-- Fibre Channel 
+			eth(5),		-- Ethernet 
+ 			system(6),	-- System (generic)
+			ibPm(7)		-- IB Performance Manager
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Event category enumeration"
+	::= { tsEventGroup 2 }
+ 
+tsEventType OBJECT-TYPE
+	SYNTAX		INTEGER {
+			none(1),
+			ibSmStarted(2),
+			ibSmTerminated(3),
+			ibSmSlaveToMaster(4),
+			ibSmMasterToSlave(5),
+			ibSmNodeAdded(6),
+			ibSmNodeDeleted(7),
+			ibSmMulticastGroupAdded(8),
+			ibSmMulticastGroupDeleted(9),
+			ibSmMulticastMemberAdded(10),
+			ibSmMulticastMemberDeleted(11),
+			ibSmPartitionAdded(12),
+			ibSmPartitionDeleted(13),
+			ibSmPartitionMemberAdded(14),
+			ibSmPartitionMemberDeleted(15),
+			cardRemoved(16),
+                        cardAdminDown(17),
+			portAdminDown(18),
+			ibSmDbSyncNotSupported(19),
+			ibSmDbSyncNotEnabled(20),
+			ibSmDbSyncNoStandby(21),
+			ibSmDbSyncDbVersionMismatch(22),
+			ibSmDbSyncColdSyncTimeout(23),
+			ibSmDbSyncSessionTimeout(24),
+			hardwareError(25),
+			adminInitiatedReboot(26),
+			softwareInitiatedReboot(27),
+			hardwareInitiatedReboot(28),
+			ibPmPortMonitorThresholdErrorChange(29),
+			ibPmPortMonitorThresholdUtilChange(30),
+			ibPmConnectionMonitorErrorChange(31),
+			ibPmConnectionMonitorUtilChange(32)
+			}
+	ACCESS		read-only
+	STATUS		mandatory
+	DESCRIPTION   	"Event type enumeration"
+	::= { tsEventGroup 3 }
+
+tsEventInfo OBJECT-TYPE
+        SYNTAX          DisplayString (SIZE (0..512))
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Event information string"
+	::= { tsEventGroup 4 }
+
+tsEventSubtype OBJECT-TYPE
+        SYNTAX          Integer32 
+        ACCESS          read-only
+        STATUS          mandatory
+        DESCRIPTION     "Used to *optionally* augment the tsEventType
+			variable.  Each event type may have subtypes
+			defined to further categorize the event.  If
+			a subtype is not used(needed) for a particular
+			event type this value will be zero.
+
+			Refer to the file xxx for a complete list of
+			subtype values supported in the system."
+	::= { tsEventGroup 5 }
+
+
+--
+-- TRAPS
+--
+
+tsCardDown NOTIFICATION-TYPE
+	OBJECTS      	{ tsDevCardSlotId, tsDevCardAdminStatus, 
+ 		       	  tsDevCardOperStatus, tsDevCardOperType }
+        STATUS       	current
+        DESCRIPTION  	"A tsCardDown trap signifies that the SNMP entity,
+                     	acting in an agent role, has detected that the
+                     	tsDevCardOperStatus object for one of its cards
+                     	is about to transition into the 'down' state."
+        ::= { tsTraps 1 }
+
+tsCardUp NOTIFICATION-TYPE
+	OBJECTS      	{ tsDevCardSlotId, tsDevCardAdminStatus, 
+ 		          tsDevCardOperStatus, tsDevCardOperType }
+        STATUS       	current
+        DESCRIPTION  	"A tsCardUp trap signifies that the SNMP entity,
+                     	acting in an agent role, has detected that the
+                     	tsDevCardOperStatus object for one of its cards
+                     	is about to transition into the 'up' state."
+        ::= { tsTraps 2 }
+
+tsPowerSupplyDown NOTIFICATION-TYPE
+	OBJECTS       	{ tsDevPowerSupplyPsId, tsDevPowerSupplyOperStatus}
+	STATUS        	current
+	DESCRIPTION   	"A tsPowerSupplyDown trap signifies that the
+			SNMP entity, acting in an agent role, has
+			detected that the tsDevPowerSupplyOperStatus
+			object for one of its power supply units is
+			about to transition into the 'down' state."
+        ::= { tsTraps 3 }
+
+tsFanDown NOTIFICATION-TYPE
+	OBJECTS       	{ tsDevFanFanId, tsDevFanOperStatus}
+	STATUS        	current
+	DESCRIPTION   	"A tsFanDown trap signifies that the
+			SNMP entity, acting in an agent role, has
+			detected that the tsDevFanOperStatus object
+			for one of its fan units is about to
+			transition into the 'down' state."
+        ::= { tsTraps 4 }
+
+tsTemperature NOTIFICATION-TYPE
+        OBJECTS       { tsDevSensorSlotId, tsDevSensorSensorId, tsDevSensorTemperature }
+        STATUS        obsolete
+        DESCRIPTION   "A tsTemperature trap signifies that the SNMP
+                      entity, acting in an agent role, has detected the
+                      device is over-heating."
+        ::= { tsTraps 5 }
+
+tsCardInsert NOTIFICATION-TYPE
+	OBJECTS      	{ tsDevCardSlotId, tsDevCardOperType }
+        STATUS       	current
+        DESCRIPTION  	"A tsCardInsert trap signifies that the SNMP entity,
+                     	acting in an agent role, has detected a card insert
+			event." 
+        ::= { tsTraps 6 }
+
+tsCardRemove NOTIFICATION-TYPE
+	OBJECTS      	{ tsDevCardSlotId }
+        STATUS       	current
+        DESCRIPTION  	"A tsCardRemove trap signifies that the SNMP entity,
+                     	acting in an agent role, has detected a card remove
+			event." 
+        ::= { tsTraps 7 }
+
+tsEvent NOTIFICATION-TYPE
+  	OBJECTS      	{ tsEventSeverity, tsEventCategory, tsEventType, 
+                          tsEventSubtype, tsEventInfo }
+        STATUS       	current
+        DESCRIPTION  	"A tsEvent trap signifies that the SNMP entity,
+                     	acting in an agent role, has detected an event
+			that should be reported."
+        ::= { tsTraps 8 }
+
+tsSensor NOTIFICATION-TYPE
+        OBJECTS       { tsDevSensorSlotId, tsDevSensorSensorId, 
+                        tsDevSensorTemperature, tsDevSensorOperCode }
+        STATUS        current
+        DESCRIPTION   "A tsSensor trap signifies that the SNMP
+                      entity, acting in an agent role, has detected the
+                      sensor has crossed a temperature threshold." 
+        ::= { tsTraps 9 }
+
+tsPowerSupplyUp NOTIFICATION-TYPE
+	OBJECTS       	{ tsDevPowerSupplyPsId, tsDevPowerSupplyOperStatus}
+	STATUS        	current
+	DESCRIPTION   	"A tsPowerSupplyUp trap signifies that the
+			SNMP entity, acting in an agent role, has
+			detected that the tsDevPowerSupplyOperStatus
+			object for one of its power supply units is
+			about to transition into the 'Up' state."
+        ::= { tsTraps 10 }
+
+tsFanUp NOTIFICATION-TYPE
+	OBJECTS       	{ tsDevFanFanId, tsDevFanOperStatus}
+	STATUS        	current
+	DESCRIPTION   	"A tsFanUp trap signifies that the
+			SNMP entity, acting in an agent role, has
+			detected that the tsDevFanOperStatus object
+			for one of its fan units is about to
+			transition into the 'up' state."
+        ::= { tsTraps 11 }
+END

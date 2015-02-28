@@ -1,0 +1,216 @@
+---
+# defines the polling output for the each spec
+# this is used by the driver to compare the output from the poll to what is expected
+
+system-stats:
+    # determines statistics for system counters such as cpu load, memory usage etc.
+    cpu:
+        required:
+            - load_1min
+            - load_5min
+            
+    memory:
+        required:
+            - name
+            - used
+            - free
+            - largest_free
+
+
+
+port-stats:
+    # determines port statistics for various packet counts
+    rfc2863:
+        # rfc2863 are standard ietf counters
+        # index by physical port names
+        required:
+            - admin_status
+            - oper_status
+            - octets_in
+            - unicast_pkts_in
+            - multicast_pkts_in
+            - broadcast_pkts_in
+            - discards_in
+            - errors_in
+            - octets_out
+            - unicast_pkts_out
+            - multicast_pkts_out
+            - broadcast_pkts_out
+            - discards_out
+            - errors_out
+
+
+entity:
+    # contains information about the system and components within (fru's, versions etc.)
+    node-info:
+        required:
+            - name
+            - location
+        optional:
+            - uptime
+            
+    info:
+        required:
+            - vendor
+            - manufacturer
+            - model_name
+            - alias
+            - desc
+            - class
+            - serial
+            - asset_id
+            - hw_rev
+            - fw_rev
+            - sw_rev
+            - mfg_date
+            - fru
+            - contained_in
+            - parent_rel_pos
+            
+    status:
+        required:
+            - op_status
+            - admin_status
+
+    modules:
+        required:
+            - physical_index
+            - num_ports
+            - slot_number
+
+
+port:
+    # description of the network ports that are on the device
+    # indexed by a physical name (eg Gi1/2)
+    info:
+        # high level information that identifies the port
+        required:
+            - alias
+            - description
+            - type
+            - mac_address
+    status:
+        required:
+            - admin_status
+            - op_status
+            - connector_status
+            - last_change
+    settings:
+        required:
+            - duplex_admin_status
+            - duplex_admin
+            - speed_admin_status
+            - speed_status
+        optional:
+            - port_fast
+
+    vlan:
+        required:
+            - native_vlan
+            - trunked_vlans
+
+
+layer1-peer:
+    # describes the layer1 peers (via cdp/lldp etc.) connected to the device being queried
+    # index by a physical port name
+    info:
+        required:
+            - device
+            - peer_port
+
+port-channel:
+    # describes the ports channels on the device
+    status:
+        # index by the port channel identifier
+        - alias
+        - members
+        - admin_status
+        - op_status
+
+spanning-tree:
+    # describes the layer2 spanning trees on the device
+    vlans:
+        required:
+            - vtp_domain_name
+            - protocol
+            
+    root:
+        # for each index'd vlan number, enumerate the ports participating in the spanning tree
+        required:
+            - vlan_status
+            - designated_ports
+            - alternate_ports
+            - learning_ports
+            
+arps:
+    # arp tables from the device
+    status:
+        - by_physical_port
+        - by_type
+        
+gateways:
+    # information on svi's, sub interfaces etc.
+    info:
+        required:
+            - protocol
+            - ip_address
+    status:
+        required:
+            - admin_status
+            - op_status
+
+subnets:
+    # information on subnets known to the device
+    status:
+        - table
+
+ospf:
+    # information on the routing status of the device
+    info:
+        - protocol
+    status:
+        - subnet
+        
+bgp:
+    subnet:
+        - next_hop
+        - as_path
+        - metric
+        - weight
+        
+environment-status:
+    # environmental status of the device, eg temperatures, power etc.
+    # index by the entity table
+    info:
+        - name
+    temperature:
+        - temperature
+    power:
+        - power_status
+        - redundancy_admin_status
+        - redundancy_op_status
+        - redudancy_mode
+    voltage:
+        - voltage_reading
+        - voltage_threshold
+    current:
+        - current_reading
+        - current_threshold
+    fan:
+        - fan_status
+        - fan_speed
+        - fan_threshold
+
+user-stats:
+    # statistical indication of the number of users on the device, this couldbe vpn users, dot11 users etc.
+    info:
+        - name
+    status:
+        - users
+
+
+ip-sla-stats:
+    # ip sla statistics from the device
+    status:
+        - uptime
+--- 

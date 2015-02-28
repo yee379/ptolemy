@@ -1,0 +1,20 @@
+# logging file
+LOG_FILE: '/opt/ptolemy/var/log/report.log'
+
+
+#######################################################################
+# Agent Settings
+#######################################################################
+
+POOL: 'postgres.default'
+KEYS:
+    - '#.spanning_tree.#'
+#######################################################################
+# POSTGRES Settings
+#######################################################################
+
+POSTGRES_HOST: 'net-graphite01.slac.stanford.edu'
+POSTGRES_PORT: 5432
+POSTGRES_DATABASE: 'ptolemy_production'
+POSTGRES_USERNAME: 'ptolemy'
+POSTGRES_PASSWORD: 'ptolemy'

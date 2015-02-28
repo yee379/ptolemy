@@ -1,0 +1,27 @@
+---
+specification:  performance
+description:    Cisco nexus Switch Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENTITY-FRU-CONTROL-MIB
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        defs:
+            - admin_status:
+                required: false
+            - status:
+                ref:    cefcFanTrayOperStatus
+                map:
+                    - value_sub:
+                        dict:
+                            up: 1
+                            down: 0
+                            unknown: 2
+                            warning: 2

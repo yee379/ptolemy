@@ -1,0 +1,115 @@
+{% extends "mobile/base-multipage.html" %}
+{% load str_tags %}
+
+{% block main-title %}Edit Port{% endblock %}
+{% block main-content %}
+          
+        <form id="port-form" method="post" target="response-configure-iframe" action="/mobile/provision/configure/{{ port.device.name }}/{{ port.physical_port|escapeforwardslash }}" data-ajax="false">
+          
+          <div data-role="fieldcontain"> 
+            <label for="alias">Alias</label> 
+            <input type="text" name="alias" id="alias" value="{{ port.alias }}"/> 
+          </div> 
+
+          <div data-role="fieldcontain"> 
+            <label for="admin_status">State </label> 
+            <select name="admin_status" id="admin_status" data-role="slider"> 
+              <option value="1"{% if port.admin_status == 1 %} selected{% endif %}>Up</option> 
+              <option value="0"{% if port.admin_status == 0 %} selected{% endif %}>Down</option> 
+            </select> 
+          </div>
+
+          <div data-role="fieldcontain"> 
+            <label for="vlan" class="select">VLAN </label> 
+            <select name="vlan" id="vlan">
+              {% for v in port.device.vlan|split:"," %}
+              <option value="{{ v }}"{% if port.vlan == v %} selected{% endif %}>{{ v }}</option> 
+              {% endfor %}
+            </select> 
+          </div>
+
+          <div data-role="fieldcontain"> 
+            <fieldset data-role="controlgroup" data-type="horizontal"> 
+            <legend>Auto-negotiation</legend> 
+              <input type="radio" name="autoneg" id="autoneg-auto" value="True"{% if port.autoneg %} checked="checked"{% endif %}/> 
+              <label for="autoneg-auto">Auto</label> 
+              <input type="radio" name="autoneg" id="autoneg-fixed" value="False"{% if not port.autoneg %} checked="checked"{% endif %}/> 
+              <label for="autoneg-fixed">Fixed</label> 
+            </fieldset>
+          </div>
+
+          <script>
+          // hide/show speed and duplex
+          
+          </script>
+
+
+          <div data-role="fieldcontain">
+            <label for="speed" class="select">Speed </label> 
+            <select name="speed" id="speed">
+              <option value="auto"{% if port.speed_admin == "auto" %} selected{% endif %}>Auto</option> 
+              <option value="1000"{% if port.speed_admin == "1000" %} selected{% endif %}>1,000</option> 
+              <option value="100"{% if port.speed_admin == "100" %} selected{% endif %}>100</option> 
+              <option value="10"{% if port.speed_admin == "10" %} selected{% endif %}>10</option> 
+            </select> 
+          </div>
+          <div data-role="fieldcontain">
+            <label for="duplex" class="select">Duplex </label> 
+            <select name="duplex" id="duplex">
+              <option value="auto"{% if port.duplex_admin == "auto" %} selected{% endif %}>Auto</option> 
+              <option value="full"{% if port.duplex_admin == "full" %} selected{% endif %}>Full</option> 
+              <option value="half"{% if port.duplex_admin == "half" %} selected{% endif %}>Half</option> 
+            </select> 
+          </div>
+          
+          <div class="ui-body ui-body-b"> 
+            <fieldset class="ui-grid-a"> 
+              <div class="ui-block-a"><a id="submit-button" href="#secondary" data-rel="dialog" data-role="button" data-theme="c">Reset</a></div> 
+              <div class="ui-block-b"><a id="submit-button" href="#secondary" data-rel="dialog" data-role="button" data-theme="e">Submit</a></div> 
+            </fieldset> 
+          </div>
+
+          <script>
+          $('#submit-button').live( 'click', function(){
+              $('#port-form').submit()
+            })
+          </script>
+        
+        </form>
+
+{% endblock %}
+
+{% block secondary-title %}Provision Response{% endblock %}
+{% block secondary-content %}
+
+        <iframe id="response-configure-iframe" width="95%" border="0"></iframe>
+        <form id="poll-form" method="get" target="response-poll-iframe" action="/mobile/provision/poll/{{ port.device.name }}/spanningtree/" data-ajax="false">
+
+          <div class="ui-body ui-body-b"> 
+            <fieldset class="ui-grid-a"> 
+              <div class="ui-block-a"><a id="back-button" href="/mobile/port/id/{{ port.id }}" rel="external" data-role="button" data-theme="c">Back</a></div> 
+              <div class="ui-block-b"><a id="poll-button" href="#tertiary" data-rel="dialog" data-role="button" data-theme="a">Poll</a></div> 
+            </fieldset> 
+          </div>
+        </form>
+        
+        <script>
+        $('#poll-button').live( 'click', function(){
+            $('#poll-form').submit()
+          })
+        </script>
+        
+{% endblock %}
+
+
+{% block tertiary-title %}Poll Response{% endblock %}
+{% block tertiary-content %}
+
+        <iframe id="response-poll-iframe" width="95%" border="0"></iframe>
+        <div class="ui-body ui-body-b"> 
+          <fieldset class="ui-grid-a"> 
+            <div class="ui-block-a"><a id="back-button" href="/mobile/port/id/{{ port.id }}" rel="external" data-role="button" data-theme="c">Back</a></div> 
+          </fieldset> 
+        </div>
+        
+{% endblock %}

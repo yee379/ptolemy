@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy analyse telephones
+#
+# chkconfig: 2345 95 02
+# description:  analysis and alerting of voip phone moves/add/changes
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="analyse"
+COMMAND="telephone"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

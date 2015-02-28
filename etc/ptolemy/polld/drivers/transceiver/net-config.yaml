@@ -1,0 +1,28 @@
+---
+specification:  transceiver
+description:    generic cli transceiver loss polling
+
+defaults:
+    agent: NetConfig
+
+
+definition:
+
+    meta:
+        group_by_key:   True
+        key_name:   physical_port
+        defs:
+            - type:
+                ref:    system.fru.transceiver.on_type
+
+    stats:
+        group_by_key:   True
+        key_name:       physical_port
+        defs:
+            - rx:
+                ref:    system.fru.transceiver.on_rx
+            - tx:
+                ref:    system.fru.transceiver.on_tx
+            - temperature:
+                ref:    system.fru.transceiver.on_temperature
+                required: False

@@ -1,0 +1,18 @@
+specification: port_channel
+description: net-config based ptolemy driver for port channel information
+
+defaults:
+    agent: NetConfig
+    # settings:
+        
+definition:
+
+    members:
+        
+        key_name:   physical_port
+        group_by_key: True
+        defs:
+            - port-channel:
+                ref:    portchannels.on_portchannel
+            - state:
+                ref:    portchannels.on_state

@@ -1,0 +1,43 @@
+---
+specification:  performance
+description:    Cisco IOS Router Environment Ptolemy Driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - CISCO-ENVMON-MIB
+
+definition:
+
+    temperature:
+        defs:
+            - temp_status:
+                ref:    ciscoEnvMonTemperatureState
+            - temp_desc:
+                ref:    ciscoEnvMonTemperatureStatusDescr
+            - temp_value:
+                ref:    ciscoEnvMonTemperatureStatusValue
+            - temp_threshold:
+                ref:    ciscoEnvMonTemperatureThreshold
+        
+    power:
+        defs:
+            - power_status:
+                ref:    ciscoEnvMonSupplyState                        
+            - power_desc:
+                ref:    ciscoEnvMonSupplyStatusDescr
+    
+    voltage:
+        defs:
+            - voltage_status:
+                ref:    ciscoEnvMonVoltageState
+            - voltage_desc:
+                ref:    ciscoEnvMonVoltageStatusDescr
+            - voltage_value:
+                ref:    ciscoEnvMonVoltageStatusValue
+            - voltage_threshold:
+                ref:    ciscoEnvMonVoltageThresholdLow
+                
+            

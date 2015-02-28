@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# ptolemy analyse layer1
+#
+# chkconfig: 2345 95 02
+# description:  ptolemy caching storage agent for postgres backends
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="stored"
+COMMAND="postgres"
+USER="netmon"
+GROUP="sf"
+
+OPTIONS=" -k #.spec.caching.# -p postgres.caching -w 2 "
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc

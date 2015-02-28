@@ -1,0 +1,46 @@
+profile_cache: /opt/ptolemy/var/profile.cache
+
+defaults:
+    
+    default: &DEFAULT
+        username: netmon
+        password: /opt/etc/netmon.password
+        probeable:  True
+        connector_type: ssh
+        
+###
+# This defines the possible 'profiles' that allows one to log onto a device
+# a device may match one or many profiles, and probing for the appropriate profile is attempted
+# each profile allows the following key/values pairs
+#   probeable      :  1  # allow probeing to use this profile
+#   password       :  <str>|<file>:
+#   enable_password:  <str>|<file>:
+#   device_type    :  ios|f5|..:
+#   login_timeout  :  <int>   # max time for log in (attempted 3 times)
+#   connector_type :  ssh|telnet:
+#   username       :  <str>
+#   prompt_output_wait :  <float>  # amount of time to wait to determine if we have output
+###
+profiles: 
+
+    ios:
+        <<: *DEFAULT
+        device_type:  cisco_ios
+
+    ios-xl:
+        <<: *DEFAULT
+        device_type: cisco_ios
+        connector_type: telnet
+
+    ios-wireless:
+        <<: *DEFAULT
+        device_type: cisco_wireless
+        login_timeout: 8
+        
+    asa:
+        <<: *DEFAULT
+        device_type: cisco_asa
+
+    nexus:
+        <<: *DEFAULT
+        device_type: cisco_nexus

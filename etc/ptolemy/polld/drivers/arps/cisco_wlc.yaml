@@ -1,0 +1,60 @@
+---
+specification: arps
+description: Generic ARP poller
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - AIRESPACE-WIRELESS-MIB 
+
+definition:
+
+    ap_name:
+        clean: True
+        defs:
+            - device:
+                ref:    bsnAPName
+                map:
+                    - function:
+                        value:  fqdn
+            - ap_mac_address:
+                ref:	bsnAPDot3MacAddress
+                map:
+                    - function:
+                        value: normalise_mac_address
+        
+    arps:
+        
+        group_by_key: True
+        remove_key: True
+        additional_key_names:
+            - device
+            - mac_address
+            - ip_address
+        defs:
+            - mac_address:
+                ref:    bsnMobileStationMacAddress
+                map:
+                    - function:
+                        value:   normalise_mac_address
+            - ip_address:
+                ref:    bsnMobileStationIpAddress
+            - physical_port:
+                ref:    bsnMobileStationAPIfSlotId
+            - vlan:
+                ref:    bsnMobileStationVlanId
+            # - ssid:
+            #     ref:    bsnMobileStationInterface
+            - on_mac_address:
+                ref:    bsnMobileStationAPMacAddr
+                map:
+                    - function:
+                        value: normalise_mac_address
+
+        post:
+            map:
+                - post_function:
+                      dataset: post_merge_wireless_apname_on_mac_address
+        

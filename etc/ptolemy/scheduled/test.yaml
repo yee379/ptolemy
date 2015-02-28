@@ -1,0 +1,7 @@
+hosts:
+  one: null
+  # two: null
+  # three: null
+settings:
+  schedule: test
+  snmp: accelerator

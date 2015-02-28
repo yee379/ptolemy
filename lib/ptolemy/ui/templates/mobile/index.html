@@ -1,0 +1,36 @@
+{% extends "mobile/base.html" %}
+{% load str_tags %}
+
+{% block title %}Network Monitoring{% endblock %}
+{% block content %}
+      <div class="content-primary">
+        
+        <p class="intro"><strong>Welcome.</strong> Browse the SLAC local area network for information about hosts and switches.</p> 
+
+        <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b"> 
+          <li data-role="list-divider">Networked Hosts</li>
+          <li><a href="/mobile/host/search/">Search Form</a></li>
+          <li><a href="/mobile/host/search/subnet/">Subnet</a></li>
+          <li><a href="/mobile/host/search/building/">Building</a></li>
+        </ul>
+
+        <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b"> 
+          <li data-role="list-divider">Network Devices</li>
+          <li><a href="/mobile/device/search/name/">Name</a></li>
+          <li><a href="/mobile/device/search/kind/">Kind</a></li>
+          <li><a href="/mobile/device/search/category/">Category</a></li>
+          <li><a href="/mobile/device/search/vendor/">Vendor</a></li>
+          <li><a href="/mobile/device/search/vlan/">VLAN</a></li>
+          <li><a href="/mobile/device/search/building/">Building</a></li>
+
+        </ul>
+
+        <ul data-role="listview" data-inset="true" data-theme="c" data-dividertheme="b"> 
+          <li data-role="list-divider">Infrastructure</li>
+          <li><a href="/mobile/subnets/">Subnets &amp; VLANs</a></li>
+          <li><a href="/mobile/device/idle">Idle Ports</a></li>
+          <li><a href="/mobile/topology/">Topology</a></li>
+        </ul>
+
+      </div>
+{% endblock %}

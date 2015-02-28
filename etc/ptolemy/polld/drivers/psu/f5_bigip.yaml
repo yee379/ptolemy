@@ -1,0 +1,33 @@
+---
+specification:  power
+description:    f5 power driver
+
+defaults:
+    agent: SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+
+    stats:
+        group_by_key:   True
+        key_name:   physical_index
+        clean_key:  True
+        defs:
+            - admin_status:
+                required:   False
+            - status:
+                ref:    sysChassisPowerSupplyStatus
+                map:
+                    - value_sub:
+                        dict:
+                            'good':  1
+                            'bad':    0
+                            'notpresent': 2
+            - physical_index:
+                ref:    sysChassisPowerSupplyIndex
+                map:
+                    - value_sub:
+                        prefix: 'psu'

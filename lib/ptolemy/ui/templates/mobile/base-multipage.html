@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
+    <title>Network Monitoring</title>
+    <link rel="stylesheet" href="/css/jquery.mobile-1.0b1.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/jqm-docs.css" type="text/css">
+    <script type="text/javascript" src="/js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.mobile-1.0b3.min.js"></script>
+  </head>
+  <body>
+    
+    <div id="main" data-role="page">
+    
+      <div data-role="header" data-theme="b">
+        <h1>{% block main-title %}Page Title{% endblock %}</h1><a rel="external" href="/mobile/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+      </div>
+    
+      <div data-role="content">
+        <div class="content-primary">
+          {% block main-content %}{% endblock %}
+        </div>
+      </div>
+    
+      <div data-role="footer" class="footer-docs" data-theme="c"> 
+        <center><p style="font-size: xx-small">&copy; 2011 SLAC Network Engineering</p></center>
+      </div>
+    
+    </div>
+    
+    <div id="secondary" data-role="page">
+      
+      <div data-role="header" data-theme="b">
+        <h1>{% block secondary-title %}Page Title{% endblock %}</h1><a rel="external" href="/mobile/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+      </div>
+    
+      <div data-role="content">
+        <div class="content-primary">
+          {% block secondary-content %}{% endblock %}
+        </div>
+      </div>
+
+    </div>
+
+    <div id="tertiary" data-role="page">
+      
+      <div data-role="header" data-theme="b">
+        <h1>{% block tertiary-title %}Page Title{% endblock %}</h1><a rel="external" href="/mobile/" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-right jqm-home">Home</a>
+      </div>
+    
+      <div data-role="content">
+        <div class="content-primary">
+          {% block tertiary-content %}{% endblock %}
+        </div>
+      </div>
+      
+    </div>
+  
+  </body>
+</html>

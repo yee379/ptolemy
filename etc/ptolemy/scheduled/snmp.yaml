@@ -1,0 +1,24 @@
+
+default:
+    community:	file:///opt/etc/snmp.community.read
+    timeout:    20
+
+forsythe:
+    community:	file:///opt/etc/snmp.community.read.forsythe
+    timeout:    20
+    
+ssrl:
+    community:	file:///opt/etc/snmp.community.read.ssrl
+    timeout:    20
+    
+visitor:
+    community:	file:///opt/etc/snmp.community.read.wireless
+    timeout:    20
+    
+pcdsn:
+    community:	file:///opt/etc/snmp.community.read.pcdsn
+    timeout:    20
+        
+accelerator:
+    community:  file:///opt/etc/snmp.community.read
+    timeout:    20

@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy analyse capacity
+#
+# chkconfig: 2345 95 02
+# description:  Analysis of capacity measurements of ports
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="analyse"
+COMMAND="generic"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc
