@@ -150,7 +150,7 @@ class PostgresStorer( Feeder ):
                         vals[d[self.partitions[name]]] = True
                     else:
                         s = 'partition for %s has incorrect context: %s does not exist (allowed %s)' % (name,self.partitions[name],context.keys())
-                        logging.error(" %s: %s -> %s" % (s, name, inherited_from) )
+                        logging.debug(" %s: %s -> %s" % (s, name, inherited_from) )
                         raise UserWarning, s
 
                 # logging.error("VALS: %s %s" % (vals,len(vals)) )
@@ -206,7 +206,7 @@ class PostgresStorer( Feeder ):
             except psycopg2.ProgrammingError,e:
                 # its fine if the table already exists
                 if not str(e).endswith( ' already exists\n'):
-                    logging.error("ERR: %s %s" % (type(e),e))
+                    logging.debug("ERR: %s %s" % (type(e),e))
                     raise e
                 if not name in self.known_tables:
                     self.known_tables[name] = {}
@@ -326,6 +326,7 @@ class PostgresStorer( Feeder ):
         # update table with new info
         # self.update_item( spec, group, row, time, context, data )
         self.update_item( self.table, row, time, context, data )
+
 
     def update_item( self, table, row, time, context, data, update_created_at=True ):
         # table = self.ensure_table( spec, group )
@@ -612,7 +613,7 @@ class PostgresStorer( Feeder ):
 
         # see if there are any differences in the this set
         diff = self.different( doc, context, data, partial=False )
-        logging.debug("doc (%s): c=%s\td=%s" % (diff,doc['context'],doc['data']) )
+        # logging.debug("_save1 (%s) doc: c=%s\td=%s, new: c=%s\td=%s" % (diff,doc['context'],doc['data'],context,data) )
 
         # if we have a 'ignore_data', then we don't care if d is True, so force - ensure we don't overwrite the created_at time
         update_created_at = True
@@ -623,8 +624,8 @@ class PostgresStorer( Feeder ):
         if 'merge_context' in meta and meta['merge_context']:
             new_context = self.flatten( doc['context'], context )
             # if new context has more fields, assume it's the same then
-            diff = False if len(new_context) >= len(context) else None
-            logging.debug(" contexts (%s) c=%s\t-> c=%s" % (diff,context,new_context))
+            diff = False if new_context.items() == doc['context'].items() else None
+            logging.debug(" merged contexts (%s) c=%s\t-> c=%s" % (diff,context,new_context))
             context = new_context
         
         if 'merge_data' in meta and meta['merge_data']:
@@ -635,16 +636,21 @@ class PostgresStorer( Feeder ):
             #         d = None                
             # if d == None:
             # check to see if the merge set would be different from what we have
-            this_data = self.flatten( doc['data'], data )
-            if cmp( this_data, doc['data'] ) == 0:
+            data = self.flatten( doc['data'], data )
+            # a) if we need to archive or do a full update, then do it
+            if diff == None or diff == True:
+                pass
+            # b) see if there's a difference in the stored data column and our date
+            elif doc['data'].items() == data.items():
                 # no need to do full merge
                 diff = False
+            # c) data is different, will need full update
             else:
-                # need to update what's in the db
                 diff = None
-                logging.debug(" merging data d=%s\t+ %s" % (doc['data'],data))
-                data = self.flatten( doc['data'], data )
+            logging.debug(" merged data: %s\td=%s\td=%s" % (diff,doc['data'],data) )
             update_created_at = False
+
+        logging.debug("_save2 (%s) doc: c=%s\td=%s, new: c=%s\td=%s" % (diff,doc['context'],doc['data'],context,data) )
 
         # actually do somethign now
         if diff == True:
@@ -730,7 +736,8 @@ class PostgresStorer( Feeder ):
         no_msgs = len(self.msg_contexts[key])
 
         # if no_docs > 1 or no_msgs > 1:
-        #     logging.error(" context: %s\t key: %s\tindb: %s\tctxs: (%s) %s" % (context,key,no_docs,no_msgs,self.msg_contexts[key]) )
+        # logging.error(" context: %s\t key: %s\tindb: %s\tctxs: (%s) %s" % (context,key,no_docs,no_msgs,self.msg_contexts[key]) )
+        # logging.error("context: %s, data: %s\tkey: %s\t(%s/%s)" % (context,data,key, no_docs,no_msgs) )
             
         # 1) one cache hit is good
         if no_docs == 1:
@@ -738,8 +745,7 @@ class PostgresStorer( Feeder ):
             # 1a) one new or existing record to update
             if no_msgs <= 1:
 
-                self._save( docs[0], time, meta, ctx, data, time_delta )
-
+                self._save( docs[0], time, meta, context, data, time_delta )
                 # TODO: deal with fact that the doc could be old and that we should archive it regardless
 
             # 1b) hmm... we have multiple msgs, will need a new entry for each
