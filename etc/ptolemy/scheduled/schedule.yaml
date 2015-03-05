@@ -66,7 +66,7 @@ wlc:
 ssrl:
     # reachability:    260 +- 4
     entity:	        560 +- 40
-    port_stats:	    520 +- 80
+    port_stats:	    110 +- 20
     ports:          520 +- 80
     layer1_peer:    520 +- 80
     port_channel:   840 +- 60

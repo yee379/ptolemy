@@ -44,3 +44,7 @@ profiles:
     nexus:
         <<: *DEFAULT
         device_type: cisco_nexus
+
+    f5_tmsh:
+        <<: *DEFAULT
+        device_type: f5_tmsh

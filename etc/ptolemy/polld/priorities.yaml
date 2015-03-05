@@ -40,7 +40,7 @@ spanning_tree:
     - net-config.yaml
 arps: 
     - generic.yaml
-    - f5_bigip.yaml
+    # - f5_bigip.yaml
     - cisco_wlc.yaml
     - net-config.yaml
     
