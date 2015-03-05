@@ -83,7 +83,7 @@ cpu:
     - cisco_asa.yaml
     # topspin_sfs7000d.yaml
     - dell_8024f.yaml
-    - f5_bigip.yaml
+    - f5_tmsh.yaml
     - cisco_wlc.yaml
 
 memory: 
