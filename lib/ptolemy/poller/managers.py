@@ -402,7 +402,7 @@ class PollManager( FanOutManager ):
     logging_queue_func = 'poll' # to give to supervisor
 
     # kwargs for supervisor creation
-    min_supervisors = 1
+    min_supervisors = 2
     supervisor_kwargs = [ 'driver_dir', 'driver_priorities', 'forced_drivers', 'memcache_pool', 'received_throttle_time', 'complete_throttle_time', 'failed_throttle_time', 'invalid_time_multiplier', 'reprobe_period', 'reprobe_spread' ]
     # max_tasks_per_supervisor = 500
     
