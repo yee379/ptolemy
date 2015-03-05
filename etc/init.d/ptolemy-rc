@@ -1,9 +1,9 @@
 #!/bin/sh
 
 PID_DIR="$WORK_DIR/var/run/$PROG/"
-mkdir -p $WORK_DIR/var/
+mkdir -p $WORK_DIR/var/log
 mkdir -p $PID_DIR
-chown -R $USER $PID_DIR
+chown -R $USER $WORK_DIR/var
 chgrp -R $GROUP $PID_DIR
 chmod -R u+rwx $PID_DIR
 pidfile="$PID_DIR/$NAME-$COMMAND.pid"
