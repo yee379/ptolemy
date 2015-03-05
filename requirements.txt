@@ -1,0 +1,10 @@
+PyYAML
+setproctitle
+python-daemon
+pytz
+amqplib
+pexpect
+dateutils
+ipaddress
+python-memcached
+psycopg2
