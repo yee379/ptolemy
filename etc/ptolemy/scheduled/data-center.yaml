@@ -66,7 +66,6 @@ hosts:
   rtr-fwvpn3.slac.stanford.edu: null
   rtr-fwvpn4.slac.stanford.edu: null
   rtr-fwvpn5.slac.stanford.edu: null
-  rtr-hsrp-serv03-wcm-ifz.slac.stanford.edu: null
   rtr-lbepn3-01.slac.stanford.edu:
     schedule:
       ha: 58 +- 4
@@ -266,6 +265,7 @@ hosts:
   swh-serv05b.slac.stanford.edu: null
   swh-serv05c.slac.stanford.edu: null
   !!python/unicode swh-ssrlctrl-core2.slac.stanford.edu: null
+  swh-ssrlctrl-core3.slac.stanford.edu: null
   swh-visitor1.slac.stanford.edu: null
   swh-visitor2.slac.stanford.edu: null
   swh-winmgmt2bf39.slac.stanford.edu: null

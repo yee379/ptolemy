@@ -1,7 +1,7 @@
 hosts:
   !!python/unicode rtr-atfcore1.slac.stanford.edu: null
   rtr-atfcore2.slac.stanford.edu: null
-  swh-b044f1-2.slac.stanford.edu: null
+  swh-b044f1-ts07.slac.stanford.edu: null
   !!python/unicode swh-dmz.slac.stanford.edu: null
   swh-test2960.slac.stanford.edu: null
   swh-test3750.slac.stanford.edu: null
