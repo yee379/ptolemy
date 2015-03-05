@@ -1,0 +1,12 @@
+*.pyc
+bin/activate
+bin/activate.csh
+bin/activate.fish
+bin/activate_this.py
+bin/easy_install*
+bin/pip*
+bin/python
+include/
+lib/python*/
+lib64
+var/
