@@ -16,6 +16,7 @@ ports:
     - f5_bigip.yaml
     - dell_8024f.yaml
     - cisco_router.yaml
+    
 port_stats: 
     - cisco_ios.yaml
     - generic.yaml
@@ -85,6 +86,7 @@ cpu:
     - dell_8024f.yaml
     - f5_tmsh.yaml
     - cisco_wlc.yaml
+    - generic.yaml
 
 memory: 
     - cisco_generic.yaml

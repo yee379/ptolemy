@@ -1,0 +1,21 @@
+---
+specification:  cpu
+description:    Generic CPU Driver
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - HOST-RESOURCES-MIB
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        defs:
+            - load_1min:
+                ref:    hrProcessorLoad
