@@ -1,0 +1,49 @@
+---
+specification:  users
+description:    users for palo alto
+
+# PAN complains of 'no more mib'
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - PAN-COMMON-MIB	
+
+definition:
+
+    stats:
+        
+        group_by_key:   True
+        key_name: physical_index
+        
+        defs:
+            - gp_utilization:
+                ref:    panGPGatewayUtilization
+            - gp_utilization_pc:
+                ref:    panGPGWUtilizationPct
+            - gp_tunnels_max:
+                ref:    panGPGWUtilizationMaxTunnels
+            - gp_tunnels_active:
+                ref:    panGPGWUtilizationActiveTunnels
+            - session_utilization:
+                ref:    panSessionUtilization                
+            - session_utilization_max:
+                ref:    panSessionMax
+            - vsys_utilization_pc:
+                ref:    panVsysSessionUtilizationPct
+            - vsys_sessions:
+                ref:    panVsysActiveSessions
+            - vsys_sessions_max:
+                ref:    panVsysMaxSessions
+                
+            - sessions:
+                ref:    panSessionActive
+            - tcp_sessions:
+                ref:  panSessionActiveTcp
+            - udp_sessions:
+                ref:  panSessionActiveUdp
+            - icmp_sessions:
+                ref:  panSessionActiveICMP
+                
