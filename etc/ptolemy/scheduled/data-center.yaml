@@ -4,11 +4,11 @@ hosts:
   rtr-bldgcore1.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-      port_stats: 148 +- 10
+      port_stats: 280 +- 20
   rtr-bldgcore2.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-      port_stats: 148 +- 10
+      port_stats: 280 +- 20
   rtr-block1.slac.stanford.edu: null
   rtr-block2.slac.stanford.edu: null
   rtr-border1.slac.stanford.edu: null
