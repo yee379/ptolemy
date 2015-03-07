@@ -1,4 +1,6 @@
 hosts:
+  rtr-atfcore1.slac.stanford.edu: null
+  rtr-atfcore2.slac.stanford.edu: null
   rtr-mcccore1.slac.stanford.edu: null
   rtr-mcccore2.slac.stanford.edu: null
   rtr-pcdsn.slac.stanford.edu: null
@@ -45,6 +47,7 @@ hosts:
   swh-b921-nw01.slac.stanford.edu: null
   swh-b950-nw01.slac.stanford.edu: null
   swh-b999-nw01.slac.stanford.edu: null
+  swh-dr-nw01.slac.stanford.edu: null
   swh-in20-nw01.slac.stanford.edu: null
   swh-in20-nw02.slac.stanford.edu: null
   swh-in20-nw03.slac.stanford.edu: null

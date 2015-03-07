@@ -4,9 +4,7 @@ hosts:
       arps: 600 +- 60
     snmp:
       community: file:///opt/etc/snmp.community.read
-  rtr-ssrlcore1.slac.stanford.edu:
-    schedule:
-      arps: 600 +- 60
+  rtr-ssrlcore1.slac.stanford.edu: null
   swh-ssrlb005-ctrl1.slac.stanford.edu: null
   swh-ssrlb006-mgmt1.slac.stanford.edu: null
   swh-ssrlb006-pub1.slac.stanford.edu: null
@@ -90,10 +88,10 @@ hosts:
   swh-ssrlb140-ctrl2.slac.stanford.edu: null
   swh-ssrlb140-ctrl3.slac.stanford.edu: null
   swh-ssrlb140-pub1.slac.stanford.edu: null
-  !!python/unicode swh-ssrlb274-pub1.slac.stanford.edu: null
-  !!python/unicode swh-ssrlb274-pub2.slac.stanford.edu: null
+  swh-ssrlb274-pub1.slac.stanford.edu: null
+  swh-ssrlb274-pub2.slac.stanford.edu: null
   swh-ssrlb274-smb1.slac.stanford.edu: null
-  !!python/unicode swh-ssrlb274-vis1.slac.stanford.edu: null
+  swh-ssrlb274-vis1.slac.stanford.edu: null
   swh-ssrlb278b1.slac.stanford.edu: null
   swh-ssrlb278b2.slac.stanford.edu: null
   swh-ssrlb453h1.slac.stanford.edu: null
