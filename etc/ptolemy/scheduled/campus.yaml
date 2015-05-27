@@ -1,4 +1,5 @@
 hosts:
+  rtr-ir2lz.slac.stanford.edu: null
   swh-b003.slac.stanford.edu: null
   swh-b005.slac.stanford.edu: null
   swh-b005b.slac.stanford.edu: null
@@ -112,7 +113,6 @@ hosts:
   swh-kavli2.slac.stanford.edu: null
   swh-mccwapcore1.slac.stanford.edu: null
   swh-mccwapcore2.slac.stanford.edu: null
-  swh-ryb407c.slac.stanford.edu: null
   swh-sect00.slac.stanford.edu: null
   !!python/unicode swh-sect07.slac.stanford.edu: null
   swh-sect10-lab.slac.stanford.edu: null

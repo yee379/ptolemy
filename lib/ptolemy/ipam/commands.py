@@ -308,10 +308,13 @@ class Subnets( NetDBCommand ):
                     'default_gateway': s['router'],
                     'description':  s['comments'],
                     'types': ','.join(types),
-                    'vlan': s['vlan'],
                 }
                 
             )
+            if s['vlan']:
+                this['data']['vlan'] = int(s['vlan'])
+
+
             this.timestamp = now
             this.type = 'task'
 
