@@ -1,5 +1,4 @@
 argparse
-yaml
 importlib
 lockfile
 python-daemon
@@ -11,7 +10,6 @@ setproctitle
 pytz
 amqplib
 pexpect
-dateutils
 ipaddress
 python-memcached
 psycopg2
