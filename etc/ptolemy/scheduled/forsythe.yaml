@@ -1,5 +1,4 @@
 hosts:
-  swh-devctlforsythe03.slac.stanford.edu: null
   swh-devctlforsythe06.slac.stanford.edu: null
   !!python/unicode swh-farmpulse05.slac.stanford.edu: null
 settings:

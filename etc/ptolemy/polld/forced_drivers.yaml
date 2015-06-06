@@ -12,8 +12,8 @@ swh-b052f3.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-b040af1.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-mccwapcore1.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-mccwapcore2.slac.stanford.edu:spanning_tree:  net-config.yaml
-rtr-bldgcore1.slac.stanford.edu:arps:	net-config.yaml
-rtr-bldgcore2.slac.stanford.edu:arps:	net-config.yaml
+rtr-bldgcore1.slac.stanford.edu:arps:   net-config.yaml
+rtr-bldgcore2.slac.stanford.edu:arps:   net-config.yaml
 rtr-devctlcore.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-b035.slac.stanford.edu:spanning_tree:  net-config.yaml
 rtr-mcccore1.slac.stanford.edu:spanning_tree:  net-config.yaml
@@ -24,8 +24,13 @@ swh-b048f1.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-b048f2.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-b024.slac.stanford.edu:spanning_tree:  net-config.yaml
 swh-b040af2.slac.stanford.edu:spanning_tree:  net-config.yaml
-rtr-core3old.slac.stanford.edu:arps:	net-config.yaml
-rtr-core4old.slac.stanford.edu:arps:	net-config.yaml
-rtr-netmgmt.slac.stanford.edu:arps:	net-config.yaml
-rtr-netmgmt.slac.stanford.edu:spanning_tree:	net-config.yaml
-# swh-erp.slac.stanford.edu:  net-config.yaml
+rtr-core3old.slac.stanford.edu:arps:    net-config.yaml
+rtr-core4old.slac.stanford.edu:arps:    net-config.yaml
+rtr-netmgmt.slac.stanford.edu:arps:     net-config.yaml
+rtr-netmgmt.slac.stanford.edu:spanning_tree:    net-config.yaml
+swh-erp.slac.stanford.edu:spanning_tree:        net-config.yaml
+rtr-serv01-01.slac.stanfor.edu:spanning_tree:   net-config.yaml
+rtr-serv01-02.slac.stanfor.edu:spanning_tree:   net-config.yaml
+rtr-bldgcore1.slac.stanford.edu:spanning_tree:  net-config.yaml
+rtr-bldgcore2.slac.stanford.edu:spanning_tree:  net-config.yaml
+
