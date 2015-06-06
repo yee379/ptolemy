@@ -4,6 +4,3 @@
 [submodule "reqs/net-config"]
 	path = reqs/net-config
 	url = git@github.com:SLACNationalAcceleratorLaboratory/net-config.git
-[submodule "req/slac_utils"]
-	path = req/slac_utils
-	url = git@github.com:SLACNationalAcceleratorLaboratory/slac_utils.git
