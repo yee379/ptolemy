@@ -211,8 +211,8 @@ class MultiCarbonManager( FanOutManager ):
     logging_queue_func = None
     
     supervisor_kwargs = [ 'carbon_instances', 'carbon_port_offset' ]
-    min_supervisors = 14
-    workers_per_shard = 3
+    min_supervisors = 12
+    workers_per_shard = 2
     
     proc_name = 'ptolemy stored carbon manager'
 
