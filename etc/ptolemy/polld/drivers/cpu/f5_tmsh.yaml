@@ -1,0 +1,28 @@
+---
+specification:  cpu
+description:    F5 CPU Driver
+
+defaults:
+    agent:  SNMP
+    settings:
+        SNMP:
+            mibs:
+                - F5-BIGIP-SYSTEM-MIB
+
+definition:
+    
+    stats:
+
+        group_by_key: True
+        key_name:   physical_index
+        
+        defs:
+            - load_1min:
+                ref:    sysMultiHostCpuUsageRatio1m   
+            - load_5min:
+                ref:    sysMultiHostCpuUsageRatio5m 
+
+        post:
+            map:
+                - post_extract:
+                    physical_index:  ^.*\.(?P<physical_index>\d+)$

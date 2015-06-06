@@ -39,7 +39,9 @@ hosts:
   !!python/unicode ap-b034r201.slac.stanford.edu: null
   !!python/unicode ap-b034r249a.slac.stanford.edu: null
   !!python/unicode ap-b035-kiosk-lva.slac.stanford.edu: null
+  !!python/unicode ap-b035r17.slac.stanford.edu: null
   !!python/unicode ap-b035r19.slac.stanford.edu: null
+  !!python/unicode ap-b035r1X.slac.stanford.edu: null
   !!python/unicode ap-b035r4a.slac.stanford.edu: null
   !!python/unicode ap-b040af1hallway.slac.stanford.edu: null
   !!python/unicode ap-b040af1rtrain1.slac.stanford.edu: null
@@ -59,6 +61,7 @@ hosts:
   !!python/unicode ap-b040r210.slac.stanford.edu: null
   !!python/unicode ap-b040r270.slac.stanford.edu: null
   !!python/unicode ap-b040r361.slac.stanford.edu: null
+  !!python/unicode ap-b041f1-temp.slac.stanford.edu: null
   !!python/unicode ap-b041f2-temp.slac.stanford.edu: null
   !!python/unicode ap-b041f2lobby.slac.stanford.edu: null
   !!python/unicode ap-b041r1012.slac.stanford.edu: null
@@ -133,7 +136,9 @@ hosts:
   !!python/unicode ap-b084r117.slac.stanford.edu: null
   !!python/unicode ap-b084r138.slac.stanford.edu: null
   !!python/unicode ap-b084r171.slac.stanford.edu: null
+  !!python/unicode ap-b084r183.slac.stanford.edu: null
   !!python/unicode ap-b084r192.slac.stanford.edu: null
+  !!python/unicode ap-b084r1XX.slac.stanford.edu: null
   !!python/unicode ap-b084r200.slac.stanford.edu: null
   !!python/unicode ap-b084r205.slac.stanford.edu: null
   !!python/unicode ap-b084r273.slac.stanford.edu: null
@@ -183,6 +188,7 @@ hosts:
   !!python/unicode ap-b725.slac.stanford.edu: null
   !!python/unicode ap-b750hibay.slac.stanford.edu: null
   !!python/unicode ap-b751r108.slac.stanford.edu: null
+  !!python/unicode ap-b751r1XX.slac.stanford.edu: null
   !!python/unicode ap-b751r206a.slac.stanford.edu: null
   !!python/unicode ap-b751r304.slac.stanford.edu: null
   !!python/unicode ap-b901r108b.slac.stanford.edu: null
@@ -219,6 +225,7 @@ hosts:
   !!python/unicode ap-linac-roam05.slac.stanford.edu: null
   !!python/unicode ap-linac-roam06.slac.stanford.edu: null
   !!python/unicode ap-linac-roam07.slac.stanford.edu: null
+  !!python/unicode ap-linac-roam09.slac.stanford.edu: null
   ap-linac-roam12.slac.stanford.edu: null
   !!python/unicode ap-ltu-nw01.slac.stanford.edu: null
   !!python/unicode ap-sect00-4n.slac.stanford.edu: null

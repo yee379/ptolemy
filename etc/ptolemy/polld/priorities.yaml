@@ -16,6 +16,7 @@ ports:
     - f5_bigip.yaml
     - dell_8024f.yaml
     - cisco_router.yaml
+    
 port_stats: 
     - cisco_ios.yaml
     - generic.yaml
@@ -40,7 +41,7 @@ spanning_tree:
     - net-config.yaml
 arps: 
     - generic.yaml
-    - f5_bigip.yaml
+    # - f5_bigip.yaml
     - cisco_wlc.yaml
     - net-config.yaml
     
@@ -83,8 +84,9 @@ cpu:
     - cisco_asa.yaml
     # topspin_sfs7000d.yaml
     - dell_8024f.yaml
-    - f5_bigip.yaml
+    - f5_tmsh.yaml
     - cisco_wlc.yaml
+    - generic.yaml
 
 memory: 
     - cisco_generic.yaml

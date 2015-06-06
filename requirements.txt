@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 argparse
 yaml
 pytz
@@ -9,4 +10,15 @@ pexpect
 six
 python-dateutil
 lxml
+=======
+PyYAML
+setproctitle
+python-daemon
+pytz
+amqplib
+pexpect
+dateutils
+ipaddress
+python-memcached
+>>>>>>> ba97fcb43acbcea715b7f254e19ba07715a78d94
 psycopg2

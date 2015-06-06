@@ -1,5 +1,5 @@
 # number of concurrent workers
-WORKERS: 200
+WORKERS: 128
 
 #######################################################################
 # driver cache settings

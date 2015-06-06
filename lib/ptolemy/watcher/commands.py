@@ -61,48 +61,51 @@ class ScheduledScannerdSupervisor( BaseScheduleSupervisor ):
         if not self.work_queue == None:
             # exits if nothing in queue
             for job in self.work_queue.get( non_blocking=True, prefetch_count=10 ):
-                # logging.info("got! %s" % job)
-                if 'data' in job:
-                    for subnet in job['data']:
+                # logging.info("job! %s" % job)
+                for item in job:
+                    if 'data' in item:
+                        for subnet in item['data']:
 
-                        # convert watched subnets
-                        if 'prefix' in subnet and 'netmask' in subnet:
+                            # logging.info("parsing %s" % (subnet,))
+                            # convert watched subnets
+                            if 'prefix' in subnet and 'netmask' in subnet:
 
-                            prefix = subnet['prefix']
-                            netmask = subnet['netmask']
-                            prefix_len = netmask_to_prefixlen( netmask )
-                            network = "%s/%s" % (prefix,prefix_len)
+                                prefix = subnet['prefix']
+                                netmask = subnet['netmask']
+                                prefix_len = netmask_to_prefixlen( netmask )
+                                network = "%s/%s" % (prefix,prefix_len)
                             
-                            # only bother with local subnets (ie those routed by us)
-                            if 'local' in subnet and subnet['local'] == True:
+                                # logging.debug("found network %s" % (network,))
+                                # only bother with local subnets (ie those routed by us)
+                                if 'local' in subnet and subnet['local'] == True:
                                 
-                                # only bother with those we haven't seen yet
-                                # TODO: update so we can expire old subnets
-                                if not network in self.parser.nodes:
+                                    # only bother with those we haven't seen yet
+                                    # TODO: update so we can expire old subnets
+                                    if not network in self.parser.nodes:
                                 
-                                    try:
+                                        try:
                                 
-                                        this = ipaddress.IPv4Network( "%s/%s" % ( prefix, prefix_len ))
-                                        for s in self.subnets:
-                                            if this[0] in s and prefix_len >= self.min_prefix_len and prefix_len <= self.max_prefix_len:
-                                                logging.info("Queuing %s" % ( network, ))
-                                                schedule = {
-                                                    'scannerd': '54 +- 6'                                                
-                                                }
-                                                node = {
-                                                    'name': network,
-                                                    'schedule': schedule
-                                                }
-                                                # TODO: bah, this shoudl be in the parser
-                                                self.parser.nodes[network] = { 'schedule': { 'ref': 'default' } }
-                                                self.parser.add( node, 'scannerd', factor=1 )
-                                                return None
+                                            this = ipaddress.IPv4Network( "%s/%s" % ( prefix, prefix_len ))
+                                            for s in self.subnets:
+                                                if this[0] in s and prefix_len >= self.min_prefix_len and prefix_len <= self.max_prefix_len:
+                                                    logging.info("Queuing %s" % ( network, ))
+                                                    schedule = {
+                                                        'scannerd': '54 +- 6'                                                
+                                                    }
+                                                    node = {
+                                                        'name': network,
+                                                        'schedule': schedule
+                                                    }
+                                                    # TODO: bah, this shoudl be in the parser
+                                                    self.parser.nodes[network] = { 'schedule': { 'ref': 'default' } }
+                                                    self.parser.add( node, 'scannerd', factor=1 )
+                                                    return None
                                                     
-                                    except ValueError:
-                                        # host bits of ip address
-                                        pass
-                                    except Exception, e:
-                                        logging.error("%s %s\n%s" % (type(e),e, traceback.format_exc()))
+                                        except ValueError:
+                                            # host bits of ip address
+                                            pass
+                                        except Exception, e:
+                                            logging.error("%s %s\n%s" % (type(e),e, traceback.format_exc()))
     
     def message_context( self, item ):
         prefix, prefix_len = item['node'].split('/')

@@ -1,9 +1,9 @@
 #!/bin/sh
 
 PID_DIR="$WORK_DIR/var/run/$PROG/"
-mkdir -p $WORK_DIR/var/
+mkdir -p $WORK_DIR/var/log
 mkdir -p $PID_DIR
-chown -R $USER $PID_DIR
+chown -R $USER $WORK_DIR/var
 chgrp -R $GROUP $PID_DIR
 chmod -R u+rwx $PID_DIR
 pidfile="$PID_DIR/$NAME-$COMMAND.pid"
@@ -49,10 +49,10 @@ clean() {
 
 forcestop(){
     echo "Force stopping $PROG $NAME $COMMAND "
-    if [ $COMMAND=="" ]; then
-        ps wx -U $USER | grep $PROG | grep $NAME | awk '{print $1}' | xargs kill -9 
+    if [ "$COMMAND"="" ]; then
+        ps wx -U $USER | grep $PROG | grep $NAME | grep -v '-' | awk '{print $1}' | xargs kill -9
     else
-        ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | awk '{print $1}' | xargs kill -9 
+        ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | grep -v '-' | awk '{print $1}' | xargs kill -9
     fi
 }
 
@@ -77,7 +77,8 @@ case "$1" in
     reload
         ;;
   restart)
-    stop
+    forcestop
+    clean
     start
         ;;
   *)
