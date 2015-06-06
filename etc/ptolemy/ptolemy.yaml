@@ -2,8 +2,8 @@
 # messenging settings
 ###
 BROKER_HOST:
-    - 'net-amqp01.slac.stanford.edu:5672'
     - 'net-amqp02.slac.stanford.edu:5672'
+    #- 'net-amqp01.slac.stanford.edu:5672'
 BROKER_PORT: 5672
 BROKER_VHOST: '/ptolemy'
 BROKER_USER: 'ptolemy'
