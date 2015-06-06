@@ -1,0 +1,12 @@
+argparse
+yaml
+pytz
+importlib
+lockfile
+python-daemon
+python-memcached
+pexpect
+six
+python-dateutil
+lxml
+psycopg2
