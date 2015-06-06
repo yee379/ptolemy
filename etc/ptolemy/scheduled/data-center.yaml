@@ -225,7 +225,6 @@ hosts:
   swh-fac.slac.stanford.edu: null
   swh-farm01a.slac.stanford.edu: null
   swh-farm04a.slac.stanford.edu: null
-  swh-farm21a.slac.stanford.edu: null
   swh-farm22d.slac.stanford.edu: null
   swh-farmorange1.slac.stanford.edu: null
   swh-farmorange2.slac.stanford.edu: null

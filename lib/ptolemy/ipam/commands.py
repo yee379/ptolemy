@@ -359,7 +359,7 @@ class Hosts( NetDBCommand ):
                 this.type = 'task'
             
                 feeder.process_task( this )
-                print("%s" % ( this, ) )
+                # print("%s" % ( this, ) )
     
     
 # class QueryHost( DjangoCommand ):
