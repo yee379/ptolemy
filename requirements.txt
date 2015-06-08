@@ -1,10 +1,15 @@
+argparse
+importlib
+lockfile
+python-daemon
+six
+python-dateutil
+lxml
 PyYAML
 setproctitle
-python-daemon
 pytz
 amqplib
 pexpect
-dateutils
 ipaddress
 python-memcached
 psycopg2
