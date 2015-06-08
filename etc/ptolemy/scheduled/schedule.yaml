@@ -66,13 +66,13 @@ wlc:
 ssrl:
     # reachability:    260 +- 4
     entity:	        560 +- 40
-    port_stats:	    56 +- 4
-    ports:          520 +- 80
-    layer1_peer:    520 +- 80
-    port_channel:   840 +- 60
+    port_stats:	    110 +- 10
+    ports:          840 +- 80
+    layer1_peer:    840 +- 80
+    port_channel:   840 +- 80
     # wireless:        520 +- 40
-    user_stats:     520 +- 80
-    spanning_tree:  840 +- 60
+    user_stats:     840 +- 80
+    spanning_tree:  840 +- 80
     cpu:            520 +- 80
     fan:            520 +- 80
     power:          520 +- 80
