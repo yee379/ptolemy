@@ -43,8 +43,7 @@ class PostgresStorer( Feeder ):
     cur = None
     db = None
     
-    print_stats_fields = ( 'bulk_updated', 'updated', 'inserted', 'deleted', 'archived', 'pre_cached', 'bulk_cached', 'pre_msg_process_time', 'main_loop_time', 'post_msg_process_time', 'total_time' )
-    report_stats_locally = True
+    print_stats_fields = ( 'updated', 'bulk_updated', 'inserted', 'deleted', 'archived', 'pre_cached', 'bulk_cached', 'pre_msg_process_time', 'main_loop_time', 'post_msg_process_time', 'total_time' )
     
     def flatten( self, a, b ):
         # hstore can only store text values
@@ -53,7 +52,12 @@ class PostgresStorer( Feeder ):
             d[k] = str(v)
         return d
     
-    def _setup( self, **kwargs ):
+    def setup( self, **kwargs ):
+        super( PostgresStorer, self).setup(**kwargs) 
+        # logging.debug("attempting connection to postgres db %s:%s %s (%s/%s)"%(self.host, self.port, self.database, self.username, self.password) )
+        # logging.info("connecting to %s" % (kwargs,))
+        self.connect()
+        # keep cache of tables
         self.known_tables = {}
         self.update_ids = []
         self.delete_ids = []
@@ -67,6 +71,7 @@ class PostgresStorer( Feeder ):
         # partitioning
         self.partitions = {}
         self.partitions_modulo = {}
+        self.md5 = md5()
         if 'partitions' in kwargs:
             for d in kwargs['partitions']:
                 try:
@@ -85,8 +90,6 @@ class PostgresStorer( Feeder ):
             self.pre_msg_process_tables[n] = { 
                 'fields': d['fields'],
                 'missing_ok': d['fields_missing_ok'] if 'fields_missing_ok' in d else False,
-                'fields_required': d['fields_required'] if 'fields_required' in d else [],
-                'optional': d['optional_fields'] if 'optional_fields' in d else [],
             }
         logging.debug("post tables: %s" % (self.pre_msg_process_tables,))
         
@@ -96,15 +99,6 @@ class PostgresStorer( Feeder ):
             n = self._table_name( d['spec'], d['group'] )
             self.post_msg_process_tables.append(n)
         logging.debug("pre tables: %s" % (self.post_msg_process_tables,))
-        
-    
-    def setup( self, **kwargs ):
-        super( PostgresStorer, self).setup(**kwargs) 
-        # logging.debug("attempting connection to postgres db %s:%s %s (%s/%s)"%(self.host, self.port, self.database, self.username, self.password) )
-        # logging.info("connecting to %s" % (kwargs,))
-        self.connect()
-        # keep cache of tables
-        self._setup( **kwargs )
         
     def connect( self ):
         self.db = psycopg2.connect(
@@ -128,15 +122,13 @@ class PostgresStorer( Feeder ):
         if name in self.partitions:
             if self.partitions[name] in context:
                 # determine the key to partition on and use this as the table name
+                # logging.info("partition! %s -> %s = %s (%s)" % (name, self.partitions[name], context[self.partitions[name]], context) )
                 inherited_from = name
                 v = context[self.partitions[name]]
-                # logging.info("partitioning %s on field %s, value %s" % (name, self.partitions[name], v) )
                 # check to see if we need to do a modulo on the value
                 if name in self.partitions_modulo:
-                    m = md5()
-                    m.update( v )
-                    v = long(m.hexdigest(),16) % self.partitions_modulo[name]
-                    # logging.info("  modulo! %s, len %s -> %s" % (name,self.partitions_modulo[name],v))
+                    self.md5.update( v )
+                    v = long(self.md5.hexdigest(),16) % self.partitions_modulo[name]
                 name = "%s__%s%s" % (name,self.partitions[name],v)
             elif not context == {}:
                 # the context does not contain the relevant fields for the table as it's inherited and split
@@ -268,7 +260,6 @@ class PostgresStorer( Feeder ):
         """
         stmt = "SELECT * FROM %s WHERE " % (table,)
         stmt = stmt + self._query_constructor( array_of_contexts, field=field, operation=operation )
-        # only return most recent answer?
         if recent:
             stmt = stmt + ' ORDER BY created_at DESC LIMIT 1 '
         stmt = stmt + ';'
@@ -277,7 +268,6 @@ class PostgresStorer( Feeder ):
         return self.cur.fetchall()
 
     def insert( self, table, time, context, data ):
-        self.stats['inserted'] = self.stats['inserted'] + 1
         stmt = self.cur.mogrify("INSERT INTO "+table+"(created_at,updated_at,context,data) VALUES (%s,%s,%s,%s);", (time,time,context,data) )
         logging.debug(" INSERT: (%s) %s" % (table,stmt,))
         self.cur.execute( stmt )
@@ -327,7 +317,6 @@ class PostgresStorer( Feeder ):
         # self.update_item( spec, group, row, time, context, data )
         self.update_item( self.table, row, time, context, data )
 
-
     def update_item( self, table, row, time, context, data, update_created_at=True ):
         # table = self.ensure_table( spec, group )
         stmt = self.cur.mogrify("UPDATE " + table + " SET updated_at=%s,created_at=%s,context=%s,data=%s WHERE id=%s;", (time,time,context,data,row['id'] ) )
@@ -337,76 +326,11 @@ class PostgresStorer( Feeder ):
         # logging.info("d=%s, doc=%s" % (data,row['data']))
         logging.debug(" (full) %s" % (stmt,))
         self.cur.execute( stmt )
-    
-    def hash_pre_msg_process( self, msgs, current_table ):
-        """ scan through all of the messages and determine a concise query string to use to bulk fetch data """
-        self.context_fields = self.pre_msg_process_tables[current_table]['fields']
-        self.context_fields_missing_ok = self.pre_msg_process_tables[current_table]['missing_ok']
-        # if we know that the table is partitioned, then lets ensure we query on partitions if possible
-        ctxs = {}
-        mappings = {}
-        seen = {}
-        dups = {}
-        
-        for m in msgs:
-
-            this_table_name, parent_table_name = self.table_name( m['_meta']['spec'],m['_meta']['group'], m['context'], m['data'] )
-            if not this_table_name.startswith( current_table ): 
-                raise Exception('non identical spec/groups in long message: %s / %s' % (current_table, this_table_name))
-            if 'context' in m:
-                if not this_table_name in ctxs:
-                    ctxs[this_table_name] = []
-                    
-                # build a tree for value lookups
-                if not this_table_name in mappings:
-                    mappings[this_table_name] = {}
-                here = mappings[this_table_name]
-
-                this = {}
-                full_this = {}
-                # just keep a tree of values, with each level being the context field in order
-                for f in self.context_fields:
-
-                    ok = False
-                    if f in m['context']:
-                        ok = True
-                    elif not self.context_fields_missing_ok and f in self.pre_msg_process_tables[current_table]['fields_required']:
-                        raise Exception( 'field %s is required in pre_msg_processing' % (f,))
-                    elif self.context_fields_missing_ok:
-                        ok = False
-
-                    if f in m['context']:
-                        
-                        v = str(m['context'][f])
-                        # logging.error("F: %s\tV: %s" % (f,v))
-                        if not v in here:
-                            here[v] = {}
-                        here = here[v]
-
-                        # logging.error("  add %s\tto %s? %s\t%s" % (f,this_table_name,ok,v))
-                        if ok:
-                            this[f] = v
-                
-                # dedup to reduce queried args, and keep a count of overlaps (eg ips on same mac addreses)
-                key = dict_to_kv( this, keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-                if not key in seen:
-                    seen[key] = []
-                # hmm.... in case there are duplicates, lets merge the context and data and obtain uniques for later lookup
-                combined = dict( m['context'].items() + m['data'].items() )
-                h = dict_to_kv( combined )
-                if not h in dups:
-                    seen[key].append( combined )
-                    if len(seen[key]) == 1:
-                        ctxs[this_table_name].append( this )
-                dups[h] = True
-                    
-        return ctxs, seen, mappings
-        
         
     def pre_msg_process( self, msg, envelope ):
         # basically a pre fetch for data
         
-        # logging.warn("="*80)
+        logging.debug("="*80)
         # logging.warn("PRE MSG: %s" % (pformat(msg,width=250),))
         self.update_ids = []
         self.delete_ids = []
@@ -424,7 +348,6 @@ class PostgresStorer( Feeder ):
             'messages': 0,
             'deleted': 0,
         }
-        self.dups = {}
 
         # try to work out if i can reduce the number of queries to fill the cache here
         # we do this by iterating through all the msgs and constructing a singel query string
@@ -438,61 +361,40 @@ class PostgresStorer( Feeder ):
         self.current_table_name = self._table_name( m['_meta']['spec'],m['_meta']['group'] )
         # logging.error("CUR: %s, PRE %s" % (self.current_table_name, self.pre_msg_process_tables))
         if self.current_table_name in self.pre_msg_process_tables:
-            try:
-                ctxs, self.msg_contexts, self.tree = self.hash_pre_msg_process( msg, self.current_table_name )
-                self.stats['messages'] = len(msg)
-                
-                for table in ctxs:
-                
-                    # do the caching
-                    if len( ctxs[table] ):
-                        # logging.error("QUERY table: %s, CTX: %s, TREE: %s" % (table,ctxs[table],self.tree[table]))
-
-                        # so if we're doing a merge on the context, we don't know the cache key
-                        # so we have to iterate through our ctxs and see if any of them match
-                        for d in self.query( table, ctxs[table], operation='OR' ):
-
-                            ptr = self.tree[table]
-                            # construct the key with something we know will match later, trawl the tree
-                            # logging.error("   GOT: %s" % (d['context'],))
-                            found_fields = []
-                            for f in self.context_fields:
-                                if f in d['context']:
-                                    # logging.error(" field %s in %s\tat %s" % (f,d,ptr))
-                                    # search tree
-                                    v = str(d['context'][f])
-                                    # logging.error("    PTR1: %s\t%s\t%s" % (f,ptr,v))
-                                    if v in ptr:
-                                        found_fields.append( f )
-                                        ptr = ptr[v]
-                                        # logging.error("    PTR2: %s\t%s" % (f,ptr,))
-
-                            # logging.error("FOUND FIELDS: %s" % (found_fields,))
-                            key = dict_to_kv( d['context'], keys=found_fields )
-                            # logging.error("   - key=%s\tc=%s,\tfields=%s->%s" % (key,d['context'],self.context_fields,found_fields) )
-                            if not key in self.cache:
-                                self.cache[key] = []
-                            self.cache[key].append( d )
-                            self.stats['pre_cached'] = self.stats['pre_cached'] + 1
-
-                            # add a long key into cache too to exact match
-                            # logging.error("D: %s %s" % (d['context'],d['data']))
-                            full_key = dict_to_kv( d['context'] )
-                            if not full_key == key:
-                                # logging.error("FULL KEY: %s\t%s" % (full_key,d))
-                                if not full_key in self.cache:
-                                    self.cache[full_key] = []
-                                self.cache[full_key].append( d )
-
-                            self.pre_msg_queried = True
-                        # logging.warn("-"*80)
-            except Exception,e:
-                logging.warning("%s %s" % (type(e),e))
-                self.db.rollback()
-                self.cache = {}
-                self.pre_msg_queried = None
-        # for k,v in self.cache.iteritems():
-            # logging.error(" cached %s\t%s" % (k,len(v)))
+            self.context_fields = self.pre_msg_process_tables[self.current_table_name]['fields']
+            self.context_fields_missing_ok = self.pre_msg_process_tables[self.current_table_name]['missing_ok']
+            ctxs = []
+            for m in msg:
+                okay = []
+                this_table_name = self._table_name( m['_meta']['spec'],m['_meta']['group'] )
+                if not this_table_name == self.current_table_name:
+                    raise Exception('non identical spec/groups in long message: %s / %s' % (self.current_table_name, this_table_name))
+                if 'context' in m:
+                    for f in self.context_fields:
+                        okay.append( True if f in m['context'] else False )
+                if not False in okay:
+                    # logging.warn("+++ %s" % m['context'] )
+                    this = {}
+                    for f in self.context_fields:
+                        this[f] = m['context'][f]
+                    ctxs.append( this )
+            self.stats['messages'] = len(msg)
+            # actually do the query
+            if len( ctxs ):
+                try:
+                    for d in self.query( self.current_table_name, ctxs, operation='OR' ):
+                        key = dict_to_kv( d['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
+                        # logging.warn("- %s\tc=%s, d=%s" % (key,d['context'],d['data']) )
+                        if not key in self.cache:
+                            self.cache[key] = []
+                        self.cache[key].append( d )
+                        self.stats['pre_cached'] = self.stats['pre_cached'] + 1
+                        self.pre_msg_queried = True
+                    # logging.warn("-"*80)
+                except Exception,e:
+                    self.db.rollback()
+                    self.cache = {}
+                    self.pre_msg_queried = None
         return msg
         
     def pre_bulk_process( self, time, meta, context, data ):
@@ -571,7 +473,6 @@ class PostgresStorer( Feeder ):
     def post_msg_process( self ):
         # logging.error("POST BULK PROCESS: %s" % (self.post_msg_data,))
         # did_something = False
-        self.dups = {}
         
         if len(self.delete_ids):
             self.bulk_delete( self.current_table_name, self.delete_ids )
@@ -608,350 +509,139 @@ class PostgresStorer( Feeder ):
             except Exception,e:
                 logging.error("ERR bulk delete: %s %s" % (type(e),e))
                 raise e
-                
-    def _save( self, doc, time, meta, context, data, time_delta ):
-
-        # see if there are any differences in the this set
-        diff = self.different( doc, context, data, partial=False )
-        # logging.debug("_save1 (%s) doc: c=%s\td=%s, new: c=%s\td=%s" % (diff,doc['context'],doc['data'],context,data) )
-
-        # if we have a 'ignore_data', then we don't care if d is True, so force - ensure we don't overwrite the created_at time
-        update_created_at = True
-        if 'ignore_data' in meta and meta['ignore_data']:
-            update_created_at = False
-            diff = None
-            
-        if 'merge_context' in meta and meta['merge_context']:
-            new_context = self.flatten( doc['context'], context )
-            # if new context has more fields, assume it's the same then
-            diff = False if new_context.items() == doc['context'].items() else None
-            logging.debug(" merged contexts (%s) c=%s\t-> c=%s" % (diff,context,new_context))
-            context = new_context
-        
-        if 'merge_data' in meta and meta['merge_data']:
-            # check to see if the kv are same for keys that are common; always assume data is smaller
-            # set d := None if there is a difference so that we do a full update
-            # for k,v in data.iteritems():
-            #     if not k in docs[0]['data'] or not docs[0]['data'][k] == data[k]:
-            #         d = None                
-            # if d == None:
-            # check to see if the merge set would be different from what we have
-            data = self.flatten( doc['data'], data )
-            # a) if we need to archive or do a full update, then do it
-            if diff == None or diff == True:
-                pass
-            # b) see if there's a difference in the stored data column and our date
-            elif doc['data'].items() == data.items():
-                # no need to do full merge
-                diff = False
-            # c) data is different, will need full update
-            else:
-                diff = None
-            logging.debug(" merged data: %s\td=%s\td=%s" % (diff,doc['data'],data) )
-            update_created_at = False
-
-        logging.debug("_save2 (%s) doc: c=%s\td=%s, new: c=%s\td=%s" % (diff,doc['context'],doc['data'],context,data) )
-
-        # actually do somethign now
-        if diff == True:
-            # 1b) if there are differences in the data, then archive the current and update links
-            # logging.error("THAT %s" % (context,))
-            self.stats['archived'] = self.stats['archived'] + 1
-            self.archive_and_update( meta['spec'], meta['group'], doc, time, context, data )
-
-        elif diff == False:
-            # 2) check timestamps, if too long, then archive the old one
-            if not time_delta == None and doc['updated_at'] + time_delta < time:
-                logging.warn("old data %s\t%s: %s " % (time_delta, doc['updated_at']+time_delta-time, context ))
-            # 1a) if no difference from the stored doc, then just update the time stamps
-            self.stats['bulk_updated'] = self.stats['bulk_updated'] + 1
-            self.update_ids.append( doc['id'] )
-
-        elif diff == None:
-            # minor updates
-            self.stats['updated'] = self.stats['updated'] + 1
-            # self.update_item( meta['spec'], meta['group'], docs[0], time, context, data, update_created_at=update_created_at )
-            self.update_item( self.table, doc, time, context, data, update_created_at=update_created_at )
-
-        else:
-            logging.error("difference value unknown! %s" % (diff,))
-
-
-    def is_skip_save( self, time, meta, context, data, time_delta ):
-        # skip subnets that we don't care about as defined in configuration files
-        skip = False
-        if ( meta['spec'] == 'layer3' and meta['group'] == 'subnets' ):
-            if 'prefix' in context and 'netmask' in context:
-                this = ipaddress.IPv4Network( "%s/%s" % ( context['prefix'], context['netmask'] ))
-
-                for s in self.subnets:
-                    if this.overlaps( s ):
-                        skip = True
-                        break
-        return skip
 
     def save( self, time, meta, ctx, data, time_delta ):
         """ do something with this single datum """
-
+        # logging.error(">>> SAVE: %s %s" % (ctx,data))
         # flatten the document
         context = self.flatten( {}, ctx )
         data = self.flatten( {}, data )
 
-        # ignore dups
-        combined_key = dict_to_kv( dict( context.items() + data.items() ) )
-        if combined_key in self.dups:
-            # logging.error("DUPLICATE! %s" % (combined_key,) )
-            return
-        self.dups[combined_key] = True
-        
-        # logging.warn("SAVE >>> %s: %s %s" % (time,context,data))
-            
+        # logging.warn("SAVE >>> %s: %s %s" % (time,ctx,data))
         # skip subnets that we don't care about as defined in configuration files
-        if self.is_skip_save( time, meta, context, data, time_delta ):
-            s = 'skipping %s %s: subnet %s' % (meta['spec'],meta['group'],this)
-            raise UserWarning, s
-
-        # 0) do we currently have the item in our db/cache? (see pre_process for cache entries)
+        if ( meta['spec'] == 'layer3' and meta['group'] == 'subnets' ):
+            if 'prefix' in context and 'netmask' in context:
+                this = ipaddress.IPv4Network( "%s/%s" % ( context['prefix'], context['netmask'] ))
+                ok = False
+                for s in self.subnets:
+                    if this.overlaps( s ):
+                        ok = True
+                        break
+                if not ok:
+                    s = 'skipping %s %s: subnet %s' % (meta['spec'],meta['group'],this)
+                    # logging.error(s)
+                    raise UserWarning, s
+            else:
+                raise SyntaxError, 'invalid context for %s %s: %s' % (meta['spec'], meta['group'], context)
+                                
+        # 0) do we currently have the item in our db/cache (see pre_process for cache entries)?
         
         # deal with delayed_contexts where we may only have a paritial entry
         # this will throw an exception if the context doesn't have all necessary fields
         # eg with vlans on caching__hosts
         key = dict_to_kv( context, keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-        # logging.warn("SAVE KEY: %s" % (key,) )
+        # logging.warn("KEY: %s" % (key,) )
         docs = self.cache[key] if key in self.cache else []
 
-        # merge in keys for delayed contexts (ie put fields back into the context )
+        # merge in keys for delayed contexts
         if 'delayed_context' in meta and len( meta['delayed_context'] ):
             for c in meta['delayed_context']:
-                # logging.error("DELAYED field=%s:\tc=%s\td=%s" % (c,context,data))
+                # logging.error("DELAYED1 %s: %s %s" % (c,context,data))
                 if c in data.keys():
                     context[c] = data[c]
                     del data[c]
-            # logging.error("DELAYED2: %s %s" % (context,data))
+            # logging.error("DELAYED2 (d=%s): %s %s" % (d,context,data))
 
         # TODO: check that only one matching document is found, if more, then merge the documents 
         # together, taking into account the last_seen and first_seens and if history exists
 
-        no_docs = len(docs)
-        no_msgs = len(self.msg_contexts[key])
+        # logging.debug("  DOCS: %s" % (len(docs),) )
+        # 1) if we already have a document, then we need to update it
+        if len(docs) == 1:
 
-        # if no_docs > 1 or no_msgs > 1:
-        # logging.error(" context: %s\t key: %s\tindb: %s\tctxs: (%s) %s" % (context,key,no_docs,no_msgs,self.msg_contexts[key]) )
-        # logging.error("context: %s, data: %s\tkey: %s\t(%s/%s)" % (context,data,key, no_docs,no_msgs) )
-            
-        # 1) one cache hit is good
-        if no_docs == 1:
-            
-            # 1a) one new or existing record to update
-            if no_msgs <= 1:
+            # see if there are any differences in the this set
+            d = self.different( docs[0], context, data, partial=False )
+            logging.debug("doc (%s): c=%s\td=%s" % (d,docs[0]['context'],docs[0]['data']) )
 
-                self._save( docs[0], time, meta, context, data, time_delta )
-                # TODO: deal with fact that the doc could be old and that we should archive it regardless
+            # if we have a 'ignore_data', then we don't care if d is True, so force - ensure we don't overwrite the created_at time
+            update_created_at = True
+            if 'ignore_data' in meta and meta['ignore_data']:
+                update_created_at = False
+                d = None
+                
+            if 'merge_context' in meta and meta['merge_context']:
+                new_context = self.flatten( docs[0]['context'], context )
+                # if new context has more fields, assume it's the same then
+                d = False if len(new_context) >= len(context) else None
+                logging.debug(" contexts (%s) c=%s\t-> c=%s" % (d,context,new_context))
+                context = new_context
+             
+            if 'merge_data' in meta and meta['merge_data']:
+                # fastpath: if data is empty, then force a post batch update
+                if data == {}:
+                    logging.debug( ' data empty')
+                else:
+                    # check to see if the kv are same for keys that are common; always assume data is smaller
+                    for k,v in data.iteritems():
+                        if not k in docs[0]['data'] or not docs[0]['data'][k] == data[k]:
+                            # tehre's a difference, so update item
+                            d = None
+                    new_data = self.flatten( docs[0]['data'], data )
+                    logging.debug(" data (%s) d=%s\t-> d=%s" % (d,docs[0]['data'],data))
+                    data = new_data
+                    
+            if d == True:
+                # 1b) if there are differences in the data, then archive the current and update links
+                # logging.error("THAT %s" % (context,))
+                self.stats['archived'] = self.stats['archived'] + 1
+                self.archive_and_update( meta['spec'], meta['group'], docs[0], time, context, data )
 
-            # 1b) hmm... we have multiple msgs, will need a new entry for each
+            elif d == False:
+                # 2) check timestamps, if too long, then archive the old one
+                if not time_delta == None and docs[0]['updated_at'] + time_delta < time:
+                    logging.warn("old data %s\t%s: %s " % (time_delta, docs[0]['updated_at']+time_delta-time, context ))
+                # 1a) if no difference from the stored doc, then just update the time stamps
+                self.stats['bulk_updated'] = self.stats['bulk_updated'] + 1
+                self.update_ids.append( docs[0]['id'] )
+
+            elif d == None:
+                # minor updates
+                self.stats['updated'] = self.stats['updated'] + 1
+                # self.update_item( meta['spec'], meta['group'], docs[0], time, context, data, update_created_at=update_created_at )
+                self.update_item( self.table, docs[0], time, context, data, update_created_at=update_created_at )
+ 
             else:
                 
-                logging.error("1>> SAVE: c=%s\td=%s" % (context,data))
-                logging.error(  " #1b) MULTI MSGS doc: c=%s\td=%s" % (docs[0]['context'],docs[0]['data']))
-                # for m in self.msg_contexts[key]:
-                    # logging.error("    msg: %s" % (m,))
-                # search cache for more specific entry?
-                this_key = dict_to_kv( context )
-                if this_key in self.cache and len(self.cache[this_key]) == 1:
-                    # logging.error("      %s\t(%s)\t%s" % (this_key, len(self.cache[k]),self.cache[k]))
-                    logging.error("    GOT IT with %s" % (this_key,))
-                    self._save( self.cache[this_key][0], time, meta, context, data, time_delta )
-                else:
-                    # for m in self.msg_contexts[key]:
-                    #     logging.error("    msg: %s" % (m,))
-                    # if we have a merge, then consider when this context has less keys than what's int he cache
-                    logging.error("      doc ctx: %s,\tcontext %s" % (docs[0]['context'], context))
-                    if 'merge_context' in meta and meta['merge_context'] and len(context) < len(docs[0]['context']):
-
-                        
-                        logging.error("    MERGE UPDATE all records?")
-                        
-                    else:
-                        # TODO: insert?
-                        logging.warn("INSERTING: key=%s\ttable=%s\tc=%s " % (key,self.table,context))
-                        self.insert( self.table, time, context, data )
-
-                    # logging.error("      %s\t(%s)\t%s" % (this_key, len(self.cache[k]),self.cache[k]))
-
+                logging.error("difference value unknown! %s" % (d,))
+                
+            # TODO: deal with fact that the doc could be old and that we should archive it regardless
                     
-                # TODO: insert this context, data
-                # we have one doc, need to replicate for each message?
-                # do an exact match on doc['context'] and context vars
-
+        elif len(docs) > 1:
+            
+            # get oldest
+            t = None
+            oldest = None
+            for i in docs:
+                if t == None:
+                    t = i['created_at']
+                    oldest = i['id']
+                if i['created_at'] < t:
+                    t = i['created_at']
+                    oldest = i['id']
+                if not i['id'] in self.delete_ids:
+                    self.delete_ids.append( i['id'] )
+                # logging.warn("- %s" % (i,))
+            self.delete_ids.remove( oldest )
+            # do a post_msg_process to delete in bulk
+            
         # 2) just insert the new document
-        elif no_docs == 0:
-
-            logging.warn("INSERTING: key=%s\ttable=%s\tc=%s " % (key,self.table,context))
+        else:
+            logging.warn("INSERTING: key=%s\tc=%s " % (key,context))
+            self.stats['inserted'] = self.stats['inserted'] + 1
             self.insert( self.table, time, context, data )
         
-        # 3)  if there are multiple matches of docs, lets see if we can mege them together
-        elif no_docs > 1:
-                        
-            def mark_newest_for_deletion( array ):
-                t = None
-                oldest = None
-                if len(array) > 1:
-                    for i in array:
-                        if t == None:
-                            t = i['created_at']
-                            oldest = i['id']
-                        if i['created_at'] < t:
-                            t = i['created_at']
-                            oldest = i['id']
-                        if not i['id'] in self.delete_ids:
-                            self.delete_ids.append( i['id'] )
-                    # logging.warn("- %s" % (i,))
-                    self.delete_ids.remove( oldest )
-
-            # def build( ctx, keys=[] ):
-            #     found_fields = []
-            #     for f in self.context_fields:
-            #         if f in ctx:
-            #             v = str(ctx[f])
-            #             found_fields.append( f )
-            #     return dict_to_kv( ctx, keys=found_fields )
-            def merge_docs( array, keys=[] ):
-                these = {}
-                for a in array:
-                    # k = build( a['context'], keys=keys )
-                    k = dict_to_kv( a['context'], keys=keys )
-                    if not k in these:
-                        these[k] = []
-                    these[k].append( a )
-                return these
-
-            # determine unique matches based on the fields of the dict
-            this_cache = merge_docs( docs, keys=context.keys() )
-
-            no_this_cache = len(this_cache)
-            no_cache_hits = 0
-            this_key = dict_to_kv( context )
-            if this_key in self.cache:
-                no_cache_hits = len(self.cache[this_key])
-                        
-            # 3a) if there's only one unique message, then merge if they have the same (sub)set of key/value pairs
-            if no_msgs == 1:
-                        
-                logging.error("3>> SAVE: c=%s\td=%s" % (context,data))
-
-                logging.error(" = %s\tno_this_cache: %s\tno_cache_hits: %s" % (this_key,len(this_cache),no_cache_hits))
-
-                if no_this_cache == 1:
-
-                    logging.error(" #3a) msg: c=%s\td=%s" % (context,data) )
-                    if this_key in self.cache:
-                        logging.error("    GOT IT with key %s" % (this_key,))
-                        self._save( self.cache[this_key][0], time, meta, context, data, time_delta )
-                        
-                    else:
-
-                        # what to do? add new one?
-                        logging.error("    WHAT TO UPDATE ON DB?")
-
-                    logging.error("  MERGE INTO ONE?")
-                    # iterate thorugh all items for this key and see if the records should be related
-                    # or not. we do this via 
-
-                    # c={'vlan': '1922', 'mac_address': '34e6.d729.d645'}, d={}
-                    # c={'vlan': '1922', 'ip_address': '134.79.224.175', 'mac_address': '34e6.d729.d645'}, d={'device': 'swh-b267.slac.stanford.edu', 'physical_port': 'Fa1/0/42'}
-                    for i in self.cache[key]:
-                        logging.error("    %s:\tc=%s, d=%s" % (i['id'],i['context'],i['data']))
-
-                    
-                # single cache entry
-                elif no_this_cache == 0:
-
-                    for k,v in this_cache.iteritems():
-                        logging.error("    %s\t(%s)" % (k,len(v)))
-                        for w in v:
-                            logging.error("      %s: c=%s\td=%s" % (w['id'],w['context'],w['data']))
-
-                    logging.error(" #3b) msg: c=%s\td=%s" % (context,data) )
-                    logging.error("  NO HITS")
-                    # insert?
-                    
-                # multiple cache entries
-                else:
-
-                    logging.error(" #3c) msg: c=%s\td=%s" % (context,data) )
-                    logging.error("  too many different docs (%s)..." % (len(this_cache),))
-                    # try an exact match
-                    if this_key in self.cache:
-                        if len(self.cache[this_key]) == 1:
-                            logging.error("    GOT IT with key %s" % (this_key,))
-                            self._save( self.cache[this_key][0], time, meta, context, data, time_delta )
-                        else:
-                            for k,v in this_cache.iteritems():
-                                logging.error("    %s\t(%s)" % (k,len(v)))
-                                for w in v:
-                                    logging.error("      %s: c=%s\td=%s" % (w['id'],w['context'],w['data']))
-                            logging.error("    DON'T GOT IT")
-                            
-                    elif this_key in this_cache and len(this_cache[this_key]) == 1:
-                        logging.error("    GOT IT with key %s" % (this_key,))
-                        self._save( this_cache[this_key][0], time, meta, context, data, time_delta )
-                        
-                    else:
-
-                        logging.warn("INSERTING: key=%s\ttable=%s\tc=%s " % (key,self.table,context))
-                        self.insert( self.table, time, context, data )
-                        # update all near matches?
-                    # dunno what to do...
-                    
-                    # TODO: merge a series of docs into teh same one?
-                    
-
-                # # get oldest
-                # distinct = {}
-                # for i in docs:
-                #     # take a hash of the context to get uniques
-                #     h = dict_to_kv( i['context'] )
-                #     if not h in distinct:
-                #         distinct[h] = []
-                #     distinct[h].append(i)
-                #
-                # for h in distinct:
-                #     mark_newest_for_deletion( distinct[h] )
-                #
-                # # if we're doing merge contexts, then we should do so if we have multiple's left
-                # if 'merge_context' in meta and meta['merge_context']:
-                #     for h in distinct:
-                #         if len(distinct[h]) > 1:
-                #             logging.error("SHOULD PROBABLY TRY TO MERGE %s:" % (h,))
-                #             for item in distinct[h]:
-                #                 logging.error("  c=%s\td=%s\tid=%s" % (item['context'],item['data'],item['id'] ))
-                #             mark_newest_for_deletion( distinct[h] )
-                #
-                #     # TODO iterate though all docs and see if there's any to merge, eg missing fields which otherwise would make the records for hte same thing
-                #     # logging.error("distinct multiples: \n%s" % (pformat(distinct,width=230),) )
-
-            elif no_msgs > 1:
-                
-                logging.error(  " #4) MANY MANY DOCS: %s\tMSGS: %s:\tc=%s\td=%s" % (no_docs,no_msgs,context,data))
-
-                if this_key in self.cache and len(self.cache[this_key]) == 1:
-                    logging.error("    GOT IT with key %s" % (this_key,))
-                    self._save( this_cache[this_key][0], time, meta, context, data, time_delta )
-                else:
-                    logging.warn("INSERTING: key=%s\ttable=%s\tc=%s " % (key,self.table,context))
-                    self.insert( self.table, time, context, data )
-                    # for i in docs:
-                    #     logging.error("   %s:\tc=%s\td=%s" % (i['id'],i['context'],i['data']) )
-                    
-
-            elif no_msgs == 0:
-                # not possible
-                logging.error("ERROR")
-
-
         return None
-
-
+        
 
 class Postgres( StorageCommand ):
     """
