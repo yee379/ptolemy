@@ -170,43 +170,62 @@ class PostgresStorer( Feeder ):
         
         if not this_table in self.known_tables:
 
-            pk = 'SERIAL'
-            if archive:
-                pk = 'INT'
-            stmt = "CREATE TABLE %s ( id %s, created_at TIMESTAMP WITH TIME ZONE NOT NULL, updated_at TIMESTAMP WITH TIME ZONE NOT NULL, context HSTORE DEFAULT hstore(array[]::varchar[]), data HSTORE DEFAULT HSTORE(array[]::varchar[]) );" % (this_table,pk)
+            # check
             try:
-                logging.debug("CREATE: %s" % (stmt,))
+                # this is ~15x faster than creating the table if it already exists
+                stmt = "SELECT '%s'::regclass;" % (this_table)
+                logging.debug("ENSURE: %s" % (stmt,))
                 self.cur.execute( stmt )
                 self.known_tables[this_table] = {}
-                # TODO: Create indexes
-            except psycopg2.ProgrammingError,e:
-                # its fine if the table already exists
-                if not str(e).endswith( ' already exists\n'):
-                    raise e
-                if not name in self.known_tables:
+            except:
+                # manually create
+                pk = 'SERIAL'
+                if archive:
+                    pk = 'INT'
+                stmt = "CREATE TABLE %s ( id %s, created_at TIMESTAMP WITH TIME ZONE NOT NULL, updated_at TIMESTAMP WITH TIME ZONE NOT NULL, context HSTORE DEFAULT hstore(array[]::varchar[]), data HSTORE DEFAULT HSTORE(array[]::varchar[]) );" % (this_table,pk)
+                try:
+                    logging.debug("CREATE: %s" % (stmt,))
+                    self.cur.execute( stmt )
                     self.known_tables[this_table] = {}
-            # accept error
-            self.db.commit()
+                    # TODO: Create indexes
+                except psycopg2.ProgrammingError,e:
+                    # its fine if the table already exists
+                    if not str(e).endswith( ' already exists\n'):
+                        raise e
+                    if not name in self.known_tables:
+                        self.known_tables[this_table] = {}
+                # accept error
+                self.db.commit()
 
         # if we have a parition, then create the partition 
         if inherited_from and not name in self.known_tables:
-            stmt = "CREATE TABLE %s () INHERITS (%s)" % (name,inherited_from)
+
             try:
-                logging.debug("CREATE PARTITION: %s" % (stmt,))
+                
+                stmt = "SELECT '%s'::regclass;" % (name,)
+                logging.debug('ENSURE %s' % (stmt,))
                 self.cur.execute( stmt )
                 self.known_tables[name] = {}
-            except psycopg2.ProgrammingError,e:
-                # its fine if the table already exists
-                if not str(e).endswith( ' already exists\n'):
-                    logging.debug("ERR: %s %s" % (type(e),e))
-                    raise e
-                if not name in self.known_tables:
+
+            except:
+
+                stmt = "CREATE TABLE %s () INHERITS (%s)" % (name,inherited_from)
+                try:
+                    logging.debug("CREATE PARTITION: %s" % (stmt,))
+                    self.cur.execute( stmt )
                     self.known_tables[name] = {}
-            except psycopg2.InternalError,e:
-                # hmmm.... why does it return this sometimes?
-                # ?? current transaction is aborted, commands ignored until end of transaction block
-                logging.debug("ERROR: %s %s" % (type(e),e))
-            self.db.commit()
+                except psycopg2.ProgrammingError,e:
+                    # its fine if the table already exists
+                    if not str(e).endswith( ' already exists\n'):
+                        logging.debug("ERR: %s %s" % (type(e),e))
+                        raise e
+                    if not name in self.known_tables:
+                        self.known_tables[name] = {}
+                except psycopg2.InternalError,e:
+                    # hmmm.... why does it return this sometimes?
+                    # ?? current transaction is aborted, commands ignored until end of transaction block
+                    logging.debug("ERROR: %s %s" % (type(e),e))
+                self.db.commit()
 
         # logging.warn("END ENSURE %s" % (name,))
         return name
