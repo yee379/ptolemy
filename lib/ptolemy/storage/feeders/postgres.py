@@ -522,7 +522,11 @@ class PostgresStorer( Feeder ):
         if len(ids):
             try:
                 self.stats['deleted'] = self.stats['deleted'] + len(ids)
-                stmt = 'DELETE FROM %s WHERE id in (%s)' % ( table, ','.join( [ str(i) for i in ids ] ) )
+                # big hack
+                t = table
+                if '@' in table:
+                    t = t.split('@').pop(0)
+                stmt = 'DELETE FROM %s WHERE id in (%s)' % ( t, ','.join( [ str(i) for i in ids ] ) )
                 logging.info(" %s" % stmt)
                 self.cur.execute( stmt )
             except Exception,e:
