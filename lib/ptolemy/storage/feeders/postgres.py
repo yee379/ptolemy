@@ -511,6 +511,7 @@ class PostgresStorer( Feeder ):
         # logging.warn("    BULK UPDATE: %s\t%s" % (table,ids,))
         if len(ids):
             try:
+                ids.sort()
                 stmt = self.cur.mogrify('UPDATE ' + table + ' SET updated_at=%s WHERE id IN (' + ','.join( [ str(i) for i in ids] ) + ');', (time,) )
                 logging.debug(" (bulk) %s" % (stmt,))
                 self.cur.execute( stmt )
