@@ -72,10 +72,11 @@ class NetDB( Infrastructure ):
             for i in d['interfaces']:
                 this = {}
                 if 'ipnum' in i:
-                    this['ip_address'] = i['ipnum']
-                if 'name' in i and 'domain' in i:
-                    this['hostname'] = '%s.%s' % ( i['name'].lower(), i['domain'].lower() )
-                if 'ethernet' in i:
-                    this['mac_address'] = '%s' % i['ethernet']
-                yield this
+                    for j in i['ipnum']:
+                        this['ip_address'] = j
+                    if 'name' in i and 'domain' in i:
+                        this['hostname'] = '%s.%s' % ( i['name'].lower(), i['domain'].lower() )
+                    if 'ethernet' in i:
+                        this['mac_address'] = '%s' % i['ethernet']
+                    yield this
     

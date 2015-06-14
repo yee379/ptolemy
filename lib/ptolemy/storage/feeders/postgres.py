@@ -526,7 +526,8 @@ class PostgresStorer( Feeder ):
                 # big hack
                 t = table
                 if '@' in table:
-                    t = t.split('@').pop(0)
+                    a = t.split('@')
+                    t = '%s__%s' % (a[0],a[1].replace('=',''))
                 stmt = 'DELETE FROM %s WHERE id in (%s)' % ( t, ','.join( [ str(i) for i in ids ] ) )
                 logging.info(" %s" % stmt)
                 self.cur.execute( stmt )

@@ -1,7 +1,7 @@
 # logging file
 LOG_FILE: '/opt/ptolemy/var/log/stored-postgres.log'
 
-WORKERS: 36
+WORKERS: 24
 
 #######################################################################
 # Agent Settings
@@ -9,10 +9,11 @@ WORKERS: 36
 
 POOL: 'postgres.default'
 KEYS:
-    - '#.spanning_tree.#'
+    #- '#.spanning_tree.#'
     - '#.entity.#'
     - '#.ports.#'
     - '#.layer1_peer.#'
+    - '#.port_channel.#'
     - '#.arps.#'
     # - '#.property_control.#'
     - '#.dns.#'
@@ -22,7 +23,8 @@ KEYS:
     - '#.spec.ipam.#'
     - '#.spec.alert.#'
     - '#.meta.#'
-    - '#.spec.caching.#'
+    # can't keep up
+    # - '#.spec.caching.#'
 
 #######################################################################
 # POSTGRES Settings
@@ -54,17 +56,10 @@ PRE_MSG_PROCESS:
       fields:
         - mac_address
         - vlan
-      # if False, then fail hard on pre_msg_process, True, just don't include it in search, null shoudl attempt to do something to ensure match
       fields_missing_ok: True
-      # do search and cache, even if the following aren't defined (cache still strip names)
-      fields_required:
-        - mac_address
-      # add it to teh keys if its defined, otherwise ignroe
-      optional_fields:
-        - ip_address
 
 POST_MSG_PROCESS:
-    - spec: caching
+    - spec: test
       group: hosts
 
 
