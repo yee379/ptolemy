@@ -122,12 +122,12 @@ class PostgresStorer( Feeder ):
         if name in self.partitions:
             if self.partitions[name] in context:
                 # determine the key to partition on and use this as the table name
-                # logging.info("partition! %s -> %s = %s (%s)" % (name, self.partitions[name], context[self.partitions[name]], context) )
                 inherited_from = name
                 v = context[self.partitions[name]]
                 # check to see if we need to do a modulo on the value
                 if name in self.partitions_modulo:
-                    self.md5.update( v )
+                    logging.debug("partition! %s field=%s v=%s (context: %s)" % (name, self.partitions[name], context[self.partitions[name]], context) )
+                    self.md5 = md5( v )
                     v = long(self.md5.hexdigest(),16) % self.partitions_modulo[name]
                 name = "%s__%s%s" % (name,self.partitions[name],v)
             elif not context == {}:
@@ -137,7 +137,7 @@ class PostgresStorer( Feeder ):
                 vals = {}
                 # logging.error("DATA: %s" % data)
                 for d in data:
-                    # logging.error("D: %s %s" % (self.partitions[name],d) )
+                    logging.error(" if: %s %s" % (self.partitions[name],d) )
                     if self.partitions[name] in d:
                         vals[d[self.partitions[name]]] = True
                     else:
@@ -149,7 +149,7 @@ class PostgresStorer( Feeder ):
                 if len(vals) == 1:
                     v = vals.keys().pop()
                     name = "%s__%s%s" % (name,self.partitions[name],v)
-                    # logging.error("NAME: %s %s" % (name, inherited_from))
+                    logging.error("NAME: %s %s" % (name, inherited_from))
                 else:
                     raise Exception( 'could not determine partition value %s: %s' % (vals,data))
         return name, inherited_from
@@ -378,30 +378,41 @@ class PostgresStorer( Feeder ):
         # important: this assumes that all messages in msg are of the same spec and group; use first as example
         m = msg[0]
         self.current_table_name = self._table_name( m['_meta']['spec'],m['_meta']['group'] )
-        # logging.error("CUR: %s, PRE %s" % (self.current_table_name, self.pre_msg_process_tables))
+        logging.debug("CUR: %s, PRE %s\t%s" % (self.current_table_name, self.pre_msg_process_tables, self.current_table_name in self.pre_msg_process_tables))
         if self.current_table_name in self.pre_msg_process_tables:
             self.context_fields = self.pre_msg_process_tables[self.current_table_name]['fields']
             self.context_fields_missing_ok = self.pre_msg_process_tables[self.current_table_name]['missing_ok']
-            ctxs = []
+            # split up the message queries by parts
+            parts = {}
+            # ctxs = []
             for m in msg:
+                logging.debug("M: %s" % (m,))
                 okay = []
-                this_table_name = self._table_name( m['_meta']['spec'],m['_meta']['group'] )
+                this_table_name, parent_table = self.table_name( m['_meta']['spec'],m['_meta']['group'], m['context'], {} )
+                logging.debug(' this_table_name: %s' % (this_table_name,))
                 if not this_table_name == self.current_table_name:
-                    raise Exception('non identical spec/groups in long message: %s / %s' % (self.current_table_name, this_table_name))
+                    # raise Exception('non identical spec/groups in long message: %s / %s' % (self.current_table_name, this_table_name))
+                    if not this_table_name in parts:
+                        parts[this_table_name] = []
+                # logging.debug(" context in m: %s" % ('context' in m,))
                 if 'context' in m:
                     for f in self.context_fields:
                         okay.append( True if f in m['context'] else False )
+                logging.debug( ' okay: %s\t%s' % (okay, False in okay))
                 if not False in okay:
                     # logging.warn("+++ %s" % m['context'] )
                     this = {}
                     for f in self.context_fields:
                         this[f] = m['context'][f]
-                    ctxs.append( this )
+                    # ctxs.append( this )
+                    parts[this_table_name].append( this )
+                    logging.debug("  this %s" % (this,))
             self.stats['messages'] = len(msg)
             # actually do the query
-            if len( ctxs ):
+            # if len( ctxs ):
+            for table, ctxs in parts.iteritems():
                 try:
-                    for d in self.query( self.current_table_name, ctxs, operation='OR' ):
+                    for d in self.query( table, ctxs, operation='OR' ):
                         key = dict_to_kv( d['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
                         # logging.warn("- %s\tc=%s, d=%s" % (key,d['context'],d['data']) )
                         if not key in self.cache:
