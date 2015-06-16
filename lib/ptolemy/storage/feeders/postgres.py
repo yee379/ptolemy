@@ -470,7 +470,7 @@ class PostgresStorer( Feeder ):
         if not self.pre_msg_queried:
             for i in self.query( self.table, [ kwargs, ], recent=recent ):
                 key = dict_to_kv( i['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-                logging.warn("  pre msg queried key: %s" % (key,))
+                logging.debug("  pre msg queried key: %s" % (key,))
                 if not key in self.cache:
                     self.cache[key] = []
                 self.cache[key].append( i )
