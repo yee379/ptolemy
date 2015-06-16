@@ -1,7 +1,7 @@
 # logging file
 LOG_FILE: '/opt/ptolemy/var/log/stored-postgres.log'
 
-WORKERS: 12
+WORKERS: 10
 
 #######################################################################
 # Agent Settings
