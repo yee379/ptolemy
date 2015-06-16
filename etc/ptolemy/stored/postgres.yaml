@@ -38,8 +38,6 @@ POSTGRES_PASSWORD: 'ptolemy'
 
 # auto partition the following tables by the context field specified
 # NB must be a list of strings, with ':' delimit
-# PARTITIONS:
-#     - spanning_tree__neighbour:vlan
 PARTITIONS:
     - spec: spanning_tree
       group: neighbour
