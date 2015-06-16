@@ -50,7 +50,7 @@ clean() {
 forcestop(){
     echo "Force stopping $PROG $NAME $COMMAND "
     if [ "$COMMAND"="" ]; then
-        ps wx -U $USER | grep $PROG | grep $NAME | grep -v '-' | awk '{print $1}' | xargs kill -9
+        ps wx -U $USER | grep $PROG | grep $NAME | grep -v 'sh' | awk '{print $1}' | xargs kill -9
     else
         ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | grep -v '-' | awk '{print $1}' | xargs kill -9
     fi
@@ -61,7 +61,8 @@ case "$1" in
     start
         ;;
   stop)
-    stop
+    forcestop
+    clean
         ;;
   forcestop)
     forcestop
