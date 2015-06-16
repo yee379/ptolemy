@@ -126,7 +126,7 @@ class PostgresStorer( Feeder ):
                 v = context[self.partitions[name]]
                 # check to see if we need to do a modulo on the value
                 if name in self.partitions_modulo:
-                    logging.debug("partition! %s field=%s v=%s (context: %s)" % (name, self.partitions[name], context[self.partitions[name]], context) )
+                    # logging.debug("partition! %s field=%s v=%s (context: %s)" % (name, self.partitions[name], context[self.partitions[name]], context) )
                     self.md5 = md5( v )
                     v = long(self.md5.hexdigest(),16) % self.partitions_modulo[name]
                 name = "%s__%s%s" % (name,self.partitions[name],v)
@@ -384,47 +384,46 @@ class PostgresStorer( Feeder ):
             self.context_fields_missing_ok = self.pre_msg_process_tables[self.current_table_name]['missing_ok']
             # split up the message queries by parts
             parts = {}
-            # ctxs = []
             for m in msg:
-                logging.debug("M: %s" % (m,))
                 okay = []
                 this_table_name, parent_table = self.table_name( m['_meta']['spec'],m['_meta']['group'], m['context'], {} )
-                logging.debug(' this_table_name: %s' % (this_table_name,))
+                logging.debug(' partitioned %s to %s' % (m['context'],this_table_name,))
                 if not this_table_name == self.current_table_name:
                     # raise Exception('non identical spec/groups in long message: %s / %s' % (self.current_table_name, this_table_name))
                     if not this_table_name in parts:
                         parts[this_table_name] = []
-                # logging.debug(" context in m: %s" % ('context' in m,))
-                if 'context' in m:
-                    for f in self.context_fields:
-                        okay.append( True if f in m['context'] else False )
-                logging.debug( ' okay: %s\t%s' % (okay, False in okay))
-                if not False in okay:
-                    # logging.warn("+++ %s" % m['context'] )
-                    this = {}
-                    for f in self.context_fields:
+                # # logging.debug(" context in m: %s" % ('context' in m,))
+                # if 'context' in m:
+                #     for f in self.context_fields:
+                #         okay.append( True if f in m['context'] else False )
+                # # logging.debug( ' okay: %s\t%s' % (okay, False in okay))
+                # if not False in okay:
+                # logging.warn("+++ %s" % m['context'] )
+                this = {}
+                for f in self.context_fields:
+                    if f in m['context']:
                         this[f] = m['context'][f]
-                    # ctxs.append( this )
-                    parts[this_table_name].append( this )
-                    logging.debug("  this %s" % (this,))
+                # ctxs.append( this )
+                parts[this_table_name].append( this )
+                logging.debug("  this %s" % (this,))
             self.stats['messages'] = len(msg)
             # actually do the query
-            # if len( ctxs ):
             for table, ctxs in parts.iteritems():
-                try:
-                    for d in self.query( table, ctxs, operation='OR' ):
-                        key = dict_to_kv( d['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-                        # logging.warn("- %s\tc=%s, d=%s" % (key,d['context'],d['data']) )
-                        if not key in self.cache:
-                            self.cache[key] = []
-                        self.cache[key].append( d )
-                        self.stats['pre_cached'] = self.stats['pre_cached'] + 1
-                        self.pre_msg_queried = True
-                    # logging.warn("-"*80)
-                except Exception,e:
-                    self.db.rollback()
-                    self.cache = {}
-                    self.pre_msg_queried = None
+                if len(ctxs):
+                    try:
+                        for d in self.query( table, ctxs, operation='OR' ):
+                            key = dict_to_kv( d['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
+                            logging.debug("  cache[%s]\tc=%s, d=%s" % (key,d['context'],d['data']) )
+                            if not key in self.cache:
+                                self.cache[key] = []
+                            self.cache[key].append( d )
+                            self.stats['pre_cached'] = self.stats['pre_cached'] + 1
+                            self.pre_msg_queried = True
+                        # logging.warn("-"*80)
+                    except Exception,e:
+                        self.db.rollback()
+                        self.cache = {}
+                        self.pre_msg_queried = None
         return msg
         
     def pre_bulk_process( self, time, meta, context, data ):
@@ -471,7 +470,7 @@ class PostgresStorer( Feeder ):
         if not self.pre_msg_queried:
             for i in self.query( self.table, [ kwargs, ], recent=recent ):
                 key = dict_to_kv( i['context'], keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-                # logging.warn("  key: %s" % (key,))
+                logging.warn("  pre msg queried key: %s" % (key,))
                 if not key in self.cache:
                     self.cache[key] = []
                 self.cache[key].append( i )
@@ -501,8 +500,7 @@ class PostgresStorer( Feeder ):
         self.update_ids = []
 
     def post_msg_process( self ):
-        # logging.error("POST BULK PROCESS: %s" % (self.post_msg_data,))
-        # did_something = False
+        # logging.error("POST BULK PROCESS: %s" % (self.delete_ids,))
         
         if len(self.delete_ids):
             self.bulk_delete( self.current_table_name, self.delete_ids )
@@ -513,7 +511,7 @@ class PostgresStorer( Feeder ):
                 # logging.error("   TABLE: %s, TIME: %s\t%s" % (table,time,d[time]))
                 self.bulk_update( table, time, d[time] )
                 # did_something = True
-        # if did_something:
+
         self.db.commit()
         # logging.info("stats: %s" % (self.stats,))
         yield None, None
@@ -576,8 +574,8 @@ class PostgresStorer( Feeder ):
         # this will throw an exception if the context doesn't have all necessary fields
         # eg with vlans on caching__hosts
         key = dict_to_kv( context, keys=self.context_fields, missing_ok=self.context_fields_missing_ok )
-        # logging.warn("KEY: %s" % (key,) )
         docs = self.cache[key] if key in self.cache else []
+        logging.debug("found cache with key (%s): '%s'" % (len(docs),key) )
 
         # merge in keys for delayed contexts
         if 'delayed_context' in meta and len( meta['delayed_context'] ):
@@ -615,7 +613,8 @@ class PostgresStorer( Feeder ):
             if 'merge_data' in meta and meta['merge_data']:
                 # fastpath: if data is empty, then force a post batch update
                 if data == {}:
-                    logging.debug( ' data empty')
+                    # logging.debug( ' this data empty, cached data: %s' % (docs[0]['data'],))
+                    data = docs[0]['data']
                 else:
                     # check to see if the kv are same for keys that are common; always assume data is smaller
                     for k,v in data.iteritems():
@@ -628,7 +627,7 @@ class PostgresStorer( Feeder ):
                     
             if d == True:
                 # 1b) if there are differences in the data, then archive the current and update links
-                # logging.error("THAT %s" % (context,))
+                logging.error("archiving %s" % (context,))
                 self.stats['archived'] = self.stats['archived'] + 1
                 self.archive_and_update( meta['spec'], meta['group'], docs[0], time, context, data )
 
@@ -638,12 +637,14 @@ class PostgresStorer( Feeder ):
                     logging.warn("old data %s\t%s: %s " % (time_delta, docs[0]['updated_at']+time_delta-time, context ))
                 # 1a) if no difference from the stored doc, then just update the time stamps
                 self.stats['bulk_updated'] = self.stats['bulk_updated'] + 1
+                logging.debug(" bulk update %s" % (docs[0]['id']))
                 self.update_ids.append( docs[0]['id'] )
 
             elif d == None:
                 # minor updates
                 self.stats['updated'] = self.stats['updated'] + 1
                 # self.update_item( meta['spec'], meta['group'], docs[0], time, context, data, update_created_at=update_created_at )
+                logging.debug("update single")
                 self.update_item( self.table, docs[0], time, context, data, update_created_at=update_created_at )
  
             else:
@@ -653,6 +654,8 @@ class PostgresStorer( Feeder ):
             # TODO: deal with fact that the doc could be old and that we should archive it regardless
                     
         elif len(docs) > 1:
+            
+            logging.debug("multiple records found (%s)\n%s" % (len(docs),docs,))
             
             # get oldest
             t = None
@@ -667,8 +670,9 @@ class PostgresStorer( Feeder ):
                 if not i['id'] in self.delete_ids:
                     self.delete_ids.append( i['id'] )
                 # logging.warn("- %s" % (i,))
-            self.delete_ids.remove( oldest )
             # do a post_msg_process to delete in bulk
+            self.delete_ids.remove( oldest )
+            logging.debug(" eldest %s, delete %s" % (oldest,self.delete_ids,))
             
         # 2) just insert the new document
         else:

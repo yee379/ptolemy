@@ -59,7 +59,7 @@ PRE_MSG_PROCESS:
       fields_missing_ok: True
 
 POST_MSG_PROCESS:
-    - spec: test
+    - spec: caching
       group: hosts
 
 
