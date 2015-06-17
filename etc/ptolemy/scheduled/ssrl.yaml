@@ -4,7 +4,9 @@ hosts:
       arps: 600 +- 60
     snmp:
       community: file:///opt/etc/snmp.community.read
-  rtr-ssrlcore1.slac.stanford.edu: null
+  rtr-ssrlcore1.slac.stanford.edu: 
+    schedule:
+      arps: 600 +- 60
   swh-ssrlb005-ctrl1.slac.stanford.edu: null
   swh-ssrlb006-mgmt1.slac.stanford.edu: null
   swh-ssrlb006-pub1.slac.stanford.edu: null
