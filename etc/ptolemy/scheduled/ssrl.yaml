@@ -107,6 +107,8 @@ hosts:
   swh-ssrlbl91-smbctrl1.slac.stanford.edu: null
   swh-ssrlcore.slac.stanford.edu: null
   swh-ssrlctrl-core1.slac.stanford.edu: null
+  swh-ssrlctrl-core2.slac.stanford.edu: null
+  swh-ssrlctrl-core3.slac.stanford.edu: null
   swh-ssrlpbl101.slac.stanford.edu: null
   swh-ssrlpbl102.slac.stanford.edu: null
   swh-ssrlpbl112.slac.stanford.edu: null
