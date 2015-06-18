@@ -22,19 +22,30 @@ from pprint import pformat
 import traceback
 from random import choice
 
-def get_key( meta, context, key_prepend='' ):
-    if 'carbon_key' in meta:
-        return meta['carbon_key']
-    # remap device to reverse notation
-    device = ".".join( reversed( context['device'].split('.')) )
+def get_key( meta, context ):
     # append other context items
+    def parse(x):
+        try:
+            a = float(x)
+            b = int(a)
+        except ValueError:
+            return '"%s"' % x
+        if a == b:
+            return b
+        else:
+            return a
+            
     keys = []
     for k in sorted(context.keys()):
-        if not k in ( 'device', ):
-            keys.append( "%s" % (context[k],) )
-    # key
-    key = "%s%s.%s.%s.%s" % (key_prepend, device, meta['spec'], meta['group'], '.'.join(keys) )
-    return key.replace('/','.')
+        keys.append( "%s=%s" % (k,parse(context[k]),) )
+    # key, should probably try to merge in group into sorted list above
+    return "%s,group=%s,%s" % ( meta['spec'], meta['group'], ','.join(keys) )
+
+def get_data( data ):
+    out = []
+    for k,v in data.iteritems():
+        out.append('%s=%s' % (k,v) )
+    return ','.join(out)
 
 def calc_time( ts ):
     return "%.3f" % float( (float(ts.microseconds) + float(ts.seconds*1000000))/1000000 )
@@ -52,12 +63,14 @@ class InfluxDbStorer( Feeder ):
 
     # number of entries to send at once to server
     chunks = 100
+    retry_chunks = 10
+    current_chunks = chunks
     data_cache = []
 
     instances = []
     dbname = ''
-    user = 'root'
-    password = 'root'
+    user = 'ptolemy'
+    password = 'ptolemy'
      
     def setup(self,**kwargs):
         super( InfluxDbStorer, self).setup(**kwargs) 
@@ -65,49 +78,40 @@ class InfluxDbStorer( Feeder ):
             raise Exception( 'need influx endpoints defined under influxdb_instances' )
         # logging.error("BLAH i=%s, c=%s, n=%s, u=%s, p=%s" % (self.instances,self.chunks,self.dbname,self.user,self.password))
     
-    def get_instance_string(self):
-        # 'http://172.23.52.10:8086/db/test_db/series?u=root&p=root'
-        return 'http://%s/db/%s/series?u=%s&p=%s' % ( choice(self.instances), self.dbname, self.user, self.password )
         
     def save( self, time, meta, context, data, time_delta=None ):
         # logging.debug("> %s\t%s - %s\t%s\t%s" % (self.instances, meta, context, time, data))
-        # reformat ata into influx format
-        
         ts = { 'start': now() }
         
-        this = {
-            'name': get_key( meta, context ),
-            'points': [ [ time*1000, ], ],
-            'columns': [ 'time', ]
-        }
-        for k,v in data.iteritems():
-            this['columns'].append( k )
-            this['points'][0].append( float(v) )
-
+        # reformat ata into influx format
+        this = '%s %s %s' % (get_key(meta,context),get_data(data),time)
+        logging.debug("+ %s" % (this,))
         self.data_cache.append( this )
 
-        if len( self.data_cache ) >= self.chunks:
+        if len( self.data_cache ) >= self.current_chunks:
             # logging.debug( "  - %s" % (encoded,))
-            c = self.get_instance_string()
-            # logging.info("sending %s to %s" % (len(self.cache),c))
-
-            json = dumps( self.data_cache ) 
+            server = choice(self.instances)
+            c = 'http://%s/write?db=%s&u=%s&p=%s&precision=%s' % ( server, self.dbname, self.user, self.password, 's' )
+            # logging.info("sending %s to %s" % (len(self.data_cache),c))
 
             ts['caching'] = now()
 
-            resp = urlopen( c, json )
+            resp = urlopen( c, '\n'.join(self.data_cache) )
             code = resp.getcode()
+            code = 200
 
             n = len(self.data_cache)
 
             if code == 200:
                 self.data_cache = []
+                self.current_chunks = self.chunks
             else:
                 logging.warn("  >: %s: %s" % (code,resp.read()))
+                self.current_chunks = self.chunks + self.retry_chunks
 
             ts['sending'] = now()
 
-            logging.info("%s sent %s datapoints (processing %.3fsec, sending %.3fsec)" % (c, n, delta(ts['start'],ts['caching']), delta(ts['caching'],ts['sending']) ) )
+            logging.info("%s sent %s datapoints (processing %.3fsec, sending %.3fsec)" % (server, n, delta(ts['start'],ts['caching']), delta(ts['caching'],ts['sending']) ) )
 
     
 class Influxdb( StorageCommand ):
