@@ -41,8 +41,8 @@ spanning_tree:
     - net-config.yaml
 arps: 
     - generic.yaml
-    # - f5_bigip.yaml
     - cisco_wlc.yaml
+    - f5_bigip.yaml
     - net-config.yaml
     
 layer3:

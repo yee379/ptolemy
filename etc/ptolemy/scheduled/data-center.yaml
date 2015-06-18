@@ -45,10 +45,10 @@ hosts:
   rtr-farmltda.slac.stanford.edu: null
   rtr-farmorange.slac.stanford.edu: null
   rtr-farmsrcf01.slac.stanford.edu: null
-  !!python/unicode rtr-fwcore1.slac.stanford.edu: null
-  !!python/unicode rtr-fwcore2.slac.stanford.edu: null
-  !!python/unicode rtr-fwdmz-01.slac.stanford.edu: null
-  !!python/unicode rtr-fwdmz-02.slac.stanford.edu: null
+  rtr-fwcore1.slac.stanford.edu: null
+  rtr-fwcore2.slac.stanford.edu: null
+  rtr-fwdmz-01.slac.stanford.edu: null
+  rtr-fwdmz-02.slac.stanford.edu: null
   rtr-fwepn2-01.slac.stanford.edu: null
   rtr-fwepn2-02.slac.stanford.edu: null
   rtr-fwepn3-01.slac.stanford.edu: null
@@ -128,7 +128,7 @@ hosts:
   rtr-visitor4.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-  !!python/unicode swh-bro.slac.stanford.edu: null
+  swh-bro.slac.stanford.edu: null
   swh-cgb1bd08.slac.stanford.edu: null
   swh-cgb1bd10.slac.stanford.edu: null
   swh-cgb1bd11.slac.stanford.edu: null
@@ -260,8 +260,6 @@ hosts:
   swh-serv05a.slac.stanford.edu: null
   swh-serv05b.slac.stanford.edu: null
   swh-serv05c.slac.stanford.edu: null
-  !!python/unicode swh-ssrlctrl-core2.slac.stanford.edu: null
-  swh-ssrlctrl-core3.slac.stanford.edu: null
   swh-visitor1.slac.stanford.edu: null
   swh-visitor2.slac.stanford.edu: null
   swh-winmgmt2bf39.slac.stanford.edu: null
