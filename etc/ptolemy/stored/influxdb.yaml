@@ -17,12 +17,13 @@ KEYS:
 #######################################################################
 
 INFLUXDB_DBNAME: ptolemy
-INFLUXDB_USER: root
-INFLUXDB_PASSWORD: root
+INFLUXDB_USER: ptolemy
+INFLUXDB_PASSWORD: ptolemy
 INFLUXDB_INSTANCES:
-    # - '172.23.52.10:8086'
-    - '172.23.52.24:8086'
-    - '172.23.52.21:8086'
-    - '172.23.52.26:8086'
-    - '172.23.52.27:8086'
-INFLUXDB_CHUNKS: 100
+    - 'influxdb01.slac.stanford.edu:8086'
+    # - '172.23.52.24:8086'
+    # - '172.23.52.21:8086'
+    # - '172.23.52.26:8086'
+    # - '172.23.52.27:8086'
+INFLUXDB_CHUNKS: 500
+
