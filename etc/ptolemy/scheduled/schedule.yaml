@@ -4,7 +4,7 @@ default:
     port_stats:     58 +- 4
     ports:          260 +- 20 
     layer1_peer:    240 +- 20
-    spanning_tree:  840 +- 60
+    spanning_tree:  540 +- 60
     arps:           560 +- 60
     layer3:         560 +- 60
     entity:         560 +- 40
@@ -23,7 +23,7 @@ accelerator:
     port_stats:	    58 +- 4
     ports:	        260 +- 20 
     layer1_peer:    240 +- 20
-    spanning_tree:	840 +- 60
+    spanning_tree:	540 +- 60
     arps:           560 +- 40
     layer3:         900 +- 100
     entity:         560 +- 40
