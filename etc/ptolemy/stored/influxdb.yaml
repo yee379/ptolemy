@@ -4,12 +4,12 @@
 
 POOL: 'influxdb.default'
 KEYS:
-    # - '#.group.rfc2863.#'
     - '#.spec.reachability.#'
     - '#.spec.user_stats.#'
     - 'network.kpi.#'
+    #- '#.stats.#'
     # - 'perfsonar.#'
-    - '#.stats.#'
+    # - '#.group.rfc2863.#'
 
 
 #######################################################################

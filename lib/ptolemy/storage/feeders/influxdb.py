@@ -23,28 +23,30 @@ import traceback
 from random import choice
 
 def get_key( meta, context ):
+    this = context.copy()
+    this['group'] = meta['group']
+    keys = []
+    for k in sorted(this.keys()):
+        keys.append( "%s=%s" % (k,this[k],) )
+    # key, should probably try to merge in group into sorted list above
+    return "%s,%s" % ( meta['spec'], ','.join(keys) )
+
+def get_data( data ):
     # append other context items
     def parse(x):
         try:
             a = float(x)
-            b = int(a)
+            # b = int(a)
         except ValueError:
             return '"%s"' % x
-        if a == b:
-            return b
-        else:
-            return a
-            
-    keys = []
-    for k in sorted(context.keys()):
-        keys.append( "%s=%s" % (k,parse(context[k]),) )
-    # key, should probably try to merge in group into sorted list above
-    return "%s,group=%s,%s" % ( meta['spec'], meta['group'], ','.join(keys) )
-
-def get_data( data ):
-    out = []
+        return a
+        # if a == b:
+        #     return b
+        # else:
+        #     return a
+    out = []    
     for k,v in data.iteritems():
-        out.append('%s=%s' % (k,v) )
+        out.append('%s=%s' % (k,parse(v)) )
     return ','.join(out)
 
 def calc_time( ts ):
@@ -84,7 +86,7 @@ class InfluxDbStorer( Feeder ):
         ts = { 'start': now() }
         
         # reformat ata into influx format
-        this = '%s %s %s' % (get_key(meta,context),get_data(data),time)
+        this = '%s %s %s' % (get_key(meta,context),get_data(data),int(time))
         logging.debug("+ %s" % (this,))
         self.data_cache.append( this )
 
