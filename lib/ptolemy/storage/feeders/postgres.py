@@ -159,7 +159,6 @@ class PostgresStorer( Feeder ):
         if archive, then the archive table will use the id column as basically a FK for the item it is referencing.
         """
         name, inherited_from = self.table_name( spec, group, context, data )
-        # logging.error("ENSURE: %s (inherited from %s)" % (name,inherited_from))
         if archive:
             name = name + self.history_collection_append
         
@@ -168,23 +167,28 @@ class PostgresStorer( Feeder ):
         if this_table == None:
             this_table = name
         
+        # logging.debug("ENSURE_TABLE: %s (inherited from %s)\tknown: %s, inherit: %s" % (name,inherited_from, this_table in self.known_tables, name in self.known_tables ))
+
         if not this_table in self.known_tables:
 
             # check
             try:
                 # this is ~15x faster than creating the table if it already exists
                 stmt = "SELECT '%s'::regclass;" % (this_table)
-                logging.debug("ENSURE: %s" % (stmt,))
+                # logging.debug("ENSURING 1: %s" % (stmt,))
                 self.cur.execute( stmt )
                 self.known_tables[this_table] = {}
             except:
+                # clear the failed select query
+                self.db.commit()
+                # logging.debug(" CREATING 1: %s" % (this_table,))
                 # manually create
                 pk = 'SERIAL'
                 if archive:
                     pk = 'INT'
                 stmt = "CREATE TABLE %s ( id %s, created_at TIMESTAMP WITH TIME ZONE NOT NULL, updated_at TIMESTAMP WITH TIME ZONE NOT NULL, context HSTORE DEFAULT hstore(array[]::varchar[]), data HSTORE DEFAULT HSTORE(array[]::varchar[]) );" % (this_table,pk)
                 try:
-                    logging.debug("CREATE: %s" % (stmt,))
+                    # logging.debug(" CREATE: %s" % (stmt,))
                     self.cur.execute( stmt )
                     self.known_tables[this_table] = {}
                     # TODO: Create indexes
@@ -203,28 +207,34 @@ class PostgresStorer( Feeder ):
             try:
                 
                 stmt = "SELECT '%s'::regclass;" % (name,)
-                logging.debug('ENSURE %s' % (stmt,))
+                # logging.debug('ENSURE 2: %s' % (stmt,))
                 self.cur.execute( stmt )
                 self.known_tables[name] = {}
 
             except:
 
+                # clear the failed select query
+                self.db.commit()
+                # logging.debug(" CREATING 2: %s" % (name,))
+                
                 stmt = "CREATE TABLE %s () INHERITS (%s)" % (name,inherited_from)
                 try:
-                    logging.debug("CREATE PARTITION: %s" % (stmt,))
+                    # logging.debug(" CREATE PARTITION: %s" % (stmt,))
                     self.cur.execute( stmt )
+                    # logging.debug(" EXECUTED")
                     self.known_tables[name] = {}
                 except psycopg2.ProgrammingError,e:
+                    # logging.debug(" PROGRAMMING ERROR: %s" % (e,))
                     # its fine if the table already exists
                     if not str(e).endswith( ' already exists\n'):
-                        logging.debug("ERR: %s %s" % (type(e),e))
+                        # logging.debug(" ALREADY EXISTS: %s %s" % (type(e),e))
                         raise e
                     if not name in self.known_tables:
                         self.known_tables[name] = {}
                 except psycopg2.InternalError,e:
                     # hmmm.... why does it return this sometimes?
                     # ?? current transaction is aborted, commands ignored until end of transaction block
-                    logging.debug("ERROR: %s %s" % (type(e),e))
+                    logging.error("ERROR: %s %s" % (type(e),e))
                 self.db.commit()
 
         # logging.warn("END ENSURE %s" % (name,))
