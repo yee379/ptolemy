@@ -604,8 +604,9 @@ class PostgresStorer( Feeder ):
         if len(docs) == 1:
 
             # see if there are any differences in the this set
+            logging.debug("DIFF: docs[0]=%s\tcontext=%s\tdata=%s" % (docs[0],context,data) )
             d = self.different( docs[0], context, data, partial=False )
-            logging.debug("doc (%s): c=%s\td=%s" % (d,docs[0]['context'],docs[0]['data']) )
+            logging.debug("doc (%s): c=%s\td=%s\tmeta=%s" % (d,docs[0]['context'],docs[0]['data'], meta) )
 
             # if we have a 'ignore_data', then we don't care if d is True, so force - ensure we don't overwrite the created_at time
             update_created_at = True
@@ -616,7 +617,7 @@ class PostgresStorer( Feeder ):
             if 'merge_context' in meta and meta['merge_context']:
                 new_context = self.flatten( docs[0]['context'], context )
                 # if new context has more fields, assume it's the same then
-                d = False if len(new_context) >= len(context) else None
+                d = None if len(new_context) >= len(context) else None
                 logging.debug(" contexts (%s) c=%s\t-> c=%s" % (d,context,new_context))
                 context = new_context
              
@@ -654,7 +655,7 @@ class PostgresStorer( Feeder ):
                 # minor updates
                 self.stats['updated'] = self.stats['updated'] + 1
                 # self.update_item( meta['spec'], meta['group'], docs[0], time, context, data, update_created_at=update_created_at )
-                logging.debug("update single")
+                logging.debug("update single c=%s, d=%s" % (context,data,))
                 self.update_item( self.table, docs[0], time, context, data, update_created_at=update_created_at )
  
             else:
