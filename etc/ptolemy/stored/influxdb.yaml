@@ -4,12 +4,12 @@
 
 POOL: 'influxdb.default'
 KEYS:
-    # - '#.group.rfc2863.#'
     - '#.spec.reachability.#'
     - '#.spec.user_stats.#'
-    #- 'network.kpi.#'
+    - 'network.kpi.#'
+    #- '#.stats.#'
     # - 'perfsonar.#'
-    # - '#.stats.#'
+    # - '#.group.rfc2863.#'
 
 
 #######################################################################
@@ -21,9 +21,5 @@ INFLUXDB_USER: ptolemy
 INFLUXDB_PASSWORD: ptolemy
 INFLUXDB_INSTANCES:
     - 'influxdb01.slac.stanford.edu:8086'
-    # - '172.23.52.24:8086'
-    # - '172.23.52.21:8086'
-    # - '172.23.52.26:8086'
-    # - '172.23.52.27:8086'
-INFLUXDB_CHUNKS: 500
+INFLUXDB_CHUNKS: 100
 
