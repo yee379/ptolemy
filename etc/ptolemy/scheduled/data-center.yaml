@@ -14,10 +14,10 @@ hosts:
   rtr-block2.slac.stanford.edu: null
   rtr-border1.slac.stanford.edu: null
   rtr-border2.slac.stanford.edu: null
-  rtr-core1.slac.stanford.edu: 
+  rtr-core1.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-  rtr-core2.slac.stanford.edu: 
+  rtr-core2.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
   rtr-core3old.slac.stanford.edu: null
@@ -115,7 +115,7 @@ hosts:
   rtr-serv01.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-  rtr-serv02.slac.stanford.edu: 
+  rtr-serv02.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
   rtr-serv03.slac.stanford.edu:
@@ -216,6 +216,7 @@ hosts:
   swh-devctlcore-r127.slac.stanford.edu: null
   swh-devctlepn3.slac.stanford.edu: null
   swh-devctlepn4.slac.stanford.edu: null
+  swh-devctlir2.slac.stanford.edu: null
   swh-devctlkavli01.slac.stanford.edu: null
   swh-devctlpcdsn01.slac.stanford.edu: null
   swh-devctlpcdsn02.slac.stanford.edu: null
