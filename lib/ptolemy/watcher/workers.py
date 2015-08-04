@@ -11,6 +11,7 @@ from slac_utils.messages import Message
 from ptolemy.util.redis_mixins import ZStoreMixin
 
 import ipaddress 
+import socket
 import subprocess
 import traceback
 
@@ -235,6 +236,21 @@ class Scanner( Worker ):
             logging.error("  error: %s\n%s" % (e,t))
             
 
+def print_log( action, type, d ):
+    a = []
+    for k in sorted( d.keys() ):
+        if not k in ( 'status', 'type' ):
+            a.append( '%s=%s' % (k,d[k]) )
+    # add the dns name if possible
+    if 'ip_address' in d:
+        try:
+            dns = socket.gethostbyaddr( d['ip_address'] )
+            # logging.debug(" ip=%s, dns=%s" % (d['ip_address'], dns))
+            a.append( 'dns=%s' % dns[0] )
+        except:
+            pass
+    logging.info( 'action=%s type=%s %s' % (action, type, ' '.join(a) ))
+
 
 class HostWatcher( Feeder, ZStoreMixin ):
     """
@@ -415,35 +431,38 @@ class HostWatcher( Feeder, ZStoreMixin ):
             dups = {}
             # new mac addresesses seen
             for is_new,d in self.zstore_add( self.mac_key, epoch, self.these_macs, "${mac_address}" ):
-                if is_new:
-                    logging.info( 'new mac: %s' % (d,))
+                s = 'new' if is_new else 'existing'
+                print_log( s, 'mac', d )
                 # logging.info("     -m %s" % ( m, ) )
                 h, m = self.format_message( epoch, 'mac', d, uplinks=uplinks )
                 if not h in dups:
                     yield m
-                else:
-                    logging.debug("DUP MAC! c=%s,\td=%s" % (m['context'],m['data']))
+                # else:
+                #     logging.debug("DUP MAC! c=%s,\td=%s" % (m['context'],m['data']))
                 dups[h] = True
                 
             # new arps
             dups = {}
             for is_new,d in self.zstore_add( self.arp_key, epoch, self.these_arps, "${mac_address}@${ip_address}" ):
-                if is_new:
-                    logging.info( 'new arp: %s' % (d,))
+                s = 'new' if is_new else 'existing'
+                print_log( s, 'arp', d )
                 h, m = self.format_message( epoch, 'arp', d, uplinks=uplinks )
                 if not h in dups:
                     # logging.warn("     -a %s" % ( m, ) )
                     yield m
-                else:
-                    logging.debug("DUP ARP! c=%s,\td=%s" % (m['context'],m['data']))
+                # else:
+                #     logging.debug("DUP ARP! c=%s,\td=%s" % (m['context'],m['data']))
                 dups[h] = True
 
         # remove old entries
         old = int(datetime_to_epoch(time - self.expire_at))
         for i in self.zstore_expire( self.mac_key, old ):
-            logging.info("expired mac: %s" % (i,))
+            # logging.info("expired mac: %s" % (i,))
+            print_log( 'expired', 'mac', { 'mac_address': i } )
         for i in self.zstore_expire( self.arp_key, old ):
-            logging.info("expired arp: %s" % (i,))
+            # logging.info("expired arp: %s" % (i,))
+            mac, ip = i.split('@')
+            print_log( 'expired', 'arp', { 'mac_address': mac, 'ip_address': ip } )
 
         # logging.error("END")
 
