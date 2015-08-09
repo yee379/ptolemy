@@ -236,11 +236,14 @@ class Scanner( Worker ):
             logging.error("  error: %s\n%s" % (e,t))
             
 
-def print_log( action, type, d ):
+def print_log( action, type, d, report_on=( 'new', 'expired' ) ):
     a = []
     for k in sorted( d.keys() ):
         if not k in ( 'status', 'type' ):
             a.append( '%s=%s' % (k,d[k]) )
+    output = False
+    if action in report_on:
+        output = True
     # add the dns name if possible
     if 'ip_address' in d:
         # bad ip addresses
@@ -251,8 +254,10 @@ def print_log( action, type, d ):
             # logging.debug(" ip=%s, dns=%s" % (d['ip_address'], dns))
             a.append( 'dns=%s' % dns[0] )
         except:
+            output = True
             pass
-    logging.info( 'action=%s type=%s %s' % (action, type, ' '.join(a) ))
+    if output:
+        logging.info( 'action=%s type=%s %s' % (action, type, ' '.join(a) ))
 
 
 class HostWatcher( Feeder, ZStoreMixin ):
@@ -435,8 +440,7 @@ class HostWatcher( Feeder, ZStoreMixin ):
             # new mac addresesses seen
             for is_new,d in self.zstore_add( self.mac_key, epoch, self.these_macs, "${mac_address}" ):
                 s = 'new' if is_new else 'existing'
-                if is_new:
-                    print_log( s, 'mac', d )
+                print_log( s, 'mac', d )
                 # logging.info("     -m %s" % ( m, ) )
                 h, m = self.format_message( epoch, 'mac', d, uplinks=uplinks )
                 if not h in dups:
@@ -449,8 +453,7 @@ class HostWatcher( Feeder, ZStoreMixin ):
             dups = {}
             for is_new,d in self.zstore_add( self.arp_key, epoch, self.these_arps, "${mac_address}@${ip_address}" ):
                 s = 'new' if is_new else 'existing'
-                if is_new:
-                    print_log( s, 'arp', d )
+                print_log( s, 'arp', d )
                 h, m = self.format_message( epoch, 'arp', d, uplinks=uplinks )
                 if not h in dups:
                     # logging.warn("     -a %s" % ( m, ) )
