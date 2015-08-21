@@ -904,7 +904,9 @@ class NetSNMP( Agent ):
             if iid == '':
                 iid = 0
 
-            while this_f == name:
+            errored = False
+            last_iid = None
+            while this_f == name and errored == False:
 
                 # logging.warn("  fetch_by_bulkwalk: %s, iid: %s (oid: %s)" % (name, iid, this_oid))
                 req = self.lib.snmp_pdu_create(SNMP_MSG_GETBULK)
@@ -941,8 +943,16 @@ class NetSNMP( Agent ):
                         if close_match and not this_f == wanted_f:
                             this_f = wanted_f
                         yield this_f,iid,v
+                        
+                        # validate we're not in an infinate loop
+                        if iid == last_iid:
+                            errored = True
+                        last_iid = iid
             
                 self.lib.snmp_free_pdu(response)
+                if errored:
+                    # throw error instead?
+                    logging.error("OID not increasing for %s" % (this_f,))
 
         return
         
