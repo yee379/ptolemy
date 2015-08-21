@@ -1,7 +1,7 @@
 # logging file
 LOG_FILE: '/opt/ptolemy/var/log/stored-postgres.log'
 
-WORKERS: 10
+WORKERS: 16
 
 #######################################################################
 # Agent Settings
@@ -9,7 +9,7 @@ WORKERS: 10
 
 POOL: 'postgres.default'
 KEYS:
-    #- '#.spanning_tree.#'
+    - '#.spanning_tree.#'
     - '#.entity.#'
     - '#.ports.#'
     - '#.layer1_peer.#'
@@ -24,7 +24,7 @@ KEYS:
     - '#.spec.alert.#'
     - '#.meta.#'
     # can't keep up
-    # - '#.spec.caching.#'
+    - '#.spec.caching.#'
 
 #######################################################################
 # POSTGRES Settings

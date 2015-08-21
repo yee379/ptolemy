@@ -6,7 +6,7 @@ mkdir -p $PID_DIR
 chown -R $USER $WORK_DIR/var
 chgrp -R $GROUP $PID_DIR
 chmod -R u+rwx $PID_DIR
-pidfile="$PID_DIR/$NAME-$COMMAND.pid"
+pidfile="$PID_DIR/$NAME-$COMMAND$OTHER.pid"
 lockfile="${pidfile}.lock"
 
 PTOLEMY="${WORK_DIR}/bin/ptolemy.py"
@@ -49,7 +49,7 @@ clean() {
 
 forcestop(){
     echo "Force stopping $PROG $NAME $COMMAND "
-    if [ "$COMMAND"="" ]; then
+    if [ -z "$COMMAND" ]; then
         ps wx -U $USER | grep $PROG | grep $NAME | grep -v 'sh' | awk '{print $1}' | xargs kill -9
     else
         ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | grep -v '-' | awk '{print $1}' | xargs kill -9

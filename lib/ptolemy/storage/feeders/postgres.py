@@ -576,7 +576,7 @@ class PostgresStorer( Feeder ):
                     # logging.error(s)
                     raise UserWarning, s
             else:
-                raise SyntaxError, 'invalid context for %s %s: %s' % (meta['spec'], meta['group'], context)
+                raise SyntaxError, 'invalid context for %s %s: ' % (meta['spec'], meta['group'] )
                                 
         # 0) do we currently have the item in our db/cache (see pre_process for cache entries)?
         
