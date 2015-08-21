@@ -924,7 +924,7 @@ def _process_by_value_remap( data, name, definition, parent_data={}, **kwargs ):
                 data[name][k] = mapping[v]
                 found = True
             else:
-                # logging.debug("regexp value remap")
+                # logging.debug("     regexp value remap")
                 for i,j in mapping.iteritems():
                     # logging.debug("      search %s %s -> %s" % (data[name][k],i,j))
                     if search( i, data[name][k] ):
