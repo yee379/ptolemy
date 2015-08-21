@@ -45,6 +45,7 @@ definition:
                             'uninitialized': false
                             'loopback': True
                             'unpopulated': False
+                            2: False
             - connector_status:
                 ref:    sysIfxStatConnectorPresent
                 required: False
