@@ -251,7 +251,7 @@ class PollerSupervisor( Supervisor ):
         # check to make sure that we are ok with reprobe
         if k in self.forced_drivers or ( 'force_driver' in state and state['force_driver'] ):
             reprobe = False
-        if 'last_successful_driver' in state and state['last_successful_driver'] == None:
+        elif 'last_successful_driver' in state and state['last_successful_driver'] == None:
             reprobe = True
         
         # deal with reprobing but providing 'probe_with_drivers' instead of 'driver' in the job
