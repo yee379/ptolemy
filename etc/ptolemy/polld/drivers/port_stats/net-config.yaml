@@ -1,0 +1,55 @@
+---
+specification:  port_stats
+description:    Generic netconfig based Ptolemy Driver
+
+defaults:
+    agent: NetConfig
+
+
+definition:
+
+    rfc2863:
+
+        group_by_key: True
+        key_name: physical_port
+
+        defs:
+            - admin_status:
+                ref:    stats.rfc2863.on_admin_status
+            - oper_status:
+                ref:    stats.rfc2863.on_oper_status
+            - connector_status:
+                ref:    stats.rfc2863.on_connector_status
+                required: False
+                
+            - octets_in:
+                ref:    stats.rfc2863.on_input_bytes
+            - unicast_pkts_in:
+                ref:    stats.rfc2863.on_l3_in_ucast_pkt
+            - multicast_pkts_in:
+                ref:    stats.rfc2863.on_l3_in_mcast_pkt
+            - broadcast_pkts_in:
+                ref:    stats.rfc2863.on_input_bcasts
+            - discards_in:
+                ref:    stats.rfc2863.on_input_ignored
+            - errors_in:
+                ref:    stats.rfc2863.on_input_errors
+            - crc_in:
+                ref:    stats.rfc2863.on_input_crc
+
+
+            - octets_out:
+                ref:    stats.rfc2863.on_output_bytes
+            - unicast_pkts_out:
+                ref:    stats.rfc2863.on_l3_out_ucast_pkt
+            - multicast_pkts_out:
+                ref:    stats.rfc2863.on_l3_out_mcast_pkt
+            - broadcast_pkts_out:
+                ref:    stats.rfc2863.on_output_bcasts
+                required: False
+
+            - discards_out:
+                ref:    stats.rfc2863.on_output_discards
+                required: False
+            - errors_out:
+                ref:    stats.rfc2863.on_output_errors

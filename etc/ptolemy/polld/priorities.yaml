@@ -21,7 +21,8 @@ port_stats:
     - cisco_ios.yaml
     - generic.yaml
     - f5_bigip.yaml
-    
+    - net-config.yaml
+        
 port_channel:
     # - cisco_ios.yaml
     - net-config.yaml
