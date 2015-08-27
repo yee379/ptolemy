@@ -31,7 +31,9 @@ rtr-netmgmt.slac.stanford.edu:spanning_tree:	net-config.yaml
 swh-erp.slac.stanford.edu:spanning_tree:	net-config.yaml
 rtr-serv01-01.slac.stanford.edu:spanning_tree:	net-config.yaml
 rtr-serv01-01.slac.stanford.edu:ports:	net-config.yaml
+rtr-serv01-01.slac.stanford.edu:layer1_peer:	generic.yaml
 rtr-serv01-02.slac.stanford.edu:spanning_tree:	net-config.yaml
 rtr-serv01-02.slac.stanford.edu:ports:	net-config.yaml
+rtr-serv01-02.slac.stanford.edu:layer1_peer:	generic.yaml
 rtr-bldgcore1.slac.stanford.edu:spanning_tree:	net-config.yaml
 rtr-bldgcore2.slac.stanford.edu:spanning_tree:	net-config.yaml
