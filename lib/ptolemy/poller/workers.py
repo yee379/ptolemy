@@ -23,6 +23,7 @@ import sys
 import traceback
 from re import match, search
 from types import ModuleType
+from os.path import basename
 
 from pprint import pformat
 import logging
@@ -444,7 +445,13 @@ class Poller( Worker ):
                 raise Exception, 'old test (>%ss)' % (t,)
             # logging.error( 'task %s %s -> %s' % (job.timestamp, t, t - job.timestamp))
         if 'spec' in job.context and 'device' in job.context:
-            setproctitle('%s %s:%s' % (self.proc_name, job.context['device'], job.context['spec']) )
+            s = '%s %s:%s' % (self.proc_name, job.context['device'], job.context['spec']) 
+            try:
+                if 'driver' in job.data:
+                    s = '%s with %s' % (s, basename(job.data['driver']))
+            except:
+                pass
+            setproctitle(s)
             return poll( job, self.gatherer, self.logger )
 
     def post_task( self, job ):
