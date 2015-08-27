@@ -249,10 +249,10 @@ class PollerSupervisor( Supervisor ):
         # queue the test!
 
         # check to make sure that we are ok with reprobe
+        if 'last_successful_driver' in state and state['last_successful_driver'] == None:
+            reprobe = True
         if k in self.forced_drivers or ( 'force_driver' in state and state['force_driver'] ):
             reprobe = False
-        elif 'last_successful_driver' in state and state['last_successful_driver'] == None:
-            reprobe = True
         
         # deal with reprobing but providing 'probe_with_drivers' instead of 'driver' in the job
         # logging.error("HERE: %s (%s) = %s" % (k, reprobe, k in self.forced_drivers ))
