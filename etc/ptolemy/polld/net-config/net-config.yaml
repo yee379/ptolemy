@@ -40,6 +40,7 @@ profiles:
     asa:
         <<: *DEFAULT
         device_type: cisco_asa
+        enable_password: /opt/etc/netmon.password
 
     nexus:
         <<: *DEFAULT
