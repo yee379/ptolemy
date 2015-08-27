@@ -1,0 +1,68 @@
+---
+specification: port
+description: port information using net-config
+
+defaults:
+    agent: NetConfig
+    
+definition:
+
+    status:
+        
+        group_by_key:   True
+        key_name:       physical_port
+
+        defs:
+            - alias:
+                ref:    ports.on_alias
+                map:
+                  - value_sub:
+                      dict:
+                          '--': ''
+            # # - description:
+            # #     ref:    ports.on_description
+            # #     required: False
+            # # - type:
+            # #     ref:    ifType
+            - physical:
+                ref:    ports.on_port
+                map:
+                    - value_sub:
+                        dict:
+                            Eth.*:  True
+                            other:  False
+            # # - mac_address:
+            # #     ref:    ifPhysAddress
+            # #     map:
+            # #         - function:
+            # #             value:   normalise_mac_address
+            - admin_status:
+                ref:    ports.on_admin_status
+            - op_status:
+                ref:    ports.on_op_status
+
+            - duplex_admin_status:
+                  ref:  ports.on_duplex_admin
+            - duplex_status:
+                  ref:  ports.on_duplex
+            - speed_admin_status:
+                ref:    ports.on_speed_admin
+            - speed:
+                ref:    ports.on_speed
+                map:
+                    - value_sub:
+                        dict:
+                          10G:  10000
+                          40G:  40000
+            - portfast:
+                ref:    ports.on_portfast
+                required: False
+
+            - native_vlan:
+                ref:    ports.on_native_vlan
+                required: False
+            - trunked_vlans:
+                ref:    ports.on_vlans
+                
+            - function:
+                ref:    ports.on_type

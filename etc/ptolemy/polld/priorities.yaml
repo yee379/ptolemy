@@ -16,6 +16,8 @@ ports:
     - f5_bigip.yaml
     - dell_8024f.yaml
     - cisco_router.yaml
+    - net-config.yaml
+
     
 port_stats: 
     - cisco_ios.yaml
