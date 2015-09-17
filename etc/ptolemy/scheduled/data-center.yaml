@@ -9,7 +9,6 @@ hosts:
     schedule:
       ip_sla: 58 +- 4
       port_stats: 280 +- 20
-  rtr-block.slac.stanford.edu: null
   rtr-block1.slac.stanford.edu: null
   rtr-block2.slac.stanford.edu: null
   rtr-border1.slac.stanford.edu: null
@@ -64,11 +63,15 @@ hosts:
   rtr-fwpbx01.slac.stanford.edu: null
   rtr-fwpbx02.slac.stanford.edu: null
   rtr-fwpcdsn1.slac.stanford.edu: null
+  rtr-fwvpn1-new.slac.stanford.edu: null
   rtr-fwvpn1.slac.stanford.edu: null
+  rtr-fwvpn2-new.slac.stanford.edu: null
   rtr-fwvpn2.slac.stanford.edu: null
   rtr-fwvpn3.slac.stanford.edu: null
   rtr-fwvpn4.slac.stanford.edu: null
   rtr-fwvpn5.slac.stanford.edu: null
+  rtr-fwvpn6.slac.stanford.edu: null
+  rtr-fwvpn7.slac.stanford.edu: null
   rtr-lbepn3-01.slac.stanford.edu:
     schedule:
       ha: 58 +- 4
@@ -128,12 +131,11 @@ hosts:
   rtr-visitor2.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-  rtr-visitor3.slac.stanford.edu:
-    schedule:
-      ip_sla: 58 +- 4
   rtr-visitor4.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
+  rtr-visitor5.slac.stanford.edu: null
+  rtr-visitor6.slac.stanford.edu: null
   swh-bro.slac.stanford.edu: null
   swh-cgb1bd08.slac.stanford.edu: null
   swh-cgb1bd10.slac.stanford.edu: null

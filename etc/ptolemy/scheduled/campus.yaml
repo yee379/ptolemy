@@ -28,6 +28,7 @@ hosts:
   swh-b040s.slac.stanford.edu: null
   swh-b041f1.slac.stanford.edu: null
   swh-b041f2.slac.stanford.edu: null
+  swh-b044f1-ts07.slac.stanford.edu: null
   swh-b044f1.slac.stanford.edu: null
   swh-b044f2.slac.stanford.edu: null
   swh-b048f1.slac.stanford.edu: null
@@ -39,11 +40,16 @@ hosts:
   swh-b050f2-power.slac.stanford.edu: null
   swh-b050f2.slac.stanford.edu: null
   swh-b050f3.slac.stanford.edu: null
+  swh-b050r112.slac.stanford.edu: null
   swh-b050r362.slac.stanford.edu: null
   swh-b052f1.slac.stanford.edu: null
   swh-b052f2.slac.stanford.edu: null
   swh-b052f3.slac.stanford.edu: null
+  swh-b053f1-aud.slac.stanford.edu: null
+  swh-b053f1-conf.slac.stanford.edu: null
   swh-b053f1.slac.stanford.edu: null
+  swh-b053f3.slac.stanford.edu: null
+  swh-b053f4.slac.stanford.edu: null
   swh-b055.slac.stanford.edu: null
   swh-b060.slac.stanford.edu: null
   swh-b062.slac.stanford.edu: null

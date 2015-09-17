@@ -1,6 +1,5 @@
 hosts:
   ap-officeextend1.slac.stanford.edu: null
-  swh-b044f1-ts07.slac.stanford.edu: null
 settings:
   schedule: default
   snmp: default
