@@ -124,6 +124,15 @@ definition:
                 map:
                     - function:
                         group: merge_trunking_vlans
+            - voice_vlan:
+                ref:    vmVoiceVlanId
+                map:    
+                      - *ifindex_to_physical_port
+                      - filter:
+                          value:                              
+                              0:    null
+                              4096: null
+                required:   False
             - function:
                 map:
                     - function:
