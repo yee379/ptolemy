@@ -129,6 +129,7 @@ hosts:
   swh-mcc0-nw02.slac.stanford.edu: null
   swh-mcc0-nw03.slac.stanford.edu: null
   swh-mcc0-nw04.slac.stanford.edu: null
+  swh-pcdsn-hpl.slac.stanford.edu: null
   swh-pcdsn01.slac.stanford.edu: null
   swh-pcdsn02.slac.stanford.edu: null
   swh-pcdsn03.slac.stanford.edu: null

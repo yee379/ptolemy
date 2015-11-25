@@ -1,10 +1,4 @@
 hosts:
-  rtr-fwssrl01-p2p-ssrlcore1.slac.stanford.edu: null
-  rtr-fwssrl1.slac.stanford.edu:
-    schedule:
-      arps: 600 +- 60
-    snmp:
-      community: file:///opt/etc/snmp.community.read
   rtr-ssrlcore1.slac.stanford.edu:
     schedule:
       arps: 600 +- 60
@@ -13,6 +7,7 @@ hosts:
   swh-ssrlb006-pub1.slac.stanford.edu: null
   swh-ssrlb006-smb1.slac.stanford.edu: null
   swh-ssrlb006-smbctrl1.slac.stanford.edu: null
+  swh-ssrlb006-smbpiscsi.slac.stanford.edu: null
   swh-ssrlb050-smb1.slac.stanford.edu: null
   swh-ssrlb052-ctrl1.slac.stanford.edu: null
   swh-ssrlb116-ctrl1.slac.stanford.edu: null
@@ -73,6 +68,7 @@ hosts:
   swh-ssrlb137e-ctrl2.slac.stanford.edu: null
   swh-ssrlb137e-ctrl3.slac.stanford.edu: null
   swh-ssrlb137e-mgmt1.slac.stanford.edu: null
+  swh-ssrlb137e-mgmt2.slac.stanford.edu: null
   swh-ssrlb137e-pub1.slac.stanford.edu: null
   swh-ssrlb137e-pub2.slac.stanford.edu: null
   swh-ssrlb137e-pub3.slac.stanford.edu: null
@@ -110,6 +106,7 @@ hosts:
   swh-ssrlbl6-vis1.slac.stanford.edu: null
   swh-ssrlbl71-smbctrl1.slac.stanford.edu: null
   swh-ssrlbl91-smbctrl1.slac.stanford.edu: null
+  swh-ssrlcngenc1.slac.stanford.edu: null
   swh-ssrlcore.slac.stanford.edu: null
   swh-ssrlctrl-core1.slac.stanford.edu: null
   swh-ssrlctrl-core2.slac.stanford.edu: null

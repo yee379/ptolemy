@@ -42,7 +42,7 @@ hosts:
   rtr-farm16.slac.stanford.edu: null
   rtr-farm18.slac.stanford.edu: null
   rtr-farm20.slac.stanford.edu: null
-  rtr-farmcore1.slac.stanford.edu: null
+  rtr-farmcore1-decom.slac.stanford.edu: null
   rtr-farmcore2.slac.stanford.edu: null
   rtr-farmkly.slac.stanford.edu: null
   rtr-farmltda.slac.stanford.edu: null
@@ -63,9 +63,7 @@ hosts:
   rtr-fwpbx01.slac.stanford.edu: null
   rtr-fwpbx02.slac.stanford.edu: null
   rtr-fwpcdsn1.slac.stanford.edu: null
-  rtr-fwvpn1-new.slac.stanford.edu: null
   rtr-fwvpn1.slac.stanford.edu: null
-  rtr-fwvpn2-new.slac.stanford.edu: null
   rtr-fwvpn2.slac.stanford.edu: null
   rtr-fwvpn3.slac.stanford.edu: null
   rtr-fwvpn4.slac.stanford.edu: null
@@ -232,7 +230,7 @@ hosts:
     schedule:
       port_stats: 280 +- 40
   swh-fac.slac.stanford.edu: null
-  swh-farm01a.slac.stanford.edu: null
+  swh-farm01a-dead.slac.stanford.edu: null
   swh-farm04a.slac.stanford.edu: null
   swh-farm22d.slac.stanford.edu: null
   swh-farmorange1.slac.stanford.edu: null
