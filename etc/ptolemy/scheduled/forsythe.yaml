@@ -1,6 +1,5 @@
 hosts:
-  swh-devctlforsythe06.slac.stanford.edu: null
-  !!python/unicode swh-farmpulse05.slac.stanford.edu: null
+  swh-farmpulse05.slac.stanford.edu: null
 settings:
   schedule: default
   snmp: forsythe

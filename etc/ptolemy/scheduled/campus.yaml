@@ -13,6 +13,7 @@ hosts:
   swh-b026.slac.stanford.edu: null
   swh-b026mm.slac.stanford.edu: null
   swh-b026s.slac.stanford.edu: null
+  swh-b027.slac.stanford.edu: null
   swh-b028.slac.stanford.edu: null
   swh-b030.slac.stanford.edu: null
   swh-b031.slac.stanford.edu: null
@@ -72,10 +73,10 @@ hosts:
   swh-b128.slac.stanford.edu: null
   swh-b136.slac.stanford.edu: null
   swh-b225.slac.stanford.edu: null
-  !!python/unicode swh-b233.slac.stanford.edu: null
+  swh-b233.slac.stanford.edu: null
   swh-b235.slac.stanford.edu: null
   swh-b243.slac.stanford.edu: null
-  !!python/unicode swh-b244-linac.slac.stanford.edu: null
+  swh-b244-linac.slac.stanford.edu: null
   swh-b244.slac.stanford.edu: null
   swh-b245.slac.stanford.edu: null
   swh-b267.slac.stanford.edu: null
@@ -84,7 +85,7 @@ hosts:
   swh-b285.slac.stanford.edu: null
   swh-b292.slac.stanford.edu: null
   swh-b299.slac.stanford.edu: null
-  !!python/unicode swh-b4111.slac.stanford.edu: null
+  swh-b4111.slac.stanford.edu: null
   swh-b420.slac.stanford.edu: null
   swh-b443.slac.stanford.edu: null
   swh-b482.slac.stanford.edu: null
@@ -122,18 +123,18 @@ hosts:
   swh-mccwapcore1.slac.stanford.edu: null
   swh-mccwapcore2.slac.stanford.edu: null
   swh-sect00.slac.stanford.edu: null
-  !!python/unicode swh-sect07.slac.stanford.edu: null
+  swh-sect07.slac.stanford.edu: null
   swh-sect10-lab.slac.stanford.edu: null
   swh-sect10.slac.stanford.edu: null
-  !!python/unicode swh-sect11.slac.stanford.edu: null
-  !!python/unicode swh-sect12.slac.stanford.edu: null
-  !!python/unicode swh-sect13.slac.stanford.edu: null
-  !!python/unicode swh-sect14.slac.stanford.edu: null
-  !!python/unicode swh-sect15.slac.stanford.edu: null
-  !!python/unicode swh-sect16.slac.stanford.edu: null
-  !!python/unicode swh-sect17.slac.stanford.edu: null
+  swh-sect11.slac.stanford.edu: null
+  swh-sect12.slac.stanford.edu: null
+  swh-sect13.slac.stanford.edu: null
+  swh-sect14.slac.stanford.edu: null
+  swh-sect15.slac.stanford.edu: null
+  swh-sect16.slac.stanford.edu: null
+  swh-sect17.slac.stanford.edu: null
   swh-sect18-lclsdev.slac.stanford.edu: null
-  !!python/unicode swh-sect18.slac.stanford.edu: null
+  swh-sect18.slac.stanford.edu: null
   swh-sect19.slac.stanford.edu: null
   swh-sect20-rfhut.slac.stanford.edu: null
   swh-sect20.slac.stanford.edu: null

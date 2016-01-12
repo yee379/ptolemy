@@ -48,8 +48,12 @@ hosts:
   rtr-farmltda.slac.stanford.edu: null
   rtr-farmorange.slac.stanford.edu: null
   rtr-farmsrcf01.slac.stanford.edu: null
-  rtr-fwcore1.slac.stanford.edu: null
-  rtr-fwcore2.slac.stanford.edu: null
+  rtr-fwcore1.slac.stanford.edu:
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwcore2.slac.stanford.edu:
+    schedule:
+      user_stats: 296 +- 4
   rtr-fwdmz-01.slac.stanford.edu: null
   rtr-fwdmz-02.slac.stanford.edu: null
   rtr-fwepn2-01.slac.stanford.edu: null
@@ -63,13 +67,27 @@ hosts:
   rtr-fwpbx01.slac.stanford.edu: null
   rtr-fwpbx02.slac.stanford.edu: null
   rtr-fwpcdsn1.slac.stanford.edu: null
-  rtr-fwvpn1.slac.stanford.edu: null
-  rtr-fwvpn2.slac.stanford.edu: null
-  rtr-fwvpn3.slac.stanford.edu: null
-  rtr-fwvpn4.slac.stanford.edu: null
-  rtr-fwvpn5.slac.stanford.edu: null
-  rtr-fwvpn6.slac.stanford.edu: null
-  rtr-fwvpn7.slac.stanford.edu: null
+  rtr-fwvpn1.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn2.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn3.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn4.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn5.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn6.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
+  rtr-fwvpn7.slac.stanford.edu: 
+    schedule:
+      user_stats: 296 +- 4
   rtr-lbepn3-01.slac.stanford.edu:
     schedule:
       ha: 58 +- 4
@@ -221,6 +239,7 @@ hosts:
   swh-devctlpcdsn01.slac.stanford.edu: null
   swh-devctlpcdsn02.slac.stanford.edu: null
   swh-devctlpulse01.slac.stanford.edu: null
+  swh-devctlpulse02.slac.stanford.edu: null
   swh-devctlsl8500a.slac.stanford.edu: null
   swh-devctlsl8500b.slac.stanford.edu: null
   swh-devctlsrcfcore.slac.stanford.edu: null
