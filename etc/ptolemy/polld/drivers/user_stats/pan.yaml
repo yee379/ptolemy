@@ -19,27 +19,13 @@ definition:
         key_name: physical_index
         
         defs:
-            - gp_utilization:
-                ref:    panGPGatewayUtilization
-            - gp_utilization_pc:
-                ref:    panGPGWUtilizationPct
-            - gp_tunnels_max:
-                ref:    panGPGWUtilizationMaxTunnels
-            - gp_tunnels_active:
-                ref:    panGPGWUtilizationActiveTunnels
             - session_utilization:
-                ref:    panSessionUtilization                
-            - session_utilization_max:
-                ref:    panSessionMax
-            - vsys_utilization_pc:
-                ref:    panVsysSessionUtilizationPct
-            - vsys_sessions:
-                ref:    panVsysActiveSessions
-            - vsys_sessions_max:
-                ref:    panVsysMaxSessions
+                ref:    panSessionUtilization
                 
             - sessions:
                 ref:    panSessionActive
+            - sessions_max:
+                ref:    panSessionMax
             - tcp_sessions:
                 ref:  panSessionActiveTcp
             - udp_sessions:
@@ -47,3 +33,35 @@ definition:
             - icmp_sessions:
                 ref:  panSessionActiveICMP
                 
+    global_protect:
+      
+        group_by_key: True
+        key_name: physical_index
+        
+        defs:
+            - gp_utilization:
+                ref:    panGPGatewayUtilization
+                required: False
+            - gp_utilization_pc:
+                ref:    panGPGWUtilizationPct
+                required: False
+            - gp_tunnels_max:
+                ref:    panGPGWUtilizationMaxTunnels
+                required: False
+            - gp_tunnels_active:
+                ref:    panGPGWUtilizationActiveTunnels
+                required: False
+          
+    system_stats:
+      
+        group_by_key: True
+        key_name: physical_index
+        
+        defs:
+          
+          - vsys_utilization_pc:
+              ref:    panVsysSessionUtilizationPct
+          - vsys_sessions:
+              ref:    panVsysActiveSessions
+          - vsys_sessions_max:
+              ref:    panVsysMaxSessions
