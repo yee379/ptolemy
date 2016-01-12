@@ -8,6 +8,7 @@ defaults:
         SNMP:
             mibs:
                 - CISCO-UNIFIED-FIREWALL-MIB
+                - CISCO-REMOTE-ACCESS-MONITOR-MIB
 
 
 definition:
@@ -16,5 +17,8 @@ definition:
         
         defs:
 
-            - number:
-                ref:    crasSVCNumSessions
+            - svc_cumulative_number:
+                ref:    crasSVCCumulateSessions
+
+            - webvpn_cumulative_number:
+                ref:    crasWebvpnCumulateSessions
