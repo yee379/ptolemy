@@ -112,6 +112,7 @@ user_stats:
     # - cisco_aironet.yaml
     - f5_bigip.yaml
     - cisco_wlc.yaml
+    - pan.yaml
 
 wireless: 
     # - cisco_aironet.yaml
