@@ -261,6 +261,23 @@ ALERTS:
         <<: *end_alert
         context: *fans
 
+    ###
+    # alert when the pan session percent is too high
+    ###
+    - net-admin_pan.sessions:
+        context: &pan
+            device: 
+                - .*
+            metric: pan.sessions
+        condition:
+          - '%(value)s > 30'
+        alert_with:
+          - email:
+              subject: high palo alto network sessions count
+              content: something here at %(value)s for pan
+              to:
+                - ytl@slac.stanford.edu
+              
 
     ###
     # alert mcc when a link connected to another switch has a high utilisation
@@ -299,5 +316,7 @@ ALERTS:
                 content: *email_template
                 to:
                     - ramirez@slac.stanford.edu
-                    - ytl@slac.stanford.edu
+                    - camuso@slac.stanford.edu
                 limit: 300
+
+    
