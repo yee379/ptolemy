@@ -178,3 +178,20 @@ ANALYSE:
     # alert if subnets acting funny
     # alert when phones change location
     #
+    
+    ###
+    # alert when the session counter on pan is too high
+    ###
+    pan.sessions:
+        what:
+            spec:   user_stats
+            group:  stats
+            field:
+                name:   device
+                regex:  .*
+        when:
+            spec:   user_stats
+            group:  stats
+            field:
+                name:   session_utilization
+                ge:     0
