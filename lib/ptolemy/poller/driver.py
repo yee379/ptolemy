@@ -926,13 +926,14 @@ def _process_by_value_remap( data, name, definition, parent_data={}, **kwargs ):
             else:
                 # logging.debug("     regexp value remap")
                 for i,j in mapping.iteritems():
-                    # logging.debug("      search %s %s -> %s" % (data[name][k],i,j))
-                    if search( i, data[name][k] ):
+                    # logging.debug("      search for '%s' in '%s' -> replace with '%s'" % (data[name][k],i,j))
+                    if search( '%s'%i, '%s'%data[name][k] ):
                         data[name][k] = j
                         found = True
                         break
             if not found and 'other' in mapping:
                 # determine if special value 'other' is defined
+                logging.debug("      not found, using 'other' value %s" % (mapping['other'],))
                 data[name][k] = mapping['other']
                 found = True
             if not found:
