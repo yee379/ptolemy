@@ -71,11 +71,12 @@ class TelephoneWorker( Feeder ):
         
     def send_email( self, msg, subj ):
         logging.info( '%s' % (msg,))
-        try:
-            e = Email( server=self.kwargs['email_server'], from_name=self.kwargs['email_from_name'], from_email=self.kwargs['email_from_address'], site_name=self.kwargs['email_server'] )
-            e.send( self.kwargs['email_to'], msg, subject='%s%s' % (self.kwargs['email_subject_prepend'],subj) )
-        except Exception,e:
-            logging.error("could not send notification: %s %s" % (type(e),e))
+        if len( self.kwargs['email_to'] ) > 0:
+            try:
+                e = Email( server=self.kwargs['email_server'], from_name=self.kwargs['email_from_name'], from_email=self.kwargs['email_from_address'], site_name=self.kwargs['email_server'] )
+                e.send( self.kwargs['email_to'], msg, subject='%s%s' % (self.kwargs['email_subject_prepend'],subj) )
+            except Exception,e:
+                logging.error("could not send notification: %s %s" % (type(e),e))
             
             
     def pre_bulk_process( self, time, meta, context, deta ):
