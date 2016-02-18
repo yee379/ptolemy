@@ -270,7 +270,7 @@ ALERTS:
                 - .*
             metric: pan.sessions
         condition:
-          - '%(value)s > 60'
+          - '%(value)s > 75'
         alert_with:
           - email:
               subject: high palo alto network sessions count
