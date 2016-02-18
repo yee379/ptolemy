@@ -67,25 +67,25 @@ hosts:
   rtr-fwpbx01.slac.stanford.edu: null
   rtr-fwpbx02.slac.stanford.edu: null
   rtr-fwpcdsn1.slac.stanford.edu: null
-  rtr-fwvpn1.slac.stanford.edu: 
+  rtr-fwvpn1.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn2.slac.stanford.edu: 
+  rtr-fwvpn2.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn3.slac.stanford.edu: 
+  rtr-fwvpn3.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn4.slac.stanford.edu: 
+  rtr-fwvpn4.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn5.slac.stanford.edu: 
+  rtr-fwvpn5.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn6.slac.stanford.edu: 
+  rtr-fwvpn6.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn7.slac.stanford.edu: 
+  rtr-fwvpn7.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
   rtr-lbepn3-01.slac.stanford.edu:
