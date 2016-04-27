@@ -35,7 +35,12 @@ stop(){
 
 reload(){
     echo "Reloading $PROG $NAME $COMMAND "
-    killproc -p ${pidfile} $PTOLEMY -HUP 
+    if [ -z "$COMMAND" ]; then
+        ps wx -U $USER | grep $PROG | grep $NAME | grep -v 'sh' | awk '{print $1}' | xargs kill -HUP
+    else
+        ps wx -U $USER | grep $PROG | grep $NAME | grep $COMMAND | grep -v '-' | awk '{print $1}' | xargs kill -HUP
+    fi
+    # killproc -p ${pidfile} $PTOLEMY -HUP 
 }
 
 currentstatus(){
