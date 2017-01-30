@@ -162,7 +162,10 @@ class AnalyseWorker( Feeder ):
         last_state = None
         last_value = None
         state = False # match against where condition
-        value = data[d['name']]
+        try:
+            value = data[d['name']]
+        except:
+            pass
         try:
             last_state, last_value = eval( self.redis.get(k) )
             logging.debug( "found %s/%s\t%s" % (last_state,last_value,k))
