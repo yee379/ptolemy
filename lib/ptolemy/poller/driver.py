@@ -604,9 +604,10 @@ def post_normalise_entities( g, d, data ):
             # grab data from child modules of this chassis
             this = walk_to( c, topology )
             child_modules = []
-            for m in this:
-                if data[g][m]['type'] == 'module':
-                    child_modules.append( m )
+            if this:
+                for m in this:
+                    if data[g][m]['type'] == 'module':
+                        child_modules.append( m )
             if len(child_modules) == 1:
                 m = child_modules.pop()
                 # logging.error("PARENT: %s has child: %s" % (c,data[g][m]) )
@@ -616,7 +617,7 @@ def post_normalise_entities( g, d, data ):
                         logging.debug('setting chassis %s to %s' % (i,data[g][m][i]))
                         data[g][c][i] = data[g][m][i]
             # rename stupid nexus 2k models from the descrition
-            if data[g][c]['model'].startswith( 'Fabric Extender Module' ):
+            if c in data[g] and data[g][c]['model'].startswith( 'Fabric Extender Module' ):
                 m = search( r'^Fex-\d+ (?P<model>\S+) Chassis', data[g][c]['description'] )
                 if m:
                     v = m.group('model')

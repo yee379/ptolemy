@@ -89,6 +89,8 @@ hosts:
   swh-ssrlb140-ctrl3.slac.stanford.edu: null
   swh-ssrlb140-pub1.slac.stanford.edu: null
   swh-ssrlb221-ctrl1.slac.stanford.edu: null
+  swh-ssrlb221-pub1.slac.stanford.edu: null
+  swh-ssrlb221-spdev1.slac.stanford.edu: null
   swh-ssrlb274-pub1.slac.stanford.edu: null
   swh-ssrlb274-pub2.slac.stanford.edu: null
   swh-ssrlb274-smb1.slac.stanford.edu: null
