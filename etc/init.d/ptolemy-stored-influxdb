@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# ptolemy stored postgres
+#
+# chkconfig: 2345 95 02
+# description:  postgres storage for ptolemy monitoring
+#              
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+PROG="ptolemy"
+NAME="stored"
+COMMAND="influxdb"
+USER="netmon"
+GROUP="sf"
+
+WORK_DIR='/opt/ptolemy'
+. /opt/ptolemy/etc/init.d/ptolemy-rc
