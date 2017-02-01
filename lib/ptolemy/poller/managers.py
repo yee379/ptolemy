@@ -243,6 +243,10 @@ class PollerSupervisor( Supervisor ):
                 state['next_probe'] = now + timedelta( seconds=s )
                 # logging.warn("NEXT %s %s (now %s +- %s = %s)" % (k,state['next_probe'],now,d,s))
 
+            # set the forced driver from mem
+            if k in self.forced_drivers:
+                state['force_driver'] = self.forced_drivers[k]
+
             # update our cache
             self.commit_state( k, state )
 
@@ -273,14 +277,11 @@ class PollerSupervisor( Supervisor ):
             
             driver = state['last_successful_driver']
             # override with forced driver if exists
-            if k in self.forced_drivers:
-                driver = self.forced_drivers[k]
-            elif 'force_driver' in state:
-                if state['force_driver']:
-                    driver = state['force_driver']
+            if 'force_driver' in state and state['force_driver']:
+                driver = state['force_driver']
                 
             job.data['driver'] = self._get_driver_path( job.context['spec'], driver )
-            # logging.info( "MAN %s using %s %s" % (k,job.data['driver'].split('/')[-1],state) )
+            # logging.info( "manager %s using %s %s" % (k,job.data['driver'].split('/')[-1],state) )
             return job
             
         raise Exception, '%s internal logic error' % (k,)

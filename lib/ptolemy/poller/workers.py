@@ -72,7 +72,7 @@ class Gatherer( object ):
                             this_kwargs[i] = kwargs[i]
                         else:
                             logging.error("agent kwargs %s not defined" % (i,))
-                logging.debug("agent %s kwargs: %s" % (a,this_kwargs))
+                # logging.debug("initializing agent %s kwargs: %s" % (a,this_kwargs))
                 self.agents[a] = AGENT_CLASSES[a]( **this_kwargs )
         
         # import external modules
@@ -188,13 +188,16 @@ class Gatherer( object ):
         _fetch will return a pure dict representation of the data
         we need to provide arrays of dicts for each group
         """
+        spec = driver.split('/')[-2]
+        k = '%s:%s' % (host, spec)
+
         # load driver
-        logging.debug('loading driver %s' % (driver,))
+        # logging.debug('initializing %s with driver %s' % (k, driver,))
         this_driver = None
         try:
             this_driver = YAMLDriver( driver )
         except Exception, e:
-            logging.error("driver load error %s: %s" % (driver,e))
+            logging.error("%s driver load error %s: %s" % (k, driver,e))
             raise e
 
         res = {}
@@ -208,7 +211,7 @@ class Gatherer( object ):
             if timeout and timeout > 0:
                 signal.alarm(0)
                 sig = signal.signal(signal.SIGALRM, _timeout_handler)
-                # logging.info("timeout: %s" % (timeout,))
+                # logging.debug("%s setting timeout: %s" % (k,timeout,))
                 signal.alarm( int(timeout) )
                 
             # logging.error("FETCH! %s %s" % (host, this_driver))
@@ -217,6 +220,7 @@ class Gatherer( object ):
             res = this_driver.post_remap( res, res_dict, keys )
             # logging.error("RES2 %s" % (res,))
             
+            logging.info("%s finished fetching data" % (k,))
             for g in res.keys():
                 # remove the group?
                 # logging.error("CLEAN %s"%g)
@@ -236,6 +240,8 @@ class Gatherer( object ):
                 signal.signal(signal.SIGALRM, sig) 
             signal.alarm(0)
 
+        # logging.info("%s fetch returning" % (k,))
+        
         return keys, additional_keys, forced_keys, res
         
     
@@ -432,7 +438,7 @@ class Poller( Worker ):
     proc_name = 'ptolemy polld'
     prefetch_tasks = 1 # only take one job at once
 
-    def setup(self, *args, **kwargs):
+    def  (self, *args, **kwargs):
         super( Poller, self ).setup( *args, **kwargs )
         self.gatherer = Gatherer( **kwargs )
     
@@ -506,7 +512,7 @@ def poll( job, gatherer, logger=logging ):
     
     # set timeout
     # really? why 450?
-    timeout = 450
+    timeout = 900
     if 'frequency' in job._meta and job._meta['frequency'] > 0:
         # logging.error("TIMEOUT: %s" % (job._meta))
         timeout = min( int(job._meta['frequency']), timeout )
@@ -523,7 +529,7 @@ def poll( job, gatherer, logger=logging ):
 
         try:
 
-            # logging.error("TIMEOUT: %s %s" % (job.context['device'], timeout))
+            # logging.debug("starting poll: %s:%s, with %s, timeout %s (%s)" % (job.context['device'],job.context['spec'], d, timeout, o))
             keys, additional_keys, forced_keys, data = gatherer.fetch( job.context['device'], d, timeout=timeout, **o )
 
             # notify upstream that this succeeded
