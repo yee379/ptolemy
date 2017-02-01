@@ -438,7 +438,7 @@ class Poller( Worker ):
     proc_name = 'ptolemy polld'
     prefetch_tasks = 1 # only take one job at once
 
-    def  (self, *args, **kwargs):
+    def setup(self, *args, **kwargs):
         super( Poller, self ).setup( *args, **kwargs )
         self.gatherer = Gatherer( **kwargs )
     
