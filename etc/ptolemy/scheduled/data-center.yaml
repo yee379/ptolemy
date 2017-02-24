@@ -1,6 +1,5 @@
 hosts:
   rtr-b720-bbrmms.slac.stanford.edu: null
-  rtr-bbrmms.slac.stanford.edu: null
   rtr-bldgcore1.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
@@ -13,6 +12,7 @@ hosts:
   rtr-block2.slac.stanford.edu: null
   rtr-border1.slac.stanford.edu: null
   rtr-border2.slac.stanford.edu: null
+  rtr-core1-new.slac.stanford.edu: null
   rtr-core1.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
@@ -25,7 +25,6 @@ hosts:
   rtr-external1.slac.stanford.edu: null
   rtr-fac1.slac.stanford.edu: null
   rtr-fac2.slac.stanford.edu: null
-  rtr-farm01.slac.stanford.edu: null
   rtr-farm02.slac.stanford.edu: null
   rtr-farm04.slac.stanford.edu:
     schedule:
@@ -42,12 +41,10 @@ hosts:
   rtr-farm16.slac.stanford.edu: null
   rtr-farm18.slac.stanford.edu: null
   rtr-farm20.slac.stanford.edu: null
-  rtr-farmcore1-decom.slac.stanford.edu: null
   rtr-farmcore2.slac.stanford.edu: null
   rtr-farmkly.slac.stanford.edu: null
   rtr-farmltda.slac.stanford.edu: null
   rtr-farmorange.slac.stanford.edu: null
-  rtr-farmsrcf01.slac.stanford.edu: null
   rtr-fwcore1.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
@@ -76,12 +73,6 @@ hosts:
   rtr-fwvpn3.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
-  rtr-fwvpn4.slac.stanford.edu:
-    schedule:
-      user_stats: 296 +- 4
-  rtr-fwvpn5.slac.stanford.edu:
-    schedule:
-      user_stats: 296 +- 4
   rtr-fwvpn6.slac.stanford.edu:
     schedule:
       user_stats: 296 +- 4
@@ -108,6 +99,8 @@ hosts:
     schedule:
       ha: 58 +- 4
       user_stats: 296 +- 4
+  rtr-lbserv01-01.slac.stanford.edu: null
+  rtr-lbserv01-02.slac.stanford.edu: null
   rtr-lbserv03-01.slac.stanford.edu:
     schedule:
       ha: 58 +- 4
@@ -140,6 +133,8 @@ hosts:
   rtr-serv03.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
+  rtr-serv06-01.slac.stanford.edu: null
+  rtr-serv06-02.slac.stanford.edu: null
   rtr-sitesec1.slac.stanford.edu: null
   rtr-visitor1.slac.stanford.edu:
     schedule:
@@ -147,12 +142,10 @@ hosts:
   rtr-visitor2.slac.stanford.edu:
     schedule:
       ip_sla: 58 +- 4
-  rtr-visitor4.slac.stanford.edu:
-    schedule:
-      ip_sla: 58 +- 4
-  rtr-visitor5.slac.stanford.edu: null
-  rtr-visitor6.slac.stanford.edu: null
+  rtr-visitor5-new10g.slac.stanford.edu: null
+  rtr-visitor6-new10g.slac.stanford.edu: null
   swh-bro.slac.stanford.edu: null
+  swh-bro2.slac.stanford.edu: null
   swh-cgb1bd08.slac.stanford.edu: null
   swh-cgb1bd10.slac.stanford.edu: null
   swh-cgb1bd11.slac.stanford.edu: null
@@ -174,6 +167,7 @@ hosts:
   swh-devctl1au20.slac.stanford.edu: null
   swh-devctl1au26.slac.stanford.edu: null
   swh-devctl1az22.slac.stanford.edu: null
+  swh-devctl1az25.slac.stanford.edu: null
   swh-devctl1bi10.slac.stanford.edu: null
   swh-devctl1bi11.slac.stanford.edu: null
   swh-devctl1bi18.slac.stanford.edu: null
@@ -220,6 +214,7 @@ hosts:
   swh-devctl2be26-2.slac.stanford.edu: null
   swh-devctl2be26.slac.stanford.edu: null
   swh-devctl2bf40.slac.stanford.edu: null
+  swh-devctl2bh24.slac.stanford.edu: null
   swh-devctl2bj36-2.slac.stanford.edu: null
   swh-devctl2bj36.slac.stanford.edu: null
   swh-devctl2bj37.slac.stanford.edu: null
@@ -227,6 +222,8 @@ hosts:
   swh-devctl2bl25.slac.stanford.edu: null
   swh-devctl2bl27.slac.stanford.edu: null
   swh-devctl2bs29.slac.stanford.edu: null
+  swh-devctl2bs34.slac.stanford.edu: null
+  swh-devctl2bxxx.slac.stanford.edu: null
   swh-devctl2ca29.slac.stanford.edu: null
   swh-devctl2ca31-2.slac.stanford.edu: null
   swh-devctl2ca31.slac.stanford.edu: null
@@ -242,14 +239,12 @@ hosts:
   swh-devctlpulse02.slac.stanford.edu: null
   swh-devctlsl8500a.slac.stanford.edu: null
   swh-devctlsl8500b.slac.stanford.edu: null
-  swh-devctlsrcfcore.slac.stanford.edu: null
   swh-epn3.slac.stanford.edu: null
   swh-epn4.slac.stanford.edu: null
   swh-erp.slac.stanford.edu:
     schedule:
       port_stats: 280 +- 40
   swh-fac.slac.stanford.edu: null
-  swh-farm01a-dead.slac.stanford.edu: null
   swh-farm04a.slac.stanford.edu: null
   swh-farm22d.slac.stanford.edu: null
   swh-farmorange1.slac.stanford.edu: null

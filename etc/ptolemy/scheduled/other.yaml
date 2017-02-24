@@ -1,6 +1,13 @@
 hosts:
+  ap-pc93693.slac.stanford.edu: null
+  ap-pc93853.slac.stanford.edu: null
+  rtr-fwamz01.slac.stanford.edu: null
+  rtr-fwserv06-01.slac.stanford.edu: null
+  rtr-fwserv06-02.slac.stanford.edu: null
   rtr-lbvm01.slac.stanford.edu: null
+  rtr-lclsdev1.slac.stanford.edu: null
   rtr-lsstcam.slac.stanford.edu: null
+  swh-b044-bk01.slac.stanford.edu: null
 settings:
   schedule: default
   snmp: default

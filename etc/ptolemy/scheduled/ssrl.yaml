@@ -2,7 +2,6 @@ hosts:
   rtr-ssrlcore1.slac.stanford.edu:
     schedule:
       arps: 600 +- 60
-  swh-ssrlb005-ctrl1.slac.stanford.edu: null
   swh-ssrlb006-mgmt1.slac.stanford.edu: null
   swh-ssrlb006-pub1.slac.stanford.edu: null
   swh-ssrlb006-smb1.slac.stanford.edu: null
@@ -19,16 +18,19 @@ hosts:
   swh-ssrlb117-pub1.slac.stanford.edu: null
   swh-ssrlb117-pub2.slac.stanford.edu: null
   swh-ssrlb117-spdev1.slac.stanford.edu: null
+  swh-ssrlb117-spdev2.slac.stanford.edu: null
   swh-ssrlb118-ctrl1.slac.stanford.edu: null
   swh-ssrlb118-ctrl2.slac.stanford.edu: null
   swh-ssrlb118-ctrl3.slac.stanford.edu: null
   swh-ssrlb118-ctrl4.slac.stanford.edu: null
   swh-ssrlb118-pub1.slac.stanford.edu: null
+  swh-ssrlb118-spdev1.slac.stanford.edu: null
   swh-ssrlb120-cam1.slac.stanford.edu: null
   swh-ssrlb120-ctrl1.slac.stanford.edu: null
   swh-ssrlb120-ctrl2.slac.stanford.edu: null
   swh-ssrlb120-ctrl3.slac.stanford.edu: null
   swh-ssrlb120-mgmt1.slac.stanford.edu: null
+  swh-ssrlb120-mps1.slac.stanford.edu: null
   swh-ssrlb120-pub1.slac.stanford.edu: null
   swh-ssrlb120-pub2.slac.stanford.edu: null
   swh-ssrlb120-pub3.slac.stanford.edu: null
@@ -53,21 +55,22 @@ hosts:
   swh-ssrlb130-pub3.slac.stanford.edu: null
   swh-ssrlb130-pub4.slac.stanford.edu: null
   swh-ssrlb130-smb1.slac.stanford.edu: null
-  swh-ssrlb130j8.slac.stanford.edu: null
+  swh-ssrlb130-smbctrl1.slac.stanford.edu: null
+  swh-ssrlb130-smbctrl2.slac.stanford.edu: null
   swh-ssrlb131-ctrl1.slac.stanford.edu: null
   swh-ssrlb131-mgmt1.slac.stanford.edu: null
   swh-ssrlb131-pub1.slac.stanford.edu: null
   swh-ssrlb131-pub3.slac.stanford.edu: null
   swh-ssrlb131-smb1.slac.stanford.edu: null
-  swh-ssrlb131-smbp1.slac.stanford.edu: null
+  swh-ssrlb131-smbctrl1.slac.stanford.edu: null
   swh-ssrlb131j1.slac.stanford.edu: null
-  swh-ssrlb131j2p.slac.stanford.edu: null
   swh-ssrlb132-ctrl1.slac.stanford.edu: null
   swh-ssrlb132-pub1.slac.stanford.edu: null
   swh-ssrlb137e-camac1.slac.stanford.edu: null
   swh-ssrlb137e-ctrl1.slac.stanford.edu: null
   swh-ssrlb137e-ctrl2.slac.stanford.edu: null
   swh-ssrlb137e-ctrl3.slac.stanford.edu: null
+  swh-ssrlb137e-hpctrl1.slac.stanford.edu: null
   swh-ssrlb137e-mgmt1.slac.stanford.edu: null
   swh-ssrlb137e-mgmt2.slac.stanford.edu: null
   swh-ssrlb137e-pub1.slac.stanford.edu: null
@@ -75,8 +78,7 @@ hosts:
   swh-ssrlb137e-pub3.slac.stanford.edu: null
   swh-ssrlb137e-pub4.slac.stanford.edu: null
   swh-ssrlb137e-smb1.slac.stanford.edu: null
-  swh-ssrlb137e-smbctrl2.slac.stanford.edu: null
-  swh-ssrlb137e-smbp1.slac.stanford.edu: null
+  swh-ssrlb137e-smbctrl1.slac.stanford.edu: null
   swh-ssrlb137e-vis1.slac.stanford.edu: null
   swh-ssrlb137ez1.slac.stanford.edu: null
   swh-ssrlb137ez2.slac.stanford.edu: null
@@ -106,12 +108,12 @@ hosts:
   swh-ssrlbl6-ctrl1.slac.stanford.edu: null
   swh-ssrlbl6-pub1.slac.stanford.edu: null
   swh-ssrlbl6-smb.slac.stanford.edu: null
-  swh-ssrlbl6-smbp1.slac.stanford.edu: null
+  swh-ssrlbl6-smbctrl1.slac.stanford.edu: null
   swh-ssrlbl6-vis1.slac.stanford.edu: null
   swh-ssrlbl71-smbctrl1.slac.stanford.edu: null
   swh-ssrlbl91-smbctrl1.slac.stanford.edu: null
-  swh-ssrlcngenc1.slac.stanford.edu: null
   swh-ssrlcore.slac.stanford.edu: null
+  swh-ssrlctrl-core01.slac.stanford.edu: null
   swh-ssrlctrl-core1.slac.stanford.edu: null
   swh-ssrlctrl-core2.slac.stanford.edu: null
   swh-ssrlctrl-core3.slac.stanford.edu: null
